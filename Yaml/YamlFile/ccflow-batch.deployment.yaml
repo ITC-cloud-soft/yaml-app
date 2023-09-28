@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccflow-batch
+spec:
+  #
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ccflow-batch
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 3
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: ccflow-batch
+        aadpodidbinding: saas-pod-identity
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ccflow-batch
+              topologyKey: kubernetes.io/zone
+      containers:
+      - name: ccflow-batch
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: secrets-store-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+        - name: vol-applog
+          mountPath: /app/log
+        env:
+          - name: LOGANALYTICS_FLG
+            value: "1"
+          - name: LOGANALYTICS_LOG_DIR
+            value: "/app/log"
+          - name: LOGANALYTICS_LOG_FILE
+            value: "ccflow-batch.log.json"
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: densin-keyvault-spc
+#          nodePublishSecretRef:
+#            name: ccflow-secret
+      - name: vol-applog
+        emptyDir: {}
+      nodeSelector:
+        "beta.kubernetes.io/os": linux

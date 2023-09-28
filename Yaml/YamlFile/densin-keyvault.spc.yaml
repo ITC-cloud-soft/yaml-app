@@ -1,0 +1,12 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+kind: SecretProviderClass
+metadata:
+  name: densin-keyvault-spc
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: 'true'
+    useVMManagedIdentity: 'false'
+    tenantId: 1bf2b880-115d-4e08-a258-aa1dc41dc0d5
+    keyvaultName: '<KeyVault名。overlays/xxx で上書きする>'
+    userAssignedIdentityID: '<KeyVaultにアクセスするためのマネージドIDのクライアントID。overlays/xxx で上書きする>'
