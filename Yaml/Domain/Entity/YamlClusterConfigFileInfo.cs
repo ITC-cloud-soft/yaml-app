@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Yaml.Infrastructure.Presistence.dao;
 namespace Yaml.Domain.Entity;
 
-
 [Table("TBL_YAML_CLUSTER_CONFIG_MAP_FILE_INFO")]
 public class YamlClusterConfigFileInfo : CommonFields
 {

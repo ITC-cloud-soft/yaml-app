@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-
+namespace Yaml.Infrastructure.Mappings;
 
 public interface IMapFrom<T>
 {

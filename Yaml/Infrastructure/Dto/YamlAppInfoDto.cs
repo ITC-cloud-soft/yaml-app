@@ -1,4 +1,5 @@
 using Yaml.Domain.Entity;
+using Yaml.Infrastructure.Mappings;
 
 namespace Yaml.Infrastructure.Dto;
 public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
@@ -19,6 +20,18 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
 
 public class AppKeyVault
 {
+    public AppKeyVault()
+    {
+    }
+
+    public AppKeyVault(string? tenantId, string? keyVaultName, string? managedId, List<string>? keyVault)
+    {
+        TenantId = tenantId;
+        KeyVaultName = keyVaultName;
+        ManagedId = managedId;
+        KeyVault = keyVault;
+    }
+
     public string? TenantId { get; set; }
     public string? KeyVaultName { get; set; }
     public string? ManagedId { get; set; }
@@ -26,8 +39,9 @@ public class AppKeyVault
 }
 
 
-public class YamlClusterInfoDto : IMapFrom<YamlAppInfo>
+public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 {
+    public int Id { set; get; }
     public string? ClusterName { set; get; }
     public string? Image { set; get; }
     public int? PodNum { set; get; }

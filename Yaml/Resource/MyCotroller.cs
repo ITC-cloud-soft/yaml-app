@@ -1,3 +1,4 @@
+using RazorLight;
 using Yaml.Application;
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
@@ -61,13 +62,6 @@ public class MyController : ApiControllerBase
         Console.WriteLine(yamlAppInfos[0].ToString());
         return Ok(yamlAppInfoDtoList);
     }
-    //
-    // [HttpGet("list1")]
-    // public async Task<ActionResult<AppInfoVm>> GetAppInfo(GetAppInfoQuery query)
-    // {
-    //     return await Mediator.Send(query);
-    //
-    // }
 
 
     [HttpGet("list3")]
@@ -96,28 +90,38 @@ public class MyController : ApiControllerBase
     }
 
     [HttpGet("generateYaml")]
-    public async Task<ActionResult<string>> GenerateYamlFile([FromBody] [Required] SaveYamlAppCommand command)
+    public async Task<ActionResult<string>> GenerateYamlFile()
     {
         var currentDirectory = Directory.GetCurrentDirectory();
-        var path = Path.Combine(currentDirectory, "Redis/redis-deployment.cshtml");
-        var template = System.IO.File.ReadAllText(path);
-        var template1 = "Hello @Model.AppName, welcome to our service.";
+        var path = Path.Combine(currentDirectory, "YamlFile/YamlTemplate.cshtml");
+        var template = System.IO.File.ReadAllText("/Users/yanzou/RiderProjects/YamlController/Yaml/YamlFile/YamlTemplate.cshtml");
+        // 创建一个 RazorLight 引擎实例
+        var engine = new RazorLightEngineBuilder()
+            .UseFileSystemProject("/Users/yanzou/RiderProjects/YamlController/Yaml/YamlFile/")
+            .UseMemoryCachingProvider()
+            .Build();
         
-       
-
         
-        // 准备模板数据 command
-        // 使用RazorEngine渲染模板
-        var dto = new YamlAppInfoDto()
+        // 创建数据模型
+        var model = new YamlDataModel
         {
-            AppName = "Shine"
+            Title = "My YAML Data",
+            Date = DateTime.UtcNow,
+            Item1 = "Value 1",
+            Item2 = "Value 2"
         };
-        var model = new { AppName = "John" };
-        var renderedTemplate = Engine.Razor.RunCompile(template, "templateKey", null, dto);
-        Console.WriteLine(renderedTemplate);
-        return await Mediator.Send(command);
+        var renderedTemplate = Engine.Razor.RunCompile(template, "templateKey", null, model);
 
+        Console.WriteLine(renderedTemplate);
+        // 渲染模板
+        var result = await engine.CompileRenderAsync("/Users/yanzou/RiderProjects/YamlController/Yaml/YamlFile/YamlTemplate.cshtml", model);
+
+        // 输出生成的 YAML 内容
+        Console.WriteLine(result);
+
+        return ";";
     }
+    
 
     [HttpPost("generateYamlByJsonStr")]
     public IActionResult GenerateYamlByJsonStr(AppInfoVo appInfoVo)
@@ -134,3 +138,10 @@ public class MyController : ApiControllerBase
     }
 }
 
+public class YamlDataModel
+{
+    public string Title { get; set; }
+    public DateTime Date { get; set; }
+    public string Item1 { get; set; }
+    public string Item2 { get; set; }
+}

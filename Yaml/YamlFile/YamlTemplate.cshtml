@@ -1,0 +1,13 @@
+@model Yaml.Infrastructure.Dto.YamlAppInfoDto
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-redis-storage
+  namespace: gitlab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath
+  resources:
+    requests:
+      storage: 1Gi

@@ -14,9 +14,9 @@ public class AppController : ApiControllerBase
     }
 
     [HttpGet("download")]
-    public async Task<IActionResult> DownloadAppFile(GetAppInfoCommand getAppInfoCommand)
+    public async Task<IActionResult> DownloadAppFile([FromQuery]GetAppInfoQuery getAppInfoQuery)
     {
-        var yamlAppInfoDto = await Mediator.Send(getAppInfoCommand);
+        var yamlAppInfoDto = await Mediator.Send(getAppInfoQuery);
         
         // Serialize the app data to JSON.
         var json = JsonConvert.SerializeObject(yamlAppInfoDto);
@@ -30,19 +30,18 @@ public class AppController : ApiControllerBase
         };
 
         return fileContentResult;
-
-        // Response.Headers.Add("Content-Disposition", "attachment; filename=content.json");
-        // Response.Headers.Add("Content-Type", "application/json"); // Set the content type to JSON
-
-        // Convert the JSON string to bytes.
-        // return File(fileBytes, "application/octet-stream"); 
     }
     
-    [HttpGet("info/{AppId}")]
+    [HttpGet("{AppId}")]
     [Produces("application/json")] 
-    public async Task<IActionResult> GetAppInfo([FromRoute]GetAppInfoCommand getAppInfoCommand)
+    public async Task<IActionResult> GetAppInfo([FromRoute]GetAppInfoQuery getAppInfoQuery)
     {
-        var yamlAppInfoDto = await Mediator.Send(getAppInfoCommand);
-        return Ok(yamlAppInfoDto);
+        return Ok(await Mediator.Send(getAppInfoQuery));
+    }
+
+    [HttpPost("deploy")]
+    public async Task<IActionResult> Deploy([FromBody] DeployAppCommand command)
+    {
+        return Ok(await Mediator.Send(command));
     }
 }

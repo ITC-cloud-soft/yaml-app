@@ -2,7 +2,7 @@ using System.Reflection;
 using AutoMapper;
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
-
+namespace Yaml.Infrastructure.Mappings;
 
 public class MappingProfile : Profile
 {
