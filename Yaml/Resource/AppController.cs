@@ -14,29 +14,27 @@ public class AppController : ApiControllerBase
     }
 
     [HttpGet("download")]
-    public async Task<IActionResult> DownloadAppFile([FromQuery]GetAppInfoQuery getAppInfoQuery)
+    public async Task<IActionResult> DownloadAppFile([FromQuery]GetAppQuery getAppQuery)
     {
-        var yamlAppInfoDto = await Mediator.Send(getAppInfoQuery);
+        var yamlAppInfoDto = await Mediator.Send(getAppQuery);
         
         // Serialize the app data to JSON.
         var json = JsonConvert.SerializeObject(yamlAppInfoDto);
         
         // Create a FileContentResult with appropriate headers
         var fileBytes = System.Text.Encoding.UTF8.GetBytes(json);
-
         var fileContentResult = new FileContentResult(fileBytes, "application/json")
         {
             FileDownloadName = "content.json" // Set the file name
         };
-
         return fileContentResult;
     }
     
     [HttpGet("{AppId}")]
     [Produces("application/json")] 
-    public async Task<IActionResult> GetAppInfo([FromRoute]GetAppInfoQuery getAppInfoQuery)
+    public async Task<IActionResult> GetAppInfo([FromRoute]GetAppQuery getAppQuery)
     {
-        return Ok(await Mediator.Send(getAppInfoQuery));
+        return Ok(await Mediator.Send(getAppQuery));
     }
 
     [HttpPost("deploy")]

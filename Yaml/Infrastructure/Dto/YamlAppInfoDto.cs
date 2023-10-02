@@ -15,7 +15,7 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
     public bool KeyVaultFlag { get; set; }
     public AppKeyVault? KeyVault { get; set; }
     
-    public List<YamlClusterInfoDto> ClusterInfoList { get; set; }
+    public List<YamlClusterInfoDto>? ClusterInfoList { get; set; }
 }
 
 public class AppKeyVault
@@ -56,17 +56,17 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 
     // KeyVault 
     public bool KeyVaultFlag { set; get; } 
-    public string[] KeyVault { set; get; }
+    public string[]? KeyVault { set; get; }
 
     // ConfigMap
     public bool ConfigMapFlag { set; get; }
-    public List<ConfigMapDto> ConfigMap { set; get; }
+    public List<ConfigMapDto>? ConfigMap { set; get; }
     
     public bool ConfigMapFileFlag { set; get; }
-    public List<ConfigFileDto> ConfigFile { set; get; }
+    public List<ConfigFileDto>? ConfigFile { set; get; }
     
     // Domain
-    public List<DomainDto> DomainList { set; get; }
+    public List<DomainDto>? DomainList { set; get; }
 
 }
 

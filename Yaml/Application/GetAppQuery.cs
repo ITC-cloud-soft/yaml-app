@@ -8,12 +8,12 @@ using Yaml.Infrastructure.Exception;
 
 namespace Yaml.Application;
 
-public class GetAppInfoQuery : IRequest<YamlAppInfoDto>
+public class GetAppQuery : IRequest<YamlAppInfoDto>
 {
     public int AppId { get; set; }
 }
 
-public class GetAppInfoCommandHandler : IRequestHandler<GetAppInfoQuery, YamlAppInfoDto>
+public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfoDto>
 {
     private readonly MyDbContext _context;
     private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppInfoQuery, YamlApp
         _logger = logger;
     }
 
-    public async Task<YamlAppInfoDto> Handle(GetAppInfoQuery query, CancellationToken cancellationToken)
+    public async Task<YamlAppInfoDto> Handle(GetAppQuery query, CancellationToken cancellationToken)
     {
         // app info
         var appInfo = await _context.AppInfoContext.Where(e => e.Id==query.AppId).FirstOrDefaultAsync(cancellationToken);

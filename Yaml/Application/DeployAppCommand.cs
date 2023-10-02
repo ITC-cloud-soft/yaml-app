@@ -43,7 +43,6 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
         await File.WriteAllTextAsync(Path.Combine(currentDirectory, OutPutFile), content, cancellationToken);
         
         // 2.manipulate k8s
-        
         var config = new KubernetesClientConfiguration { Host = "http://127.0.0.1:8001", AccessToken = ""};
         var client = new Kubernetes(config);
         
