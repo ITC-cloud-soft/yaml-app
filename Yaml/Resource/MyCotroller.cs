@@ -1,24 +1,11 @@
-using RazorLight;
 using Yaml.Application;
-using Yaml.Domain.Entity;
-using Yaml.Infrastructure.Dto;
-using Yaml.Resource.Vo;
-
 namespace Yaml.Resource;
 
 using System.ComponentModel.DataAnnotations;
-
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using RazorEngine;
-using RazorEngine.Templating;
-
-
 
 public class MyController : ApiControllerBase
 {

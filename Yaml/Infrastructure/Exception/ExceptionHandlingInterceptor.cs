@@ -22,7 +22,9 @@ public class ExceptionHandlingInterceptor
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsync(e.Message);
         }
+        catch (System.Exception ex)
+        { context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsync(ex.Message);
+        }
     }
-
-
 }

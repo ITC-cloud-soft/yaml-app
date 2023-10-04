@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
 
@@ -56,7 +55,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 await _context.SaveChangesAsync(cancellationToken);
                     
                 // ConfigMap
-                var configMapList = yamlClusterInfoDto.ConfigMap.Select(dto =>
+                var configMapList = yamlClusterInfoDto.ConfigMap?.Select(dto =>
                 {
                     var configMap = _mapper.Map<YamlClusterConfigMapInfo>(dto);
                     configMap.ClusterId = cluster.Id;
@@ -66,7 +65,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 await _context.SaveChangesAsync(cancellationToken);
 
                 // ConfigMapFile
-                var configFileList = yamlClusterInfoDto.ConfigFile.Select(dto =>
+                var configFileList = yamlClusterInfoDto.ConfigFile?.Select(dto =>
                 {
                     var configFile = _mapper.Map<YamlClusterConfigFileInfo>(dto);
                     configFile.ClusterId = cluster.Id;

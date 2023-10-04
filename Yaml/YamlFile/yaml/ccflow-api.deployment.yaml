@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: ccflow-api
 spec:
-  #
   replicas: 3
   selector:
     matchLabels:
@@ -41,7 +40,6 @@ spec:
         volumeMounts:
         - name: secrets-store-inline
           mountPath: "/mnt/secrets-store"
-          readOnly: true
         - name: vol-applog
           mountPath: /app/log
         env:
@@ -58,8 +56,6 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: densin-keyvault-spc
-#          nodePublishSecretRef:
-#            name: ccflow-secret
       - name: vol-applog
         emptyDir: {}
       nodeSelector:

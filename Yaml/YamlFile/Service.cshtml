@@ -1,0 +1,13 @@
+@model Yaml.Infrastructure.Dto.YamlAppInfoDto
+apiVersion: v1
+kind: Service
+metadata:
+  name: @Model.AppName-svc
+spec:
+  selector:
+    app:  @Model.AppName-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

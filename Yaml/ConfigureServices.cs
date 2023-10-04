@@ -12,8 +12,7 @@ namespace Yaml;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AppServiceConfiguration(this IServiceCollection services,
-         IConfiguration configuration)
+    public static IServiceCollection AppServiceConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -34,7 +33,7 @@ public static class ConfigureServices
                 .Build();
             return engine;
         });
-
+        
         // Swagger
         services.AddSwaggerGen(options =>
         {
