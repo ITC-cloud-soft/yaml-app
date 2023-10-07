@@ -30,7 +30,6 @@
     <ItemGroup>
       <Folder Include="Domain\" />
       <Folder Include="Infrastructure\Presistence\" />
-      <Folder Include="Infrastructure\Vm\" />
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Redis\redis-deployment.cshtml" />

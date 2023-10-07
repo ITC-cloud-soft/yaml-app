@@ -1,12 +1,10 @@
 using AutoMapper;
-using k8s;
-using k8s.Models;
 using MediatR;
 using RazorLight;
+using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
-using Yaml.Infrastructure.K8s;
 
-namespace Yaml.Application;
+namespace Yaml.Application.Command;
 
 public class DeployAppCommand : IRequest<string>
 {
@@ -39,15 +37,10 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
     }
 
     public async Task<string> Handle(DeployAppCommand command, CancellationToken cancellationToken)
-    {   
-        // 1.create yaml file
-        var currentDirectory = Directory.GetCurrentDirectory();
-        var path = Path.Combine(currentDirectory, TemplateFilePath);
-        
-        var content = await _engine.CompileRenderAsync(path, command.AppInfoDto);
-        await File.WriteAllTextAsync(Path.Combine(currentDirectory, OutPutFile), content, cancellationToken);
-        
-        // 2.manipulate k8s
-        return await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
+    {
+        // var v1ConfigMaps = await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
+        // await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
+        await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
+        return "1";
     }
 }

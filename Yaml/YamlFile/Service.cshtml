@@ -1,11 +1,11 @@
-@model Yaml.Infrastructure.Dto.YamlAppInfoDto
-apiVersion: v1
+@model Yaml.Infrastructure.Dto.YamlClusterInfoDto
+apiVersion:  v1
 kind: Service
 metadata:
-  name: @Model.AppName-svc
+  name: @Model.ClusterName-svc
 spec:
   selector:
-    app:  @Model.AppName-app
+    app:  @Model.ClusterName-app
   ports:
     - protocol: TCP
       port: 80

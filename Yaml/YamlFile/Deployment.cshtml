@@ -1,10 +1,10 @@
-@model Yaml.Infrastructure.Dto.YamlAppInfoDto
+@model Yaml.Infrastructure.Dto.YamlClusterInfoDto
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kube100-site
+  name: @Model.ClusterName-app
 spec:
-  replicas: 2
+  replicas: @Model.PodNum
   selector:
     matchLabels:
       app: web
@@ -14,9 +14,9 @@ spec:
         app: web
     spec:
       containers:
-        - name: front-end
-          image: nginx
-          ports:
+        - name: a
+          image: @Model.Image
+          ports: 
             - containerPort: 80
         - name: flaskapp-demo
           image: jcdemo/flaskapp

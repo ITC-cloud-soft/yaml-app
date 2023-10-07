@@ -1,4 +1,5 @@
-using Yaml.Application;
+using Yaml.Application.Command;
+
 namespace Yaml.Resource;
 
 using System.ComponentModel.DataAnnotations;
@@ -44,6 +45,5 @@ public class MyController : ApiControllerBase
         }
 
         return await Mediator.Send(command);
-
     }
 }

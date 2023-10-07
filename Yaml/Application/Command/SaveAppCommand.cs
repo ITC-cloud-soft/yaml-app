@@ -3,7 +3,7 @@ using MediatR;
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
 
-namespace Yaml.Application;
+namespace Yaml.Application.Command;
 
 public class SaveYamlAppCommand : IRequest<string>
 {

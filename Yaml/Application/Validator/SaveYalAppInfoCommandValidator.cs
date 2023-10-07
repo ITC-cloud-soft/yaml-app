@@ -1,6 +1,7 @@
 using FluentValidation;
+using Yaml.Application.Command;
 
-namespace Yaml.Application;
+namespace Yaml.Application.Validator;
 
 public class SaveYalAppInfoCommandValidator : AbstractValidator<SaveYamlAppCommand>
 {

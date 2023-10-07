@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Yaml.Application;
+using Yaml.Application.Command;
 
 namespace Yaml.Resource;
 
@@ -25,7 +26,7 @@ public class AppController : ApiControllerBase
         var fileBytes = System.Text.Encoding.UTF8.GetBytes(json);
         var fileContentResult = new FileContentResult(fileBytes, "application/json")
         {
-            FileDownloadName = "content.json" // Set the file name
+            FileDownloadName = "content.json" 
         };
         return fileContentResult;
     }
@@ -38,6 +39,7 @@ public class AppController : ApiControllerBase
     }
 
     [HttpPost("deploy")]
+    [Produces("application/json")] 
     public async Task<IActionResult> Deploy([FromBody] DeployAppCommand command)
     {
         return Ok(await Mediator.Send(command));

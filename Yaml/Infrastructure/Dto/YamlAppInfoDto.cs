@@ -41,6 +41,7 @@ public class AppKeyVault
 
 public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 {
+    public string? AppName { set; get; }
     public int Id { set; get; }
     public string? ClusterName { set; get; }
     public string? Image { set; get; }
@@ -52,7 +53,7 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     
     // Disk Info 
     public bool DiskInfoFlag { set; get; }
-    public DiskInfo? Disk;
+    public  DiskInfo? Disk { set; get; }
 
     // KeyVault 
     public bool KeyVaultFlag { set; get; } 
@@ -72,7 +73,7 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 
 public class DiskInfo
 {
-    public int? Size { set; get; }
+    public string? Size { set; get; }
     public string? Type { set; get; }
     public string[]? MountPath { set; get; }
 

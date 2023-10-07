@@ -1,0 +1,15 @@
+@model Yaml.Infrastructure.Dto.YamlClusterInfoDto
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: @Model.AppName-volume
+  labels:
+    type: local
+spec:
+  storageClassName: @Model.Disk?.Type
+  capacity:
+    storage:  @Model.Disk?.Size
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"

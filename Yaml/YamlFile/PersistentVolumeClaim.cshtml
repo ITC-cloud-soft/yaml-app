@@ -1,13 +1,13 @@
-@model Yaml.Infrastructure.Dto.YamlAppInfoDto
+@model Yaml.Infrastructure.Dto.YamlClusterInfoDto
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: gitlab-redis-storage
-  namespace: gitlab
+  name: @Model.ClusterName-pvc
+  namespace: @Model.AppName
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: hostpath
+  storageClassName: @Model.Disk?.Type
   resources:
     requests:
-      storage: 1Gi
+      storage: @Model.Disk?.Size

@@ -1,8 +1,9 @@
 using k8s;
 using Microsoft.EntityFrameworkCore;
 using Yaml;
+using Yaml.Domain.K8s;
+using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Exception;
-using Yaml.Infrastructure.K8s;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IKubeApi, KubeCli>();
+builder.Services.AddScoped<IKubeApi, KubeApi>();
+
 // 注册Kubernetes客户端（如果需要）
 builder.Services.AddSingleton<Kubernetes>(_ =>
 {
