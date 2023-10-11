@@ -55,11 +55,11 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
         {
             var yamlClusterInfoDto = _mapper.Map<YamlClusterInfoDto>(yamlClusterInfo);
 
-            yamlClusterInfoDto.DomainList = await _context.Domain
+            yamlClusterInfoDto.Domain = await _context.Domain
                 .AsNoTracking()
                 .Where(e => e.ClusterId == yamlClusterInfo.Id)
                 .ProjectTo<DomainDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
+                .SingleAsync(cancellationToken);
 
             yamlClusterInfoDto.ConfigMap = await _context.ConfigMap
                 .AsNoTracking()
@@ -72,6 +72,8 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
                 .Where(e => e.ClusterId == yamlClusterInfo.Id)
                 .ProjectTo<ConfigFileDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
+            
+            // TODO query key vault
          
             yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
             

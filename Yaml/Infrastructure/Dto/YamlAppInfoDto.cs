@@ -5,6 +5,8 @@ namespace Yaml.Infrastructure.Dto;
 public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
 {
     public int? Id;
+    
+    // Namespace '[a-z0-9]([-a-z0-9]*[a-z0-9])?'
     public string? AppName { get; set; }
     public string? Cr { get; set; }
     public string? Token { get; set; }
@@ -23,7 +25,7 @@ public class AppKeyVault
     public AppKeyVault()
     {
     }
-
+    
     public AppKeyVault(string? tenantId, string? keyVaultName, string? managedId, List<string>? keyVault)
     {
         TenantId = tenantId;
@@ -57,7 +59,7 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 
     // KeyVault 
     public bool KeyVaultFlag { set; get; } 
-    public string[]? KeyVault { set; get; }
+    public KeyVaultDto[]? KeyVault { set; get; }
 
     // ConfigMap
     public bool ConfigMapFlag { set; get; }
@@ -67,7 +69,7 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     public List<ConfigFileDto>? ConfigFile { set; get; }
     
     // Domain
-    public List<DomainDto>? DomainList { set; get; }
+    public DomainDto Domain { set; get; }
 
 }
 
@@ -99,6 +101,6 @@ public class DomainDto
 
 public class KeyVaultDto
 {
-    public string? Key { set; get; }
+    public string? ConfigKey { set; get; }
     public string? Value { set; get; }
 }

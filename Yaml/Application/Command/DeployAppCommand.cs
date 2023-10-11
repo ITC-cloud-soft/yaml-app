@@ -16,12 +16,9 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
     private readonly MyDbContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger _logger;
-    private const string TemplateFilePath = "YamlFile/Service.cshtml";
-    private const string OutPutFile = "YamlFile/App.yaml";
     private readonly  IRazorLightEngine _engine;
     private readonly  IKubeApi _kubeApi;
-
-
+    
     public DeployAppCommandHandler(
         MyDbContext context, 
         IMapper mapper, 
@@ -38,9 +35,16 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
 
     public async Task<string> Handle(DeployAppCommand command, CancellationToken cancellationToken)
     {
-        // var v1ConfigMaps = await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
-        // await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
+        var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
+        await _kubeApi.CreateSecret(command.AppInfoDto, cancellationToken);
+        await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
+        
+        await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
+        await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
         await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
-        return "1";
+        await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
+
+        
+        return v1Namespace.Metadata.Name;
     }
 }

@@ -4,11 +4,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: @Model.ClusterName-configmap
-  namespace: @Model.AppName
+  namespace: @Model.AppName-ns
 data:
     @foreach(var item in @Model.ConfigMap ?? Enumerable.Empty<ConfigMapDto>())
     {
         string configRecord = item.ConfigKey + ": \"" + item.Value + "\"\n";
         @("  " + configRecord)
     }
-  X: 1

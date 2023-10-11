@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: @Model.ClusterName-pvc
-  namespace: @Model.AppName
+  namespace: @Model.AppName-ns
 spec:
   accessModes:
     - ReadWriteOnce

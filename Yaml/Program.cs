@@ -11,10 +11,7 @@ builder.Services.AppServiceConfiguration(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddScoped<IKubeApi, KubeApi>();
-
-// 注册Kubernetes客户端（如果需要）
 builder.Services.AddSingleton<Kubernetes>(_ =>
 {
     var config = new KubernetesClientConfiguration
@@ -27,8 +24,8 @@ builder.Services.AddSingleton<Kubernetes>(_ =>
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 32)))); // Replace with your MySQL version
-var app = builder.Build();
 
+var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

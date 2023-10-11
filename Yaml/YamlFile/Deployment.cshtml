@@ -2,23 +2,65 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: @Model.ClusterName-app
+  name: @Model.ClusterName-deployment
+  namespace: @Model.AppName-ns
 spec:
   replicas: @Model.PodNum
   selector:
     matchLabels:
-      app: web
+      app: @Model.ClusterName-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 3
+  minReadySeconds: 5 
   template:
     metadata:
       labels:
-        app: web
+        app: @Model.ClusterName-app
+        addPodIDBinding: @Model.ManageLabel
     spec:
       containers:
-        - name: a
+        - name: @Model.ClusterName
           image: @Model.Image
+          imagePullPolicy: Always
+          env:
+          @foreach (var cf in @Model.ConfigMap)
+          {
+            
+            string configMap = $"           - name: {cf.ConfigKey} \n" +
+                               $"             valueFrom: \n" +
+                               $"               configMapKeyRef: \n" +
+                               $"                 name: {Model.ClusterName}-configmap\n" +
+                               $"                 key: {cf.ConfigKey}\n";
+            @configMap
+          }
+          @foreach (var kv in @Model.KeyVault)
+          {
+            
+            string configMap = $"           - name: {kv.ConfigKey} \n" +
+                               $"             valueFrom: \n" +
+                               $"               secretKeyRef: \n" +
+                               $"                 name: {Model.ClusterName}-secret\n" +
+                               $"                 key: {kv.ConfigKey}\n";
+            @configMap
+          }
           ports: 
-            - containerPort: 80
-        - name: flaskapp-demo
-          image: jcdemo/flaskapp
-          ports:
-            - containerPort: 5000
+           - containerPort: 80
+          volumeMounts:
+          @foreach (var path in @Model.Disk?.MountPath ?? Enumerable.Empty<String>())
+          {
+            string mountPath = $"           - mountPath: {path}\n" +
+                               $"             name: {Model.ClusterName}-pvc \n";
+            @mountPath
+          }
+          resources:
+           limits:
+             memory: @Model.Memory
+             cpu: @Model.Cpu
+      volumes:
+      - name: @Model.ClusterName-pvc
+        persistentVolumeClaim:
+          claimName: @Model.ClusterName-pvc
+  
+

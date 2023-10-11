@@ -45,13 +45,13 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 await _context.SaveChangesAsync(cancellationToken);
                     
                 // domain
-                var  domainInfos = yamlClusterInfoDto.DomainList.Select(domainDto =>
+                var  domainInfos = yamlClusterInfoDto.Domain(domainDto =>
                 {
                     var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(domainDto);
                     clusterDomain.ClusterId = cluster.Id;
                     return clusterDomain;
                 }).ToList();
-                await _context.Domain.AddRangeAsync(domainInfos, cancellationToken);
+                await _context.Domain.AddAsync(domainInfos, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
                     
                 // ConfigMap

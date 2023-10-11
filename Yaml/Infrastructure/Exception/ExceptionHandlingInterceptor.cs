@@ -26,7 +26,7 @@ public class ExceptionHandlingInterceptor
         }
         catch (HttpOperationException e)
         {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.StatusCode = StatusCodes.Status501NotImplemented;
             await context.Response.WriteAsync(e.Message);
         }
         catch (System.Exception ex)

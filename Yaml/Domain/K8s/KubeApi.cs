@@ -3,9 +3,6 @@ using k8s.Models;
 using RazorLight;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-
 namespace Yaml.Domain.K8s;
 
 public class KubeApi : IKubeApi
@@ -13,14 +10,24 @@ public class KubeApi : IKubeApi
     private readonly  IRazorLightEngine _engine;
     private readonly  Kubernetes _client;
     private readonly ILogger _logger;
+    private readonly string _currentDirectory = Directory.GetCurrentDirectory();
 
     private const string ConfigMapTemplate = "YamlFile/ConfigMap.cshtml";
     private const string PersistentVolumeClaimTemplate = "YamlFile/PersistentVolumeClaim.cshtml";
     private const string DeploymentTemplate = "YamlFile/Deployment.cshtml";
     private const string ServiceTemplate = "YamlFile/Service.cshtml";
-    
+    private const string SecretTemplate = "YamlFile/Keyvault.cshtml";
     private const string OutPutFile = "YamlFile/App.yaml";
-    private string _currentDirectory = Directory.GetCurrentDirectory();
+    private const string IngressFile = "YamlFile/Ingress.cshtml";
+    
+    private const string NamespaceSuffix = "-ns";
+    private const string PvcSubSuffix = "-pvc";
+    private const string ConfigMapSuffix  = "-configmap";
+    private const string ServiceSuffix  = "-svc";
+    private const string DeploymentSuffix  = "-deployment";
+    private const string SecretSuffix  = "-secret";
+    private const string IngressSuffix  = "-ingress";
+    
     public KubeApi(IRazorLightEngine engine, Kubernetes client, ILogger<KubeApi> logger)
     {
         _engine = engine;
@@ -28,31 +35,56 @@ public class KubeApi : IKubeApi
         _logger = logger;
     }
 
-    //  Console.WriteLine(content);
     // await File.WriteAllTextAsync(Path.Combine(currentDirectory, OutPutFile), content, cancellationToken);
     
-    public Task<V1Namespace> CreateNamespace(string namespaceName, CancellationToken cancellationToken)
+    public async Task<V1Namespace> CreateNamespace(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
- 
-        // if not exist
-        var namespaceAsync = _client.CreateNamespaceAsync(new V1Namespace
+        var namespaceName = dto.AppName + NamespaceSuffix;
+        try
         {
-            Metadata = new V1ObjectMeta { Name = namespaceName }
-        }, cancellationToken: cancellationToken);
-        return namespaceAsync;
+            // check namespace if exists
+            var namespaces = await _client.ListNamespaceAsync(cancellationToken:cancellationToken);
+            var namespaceNs = namespaces.Items.SingleOrDefault(ns => ns.Metadata.Name == namespaceName);
+
+            if (namespaceNs != null)
+            {
+                return namespaceNs;
+            }
+            
+            var newNamespace = new V1Namespace
+            {
+                Metadata = new V1ObjectMeta { Name = namespaceName }
+            };
+
+            var namespaceAsync =await _client.CreateNamespaceAsync(newNamespace, cancellationToken: cancellationToken);
+            return namespaceAsync;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Create namespace error [{}]", namespaceName);
+            _logger.LogError(e, "Error details: ");
+            throw e;
+        }
     }
 
     public async Task<V1Service[]> CreateService(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
         var path = Path.Combine(_currentDirectory, ServiceTemplate);
+        var namespaceName = dto.AppName + NamespaceSuffix;
         try
         {
+            var v1ServiceList = await _client.ListNamespacedServiceAsync(namespaceName, cancellationToken: cancellationToken);
             var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
             {
-                // render cshtml to yaml string form 
+                var serviceName = cluster.ClusterName + ServiceSuffix;
+                var service = v1ServiceList.Items.SingleOrDefault(service => service.Metadata.Name == serviceName);
+                if (service != null)
+                {
+                    return service;
+                }
                 var content = await _engine.CompileRenderAsync(path, cluster);
                 var v1Service = KubernetesYaml.Deserialize<V1Service>(content);
-                return await _client.CreateNamespacedServiceAsync(v1Service, cluster.AppName, cancellationToken:cancellationToken);
+                return await _client.CreateNamespacedServiceAsync(v1Service, namespaceName, cancellationToken:cancellationToken);
             });
             return await Task.WhenAll(task).ConfigureAwait(false);
         }
@@ -60,50 +92,67 @@ public class KubeApi : IKubeApi
         {
             _logger.LogError("CreateConfigMap error [{}]", dto.AppName);
             _logger.LogError(e, "Error details: ");
-            throw new Exception(e.Message);
+            throw e;
         }
     }
 
-    public Task<V1Deployment> CreateDeployment(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task<V1Deployment[]> CreateDeployment(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        var currentDirectory = Directory.GetCurrentDirectory();
-        var path = Path.Combine(currentDirectory, DeploymentTemplate);
-        var content =  _engine.CompileRenderAsync(path, dto);
-        
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-        // 解析 YAML 内容为 Kubernetes 对象
-        var deployment = deserializer.Deserialize<V1Deployment>(new StringReader(""));
-
-        return  _client.CreateNamespacedDeploymentAsync(deployment, dto.AppName, cancellationToken:cancellationToken);
-    }
-
-    /// <summary>
-    /// YamlAppInfoDtoを使用して新しいConfigMapを作成します。
-    /// </summary>
-    /// <param name="dto">YamlAppInfoDtoの情報</param>
-    /// <param name="cancellationToken">操作をキャンセルするためのトークン</param>
-    /// <returns>作成されたConfigMapの情報の配列</returns>
-    public async Task<V1ConfigMap[]> CreateConfigMap(YamlAppInfoDto dto, CancellationToken cancellationToken)
-    {
-        var path = Path.Combine(_currentDirectory, ConfigMapTemplate);
+        var namespaceName = dto.AppName + NamespaceSuffix;
+        var path = Path.Combine(_currentDirectory, DeploymentTemplate);
         try
         {
+            var v1DeploymentList = await _client.ListNamespacedDeploymentAsync(namespaceName, cancellationToken: cancellationToken);
             var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
             {
-                // render cshtml to yaml string form 
+                var deploymentName = cluster.ClusterName + DeploymentSuffix;
+                var v1Deployment = v1DeploymentList.Items.SingleOrDefault(v1Deployment => v1Deployment.Metadata.Name == deploymentName);
+                if (v1Deployment != null)
+                {
+                    return v1Deployment;
+                }
                 var content = await _engine.CompileRenderAsync(path, cluster);
-                var v1ConfigMap = KubernetesYaml.Deserialize<V1ConfigMap>(content);
-                return await _client.CreateNamespacedConfigMapAsync(v1ConfigMap, cluster.AppName, cancellationToken:cancellationToken);
+                await File.WriteAllTextAsync(Path.Combine(_currentDirectory, OutPutFile), content, cancellationToken);
+                var v1Service = KubernetesYaml.Deserialize<V1Deployment>(content);
+                return await _client.CreateNamespacedDeploymentAsync(v1Service, namespaceName, cancellationToken:cancellationToken);
             });
             return await Task.WhenAll(task).ConfigureAwait(false);
         }
         catch (Exception e)
         {
-            _logger.LogError("CreateConfigMap error [{}]", dto.AppName);
+            _logger.LogError("CreateDeployment error [{}]", dto.AppName);
             _logger.LogError(e, "Error details: ");
-            throw new Exception(e.Message);
+            throw e;
+        }
+    }
+
+    public async Task<V1ConfigMap?[]> CreateConfigMap(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+        var path = Path.Combine(_currentDirectory, ConfigMapTemplate);
+        var namespaceName = dto.AppName + NamespaceSuffix;
+    
+        try
+        {
+            var v1ConfigMapList = await _client.ListNamespacedConfigMapAsync(namespaceName, cancellationToken: cancellationToken);
+            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            {
+                var configMapName = cluster.ClusterName + ConfigMapSuffix;
+                var configMap = v1ConfigMapList.Items.SingleOrDefault(cf => cf.Metadata.Name == configMapName);
+                if (configMap != null)
+                {
+                    return configMap;
+                }
+                var content = await _engine.CompileRenderAsync(path, cluster);
+                var v1ConfigMap = KubernetesYaml.Deserialize<V1ConfigMap>(content);
+                return await _client.CreateNamespacedConfigMapAsync(v1ConfigMap, namespaceName, cancellationToken:cancellationToken);
+            });
+            return await Task.WhenAll(task).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("CreateConfigMap error [{}]", dto.AppName);
+            _logger.LogError(ex, "Error details: ");
+            throw ex;
         }
     }
 
@@ -112,33 +161,90 @@ public class KubeApi : IKubeApi
         throw new NotImplementedException();
     }
     
-
-    /// <summary>
-    /// YamlAppInfoDtoを使用して新しい永続ボリュームクレームを作成します。
-    /// </summary>
-    /// <param name="dto">YamlAppInfoDtoの情報</param>
-    /// <param name="cancellationToken">操作をキャンセルするためのトークン</param>
-    /// <returns>作成された永続ボリュームクレームの情報の配列</returns>
     public async Task<V1PersistentVolumeClaim[]> CreatePersistentVolumeClaim(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
         var path = Path.Combine(_currentDirectory, PersistentVolumeClaimTemplate);
+        var namespaceName = dto.AppName + NamespaceSuffix;
         try
         {
+            var pvsList = await _client.ListNamespacedPersistentVolumeClaimAsync(namespaceName, cancellationToken: cancellationToken);
             var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
             {
-                // render cshtml to yaml string form 
+                var pvcName = cluster.ClusterName + PvcSubSuffix;
+                var persistentVolumeClaim = pvsList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == pvcName);
+                if (persistentVolumeClaim != null)
+                {
+                    return persistentVolumeClaim;
+                }
                 var content = await _engine.CompileRenderAsync(path, cluster);
-                Console.WriteLine(content);
                 var pvc = KubernetesYaml.Deserialize<V1PersistentVolumeClaim>(content);
-                return await _client.CreateNamespacedPersistentVolumeClaimAsync(pvc, cluster.AppName, cancellationToken:cancellationToken);
+                return await _client.CreateNamespacedPersistentVolumeClaimAsync(pvc, namespaceName, cancellationToken:cancellationToken);
             });
             return await Task.WhenAll(task).ConfigureAwait(false);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             _logger.LogError("Create V1PersistentVolumeClaim  [{}] Error", dto.AppName);
-            _logger.LogError(e, "Error details: ");
-            throw new Exception(e.Message);
+            _logger.LogError(ex, "Error details: ");
+            throw ex;
+        }
+    }
+
+    public async Task<V1Secret[]> CreateSecret(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+        var path = Path.Combine(_currentDirectory, SecretTemplate);
+        var namespaceName = dto.AppName + NamespaceSuffix;
+        try
+        {
+            var secretList = await _client.ListNamespacedSecretAsync(namespaceName, cancellationToken: cancellationToken);
+            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            {
+                var secretName = cluster.ClusterName + SecretSuffix;
+                var secretSig = secretList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == secretName);
+                if (secretSig != null)
+                {
+                    return secretSig;
+                }
+                var content = await _engine.CompileRenderAsync(path, cluster);
+                var secret = KubernetesYaml.Deserialize<V1Secret>(content);
+                return await _client.CreateNamespacedSecretAsync(secret, namespaceName, cancellationToken:cancellationToken);
+            });
+            return await Task.WhenAll(task).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Create Secret  [{}] Error", dto.AppName);
+            _logger.LogError(ex, "Error details: ");
+            throw ex;
+        }
+    }
+    
+    public async Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+        var path = Path.Combine(_currentDirectory, IngressFile);
+        var namespaceName = dto.AppName + NamespaceSuffix;
+        try
+        {
+            var ingressList = await _client.ListNamespacedIngressAsync(namespaceName, cancellationToken: cancellationToken);
+            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            {
+                var pvcName = cluster.ClusterName + IngressSuffix;
+                var ingressSig = ingressList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == pvcName);
+                if (ingressSig != null)
+                {
+                    return ingressSig;
+                }
+                var content = await _engine.CompileRenderAsync(path, cluster);
+                var ingress = KubernetesYaml.Deserialize<V1Ingress>(content);
+                return await _client.CreateNamespacedIngressAsync(ingress, namespaceName, cancellationToken:cancellationToken);
+            });
+            return await Task.WhenAll(task).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Create Secret  [{}] Error", dto.AppName);
+            _logger.LogError(ex, "Error details: ");
+            throw ex;
         }
     }
 }
