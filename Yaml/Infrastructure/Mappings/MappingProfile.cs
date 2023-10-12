@@ -54,7 +54,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Tenantid, opt => opt.MapFrom(src => src.KeyVault.TenantId))
             .ForMember(dest => dest.KeyVaultName, opt => opt.MapFrom(src => src.KeyVault.KeyVaultName))
             .ForMember(dest => dest.ManagedId, opt => opt.MapFrom(src => src.KeyVault.ManagedId));
-
+        
         CreateMap<YamlClusterInfoDto, YamlClusterInfo>();
         CreateMap<DomainDto, YamlClusterDomainInfo>();
         CreateMap<ConfigMapDto, YamlClusterConfigMapInfo>();
@@ -66,6 +66,7 @@ public class MappingProfile : Profile
         CreateMap<YamlClusterDomainInfo, DomainDto>();
         CreateMap<YamlClusterConfigMapInfo, ConfigMapDto>();
         CreateMap<YamlClusterConfigFileInfo, ConfigFileDto>();
+        CreateMap<YamlKeyVaultInfo, KeyVaultDto>();
 
     }
 }

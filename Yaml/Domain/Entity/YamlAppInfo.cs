@@ -7,9 +7,9 @@ namespace Yaml.Domain.Entity;
 [Table("TBL_YAML_APP_INFO")]
 public class YamlAppInfo : CommonFields
 {
-    [Required]
-    public int Id;
-    
+    [Required] 
+    public int Id { get; set; } 
+
     [Column("app_name")] 
     public string? AppName { get; set; } 
     

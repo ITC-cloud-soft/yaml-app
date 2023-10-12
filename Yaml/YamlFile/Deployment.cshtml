@@ -38,12 +38,12 @@ spec:
           @foreach (var kv in @Model.KeyVault)
           {
             
-            string configMap = $"           - name: {kv.ConfigKey} \n" +
+            string secretkeyref = $"           - name: {kv.ConfigKey} \n" +
                                $"             valueFrom: \n" +
                                $"               secretKeyRef: \n" +
-                               $"                 name: {Model.ClusterName}-secret\n" +
+                               $"                 name: {Model.AppName}-secret\n" +
                                $"                 key: {kv.ConfigKey}\n";
-            @configMap
+            @secretkeyref
           }
           ports: 
            - containerPort: 80
@@ -62,5 +62,12 @@ spec:
       - name: @Model.ClusterName-pvc
         persistentVolumeClaim:
           claimName: @Model.ClusterName-pvc
-  
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: @Model.AppName-keyvault-spc
+          nodePublishSecretRef:
+            name:  @Model.AppName-secret
 

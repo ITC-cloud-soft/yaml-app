@@ -8,7 +8,7 @@ namespace Yaml.Application.Command;
 
 public class DeployAppCommand : IRequest<string>
 {
-    public YamlAppInfoDto AppInfoDto { get; set; }
+    public YamlAppInfoDto? AppInfoDto { get; set; }
 }
 
 public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
@@ -36,15 +36,13 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
     public async Task<string> Handle(DeployAppCommand command, CancellationToken cancellationToken)
     {
         var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
-        await _kubeApi.CreateSecret(command.AppInfoDto, cancellationToken);
+        // await _kubeApi.CreateSecret(command.AppInfoDto, cancellationToken);
         await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
         
         await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
         await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
         await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
         await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
-
-        
         return v1Namespace.Metadata.Name;
     }
 }

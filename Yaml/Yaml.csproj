@@ -30,6 +30,8 @@
     <ItemGroup>
       <Folder Include="Domain\" />
       <Folder Include="Infrastructure\Presistence\" />
+      <Folder Include="YamlFile\json\" />
+      <Folder Include="YamlFile\yaml\" />
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Redis\redis-deployment.cshtml" />

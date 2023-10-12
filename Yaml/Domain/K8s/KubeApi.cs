@@ -190,26 +190,25 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<V1Secret[]> CreateSecret(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task<V1Secret> CreateSecret(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
         var path = Path.Combine(_currentDirectory, SecretTemplate);
         var namespaceName = dto.AppName + NamespaceSuffix;
         try
         {
             var secretList = await _client.ListNamespacedSecretAsync(namespaceName, cancellationToken: cancellationToken);
-            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            var secretName = dto.AppName + SecretSuffix;
+            var secretSig = secretList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == secretName);
+            if (secretSig != null)
             {
-                var secretName = cluster.ClusterName + SecretSuffix;
-                var secretSig = secretList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == secretName);
-                if (secretSig != null)
-                {
-                    return secretSig;
-                }
-                var content = await _engine.CompileRenderAsync(path, cluster);
-                var secret = KubernetesYaml.Deserialize<V1Secret>(content);
-                return await _client.CreateNamespacedSecretAsync(secret, namespaceName, cancellationToken:cancellationToken);
-            });
-            return await Task.WhenAll(task).ConfigureAwait(false);
+                return secretSig;
+            }
+            var content = await _engine.CompileRenderAsync(path, dto); 
+            Console.WriteLine(content);
+            await File.WriteAllTextAsync(Path.Combine(_currentDirectory, OutPutFile), content, cancellationToken);
+
+            var secret = KubernetesYaml.Deserialize<V1Secret>(content);
+            return await _client.CreateNamespacedSecretAsync(secret, namespaceName, cancellationToken:cancellationToken);
         }
         catch (Exception ex)
         {

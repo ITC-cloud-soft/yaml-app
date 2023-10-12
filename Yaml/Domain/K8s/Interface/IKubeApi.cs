@@ -52,6 +52,6 @@ public interface IKubeApi
     /// <returns>作成された永続ボリュームクレームの情報の配列</returns>
     public Task<V1PersistentVolumeClaim[]> CreatePersistentVolumeClaim(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
-    public Task<V1Secret[]> CreateSecret(YamlAppInfoDto dto, CancellationToken cancellationToken);
+    public Task<V1Secret> CreateSecret(YamlAppInfoDto dto, CancellationToken cancellationToken);
     public Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken);
 }

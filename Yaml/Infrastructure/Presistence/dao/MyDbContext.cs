@@ -26,4 +26,5 @@ public class MyDbContext : DbContext
  	public DbSet<YamlClusterDomainInfo> Domain { get; set; }
  	public DbSet<YamlClusterConfigFileInfo> ConfigFile { get; set; }
  	public DbSet<YamlClusterConfigMapInfo> ConfigMap { get; set; }
+ 	public DbSet<YamlUser> User { get; set; }
 }

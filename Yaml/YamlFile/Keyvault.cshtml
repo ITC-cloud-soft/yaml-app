@@ -1,31 +1,34 @@
 @model Yaml.Infrastructure.Dto.YamlAppInfoDto
-@* apiVersion: v1 *@
-@* kind: Secret *@
-@* metadata: *@
-@*   name: @Model.AppName-secret *@
-@*   namespace: @Model.AppName-ns *@
-@* type: Opaque *@
-@* data: *@
-@*   @foreach (var keyVault in @Model.KeyVault) *@
-@*   { *@
-@*     string keyVaultString = $"  {keyVault.ConfigKey}: {keyVault.Value}"; *@
-@*     @keyVaultString *@
-@*   } *@
-@* --- *@
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
-  name: @Model.AppName-keyvault
+  name: @Model.AppName-keyvault-spc
+  namespace: @Model.AppName-ns
 spec:
-  provider: azure
   parameters:
-    usePodIdentity: "false"
     keyvaultName: @Model.KeyVault?.KeyVaultName
-    cloudName:                      
     objects: |
       array:
-        - |
-          objectName: DemoSecret
-          objectType: secret            
-          objectVersion: ""              
-    tenantId: @Model.KeyVault?.TenantId          
+        @foreach (var kv in @Model.KeyVault.KeyVault)
+        {
+          string obj = $"        - | \n" +
+                       $"          objectType: secret \n" +
+                       $"          objectName: {kv} \n";
+          @obj
+        }
+    tenantId: @Model.KeyVault?.TenantId
+    usePodIdentity: "true"
+    useVMManagedIdentity: "false"
+    userAssignedIdentityID: @Model.KeyVault?.ManagedId
+  provider: azure
+  secretObjects:
+  - data:
+    secretName: @Model.AppName-secret
+    type: Opaque    
+      @foreach (var kv in Model.KeyVault.KeyVault)
+      {
+        string sc = $"      - key: {kv} \n" +
+                    $"        objectName: {kv}";
+        @sc
+      }
+     

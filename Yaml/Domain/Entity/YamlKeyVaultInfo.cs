@@ -6,7 +6,7 @@ namespace Yaml.Domain.Entity;
 public class YamlKeyVaultInfo : CommonFields
 {
     [Column("id")]
-    public int Id { set; get; }
+    public int?  Id { set; get; }
     
     [Column("config_key")]
     public string? ConfigKey{ set; get; }
@@ -15,8 +15,8 @@ public class YamlKeyVaultInfo : CommonFields
     public string? Value{ set; get; }
     
     [Column("cluster_id")]
-    public int ClusterId{ set; get; }
+    public int?  ClusterId{ set; get; }
     
     [Column("app_id")]
-    public int AppId{ set; get; }
+    public int?  AppId{ set; get; }
 }

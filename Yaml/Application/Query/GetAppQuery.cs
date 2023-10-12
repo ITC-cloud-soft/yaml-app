@@ -31,18 +31,27 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
     {
         // app info
         var appInfo = await _context.AppInfoContext.Where(e => e.Id==query.AppId).FirstOrDefaultAsync(cancellationToken);
+        
         if (appInfo == null)
         {
             throw new NotFoundException($"App [{query.AppId}] info not found");
         }
         var yamlAppInfoDto = _mapper.Map<YamlAppInfoDto>(appInfo);
+        
+        // Set app key vault
+        var keyVault = await _context.KeyVaultInfo
+            .AsNoTracking()
+            .Where(e => e.ClusterId == appInfo.Id)
+            .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+        
         yamlAppInfoDto.KeyVault = new AppKeyVault(
             tenantId: appInfo.ManagedId, 
             keyVaultName: appInfo.KeyVaultName,
             managedId: appInfo.ManagedId, 
-            keyVault: null // TODO
+            keyVault: null
         );
-        
+       
         // Get correspond cluster from DB
         List<YamlClusterInfo> yamlClusterInfoList =
             await _context.ClusterContext
@@ -50,11 +59,12 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
                 .Where(e => e.AppId == appInfo.Id)
                 .ToListAsync(cancellationToken);
 
+        // Load Cluster info
         List<YamlClusterInfoDto> yamlClusterInfoDtoList = new List<YamlClusterInfoDto>();
         foreach (var yamlClusterInfo in yamlClusterInfoList)
         {
             var yamlClusterInfoDto = _mapper.Map<YamlClusterInfoDto>(yamlClusterInfo);
-
+            
             yamlClusterInfoDto.Domain = await _context.Domain
                 .AsNoTracking()
                 .Where(e => e.ClusterId == yamlClusterInfo.Id)
@@ -72,14 +82,16 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
                 .Where(e => e.ClusterId == yamlClusterInfo.Id)
                 .ProjectTo<ConfigFileDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
-            
-            // TODO query key vault
+
+            yamlClusterInfoDto.KeyVault = await _context.KeyVaultInfo
+                .AsNoTracking()
+                .Where(e => e.ClusterId == yamlClusterInfo.Id)
+                .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
          
             yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
-            
             _logger.LogInformation("Get App:[{}] and AppId:[{}] info from DB", appInfo.AppName, appInfo.Id);
         }
-
         yamlAppInfoDto.ClusterInfoList = yamlClusterInfoDtoList;
         return yamlAppInfoDto;
     }

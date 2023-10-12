@@ -4,7 +4,7 @@ using Yaml.Infrastructure.Mappings;
 namespace Yaml.Infrastructure.Dto;
 public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
 {
-    public int? Id;
+    public Int32 Id;
     
     // Namespace '[a-z0-9]([-a-z0-9]*[a-z0-9])?'
     public string? AppName { get; set; }
@@ -44,7 +44,7 @@ public class AppKeyVault
 public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 {
     public string? AppName { set; get; }
-    public int Id { set; get; }
+    public int? Id { set; get; }
     public string? ClusterName { set; get; }
     public string? Image { set; get; }
     public int? PodNum { set; get; }
@@ -59,7 +59,7 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 
     // KeyVault 
     public bool KeyVaultFlag { set; get; } 
-    public KeyVaultDto[]? KeyVault { set; get; }
+    public List<KeyVaultDto>? KeyVault { set; get; }
 
     // ConfigMap
     public bool ConfigMapFlag { set; get; }
@@ -69,7 +69,7 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     public List<ConfigFileDto>? ConfigFile { set; get; }
     
     // Domain
-    public DomainDto Domain { set; get; }
+    public DomainDto? Domain { set; get; }
 
 }
 
@@ -101,6 +101,7 @@ public class DomainDto
 
 public class KeyVaultDto
 {
+    public int?  AppId{ set; get; }
     public string? ConfigKey { set; get; }
     public string? Value { set; get; }
 }

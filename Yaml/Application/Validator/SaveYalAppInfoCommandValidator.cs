@@ -7,8 +7,8 @@ public class SaveYalAppInfoCommandValidator : AbstractValidator<SaveYamlAppComma
 {
     public SaveYalAppInfoCommandValidator()
     {
-        // RuleFor(v => v.name)
-        //     .MaximumLength(4)
-        //     .NotEmpty();
+        RuleFor(v => v.appInfoDto.AppName)
+            .MaximumLength(4)
+            .NotEmpty();
     }
 }

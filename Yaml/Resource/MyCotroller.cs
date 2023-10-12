@@ -25,22 +25,26 @@ public class MyController : ApiControllerBase
 
     [HttpGet("list3")]
     public async Task<ActionResult<string>> GetAppInfo([FromBody] [Required] SaveYamlAppCommand command)
-    {
-        // var validationResult = _validator.Validate(command);
-        //
+    {        
+        // use validator
+        // var validationResult = await _validator.ValidateAsync(command);
         // if (!validationResult.IsValid)
         // {
         //     // 验证失败，处理错误
         //     var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-        //     return BadRequest(errors);
+        //     Console.WriteLine("Error line ");
+        //     return Ok("12313");
         // }
+        // RuleFor(v => v.appInfoDto.AppName)
+        //     .MaximumLength(4)
+        //     .NotEmpty();
         var results = new List<ValidationResult>();
         var isValid = Validator.TryValidateObject(command, new ValidationContext(command), results, true);
 
         if (!isValid)
         {
             // 模型验证失败，处理错误
-            var errors = results.Select(r => r.ErrorMessage);
+            var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
             return BadRequest(errors);
         }
 
