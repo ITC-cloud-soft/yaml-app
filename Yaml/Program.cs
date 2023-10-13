@@ -1,4 +1,7 @@
+using System.Globalization;
 using k8s;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Yaml;
 using Yaml.Domain.K8s;
@@ -21,19 +24,45 @@ builder.Services.AddSingleton<Kubernetes>(_ =>
     return new Kubernetes(config);
 });
 
+// localization service
+builder.Services.AddLocalization(options => options.ResourcesPath = "Localization");
+builder.Services.Configure<RequestLocalizationOptions>(
+    opts =>
+    {
+        var supportedCultures = new List<CultureInfo>
+        {
+            new CultureInfo("en-us"),
+            new CultureInfo("en"),
+            new CultureInfo("zh"),
+            new CultureInfo("ja"),
+            new CultureInfo("en-jp"),
+        };
+
+        opts.DefaultRequestCulture = new RequestCulture("ja");
+        // Formatting numbers, dates, etc.
+        opts.SupportedCultures = supportedCultures;
+        // UI strings that we have localized.
+        opts.SupportedUICultures = supportedCultures;
+    });
+        
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
+
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 32)))); // Replace with your MySQL version
 
 var app = builder.Build();
+app.UseRequestLocalization();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
-
 app.UseMiddleware<ExceptionHandlingInterceptor>();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.MapControllers();
 app.Run();

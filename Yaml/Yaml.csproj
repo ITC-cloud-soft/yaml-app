@@ -30,6 +30,8 @@
     <ItemGroup>
       <Folder Include="Domain\" />
       <Folder Include="Infrastructure\Presistence\" />
+      <Folder Include="wwwroot\assets\locales\en\" />
+      <Folder Include="wwwroot\assets\locales\ja\" />
       <Folder Include="YamlFile\json\" />
       <Folder Include="YamlFile\yaml\" />
     </ItemGroup>

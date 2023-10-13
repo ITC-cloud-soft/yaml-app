@@ -50,4 +50,11 @@ public class MyController : ApiControllerBase
 
         return await Mediator.Send(command);
     }
+
+
+    [HttpGet("demo")]
+    public  string GetAppInfo()
+    {
+        return "demo success";
+    }
 }

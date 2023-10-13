@@ -38,7 +38,7 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
         }
         var yamlAppInfoDto = _mapper.Map<YamlAppInfoDto>(appInfo);
         
-        // Set app key vault
+        // TODO Set app key vault 
         var keyVault = await _context.KeyVaultInfo
             .AsNoTracking()
             .Where(e => e.ClusterId == appInfo.Id)

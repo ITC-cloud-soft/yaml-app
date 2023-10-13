@@ -1,8 +1,11 @@
 
 
+using System.Globalization;
 using System.Reflection;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RazorLight;
@@ -21,6 +24,8 @@ public static class ConfigureServices
         services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
+        
+ 
         
         // Inject RazorLight into Container
         services.AddRazorLight(() =>

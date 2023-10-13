@@ -1,0 +1,7 @@
+{
+  "login-page": {
+    "loginId": "登录ID",
+    "password": "密码",
+    "loginButton": "登录"
+  }
+}
