@@ -32,6 +32,5 @@ public class UserController : ApiControllerBase
             Console.WriteLine(e);
             throw;
         }
-        
     }
 }

@@ -1,0 +1,28 @@
+/*!
+       * Fuse.js v3.4.5 - Lightweight fuzzy-search (http://fusejs.io)
+       * 
+       * Copyright (c) 2012-2017 Kirollos Risk (http://kiro.me)
+       * All Rights Reserved. Apache Software License 2.0
+       * 
+       * http://www.apache.org/licenses/LICENSE-2.0
+       */
+
+/*!
+ * Quill Editor v1.3.7
+ * https://quilljs.com/
+ * Copyright (c) 2014, Jason Chen
+ * Copyright (c) 2013, salesforce.com
+ */
+
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
+
+/*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js */
+
+/*! choices.js v9.0.1 | © 2019 Josh Johnson | https://github.com/jshjohnson/Choices#readme */
+
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */

@@ -35,5 +35,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionHandlingInterceptor>();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.MapControllers();
 app.Run();
