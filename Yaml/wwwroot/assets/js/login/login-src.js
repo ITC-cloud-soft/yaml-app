@@ -1,8 +1,11 @@
-
 $(function () {
-    initI18next.init();
-    initPage.initElementEvent();
-    initPage.initValidation();
+
+    new Promise((resolve, reject)=>{
+        resolve(initI18next());
+    }).then(function (result){
+        initPage.initElementEvent();
+        initPage.initValidation();
+    })
 
     // 阻止表单的默认提交行为
     $('#loginForm').submit(function (event) {
@@ -53,10 +56,9 @@ const initPage = (function ($){
                 }
             },
             messages: {
-                name: i18next.t('login-page.password'),
+                name: i18next.t('login-page.loginId'),
                 pwd: {
-                    required: i18next.t('login-page.name'),
-                    minlength: i18next.t('login-page.password')
+                    required: i18next.t('login-page.password')
                 }
             },
             errorPlacement: function (error, element){
@@ -96,3 +98,4 @@ const loginComponent = (function ($) {
         login: login
     };
 })(jQuery);
+
