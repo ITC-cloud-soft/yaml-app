@@ -1,10 +1,10 @@
 $(function () {
 
-    new Promise((resolve, reject)=>{
+    new Promise((resolve, reject) => {
         resolve(initI18next());
-    }).then(function (result){
+    }).then(function (result) {
         initPage.initElementEvent();
-        initPage.initValidation();
+        initPage.initValidation(i18next);
     })
 
     // 阻止表单的默认提交行为
@@ -22,9 +22,10 @@ $(function () {
     });
 })
 
-const initPage = (function ($){
+const initPage = (function ($) {
     "use strict"
-    function initElementEvent(){
+
+    function initElementEvent() {
         $("#login-btn").click(function () {
             const name = $("#name").val();
             const pwd = $("#pwd").val();
@@ -32,13 +33,12 @@ const initPage = (function ($){
         })
     }
 
-    function initValidation(){
-        
+    function initValidation(i18next) {
+
         const rules = {
             name: "required",
             pwd: {
-                required: true,
-                minlength: 6
+                required: true
             }
         }
 
@@ -52,24 +52,23 @@ const initPage = (function ($){
                 name: "required",
                 pwd: {
                     required: true,
-                    minlength: 6
                 }
             },
             messages: {
-                name: i18next.t('login-page.loginId'),
+                name: i18next.t('login-page.usernameEmpty'),
                 pwd: {
-                    required: i18next.t('login-page.password')
+                    required: i18next.t('login-page.pwdEmpty')
                 }
             },
-            errorPlacement: function (error, element){
+            errorPlacement: function (error, element) {
                 error.insertAfter(element.parent());
             }
         })
     }
-    
-    function render(){
-       $("#name-error").text(i18next.t('login-page.loginId')) 
-       $("#pwd-error").text(i18next.t('login-page.password'))
+
+    function render() {
+        $("#name-error").text(i18next.t('login-page.usernameEmpty'));
+        $("#pwd-error").text(i18next.t('login-page.pwdEmpty'));
     }
 
     return {
@@ -82,18 +81,20 @@ const initPage = (function ($){
 const loginComponent = (function ($) {
     "use strict"
 
-    function login(name, pwd){
-        if($("#loginForm").valid()){
-            commonFunctions.axios().post('/api/User/login', {name: name, password: pwd
-            }).then(function (res){
-                window.location.href="../../../cd-control.html";
+    function login(name, pwd) {
+        if ($("#loginForm").valid()) {
+            commonFunctions.axios().post('/api/User/login', {
+                name: name, password: pwd
+            }).then(function (res) {
+                window.location.href = "../../../cd-control.html";
             }).catch(function (error) {
                 console.log(error.response.data);
                 // if error show modal
-                commonFunctions.showModal("Login Warn", error.response.data)
+                commonFunctions.showModal("", error.response.data.title)
             })
         }
     }
+
     return {
         login: login
     };

@@ -38,5 +38,18 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Redis\redis-deployment.cshtml" />
     </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Localization\Application\Command\UserLoginCommand.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>UserLoginCommand.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Localization\Application\Command\UserLoginCommand.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UserLoginCommand.en.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
 
 </Project>

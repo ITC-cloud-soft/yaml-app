@@ -2,6 +2,8 @@
   "login-page": {
     "loginId": "登录ID",
     "password": "密码",
-    "loginButton": "登录"
+    "loginButton": "登录",
+    "usernameEmpty": "用户名不能为空",
+    "pwdEmpty": "密码不能为空"
   }
 }

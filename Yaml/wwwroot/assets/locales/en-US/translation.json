@@ -2,6 +2,8 @@
   "login-page": {
     "loginId": "Login ID",
     "password": "Password",
-    "loginButton": "Login"
+    "loginButton": "Login",
+    "usernameEmpty": "Username cannot be empty.",
+    "pwdEmpty": "Password cannot be empty."
   }
 }

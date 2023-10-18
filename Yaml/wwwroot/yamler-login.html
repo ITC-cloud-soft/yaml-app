@@ -1,88 +1,112 @@
 <!doctype html>
 <html lang="utf-8">
 <head>
-  <meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="assets/css/components.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="assets/css/components.css" rel="stylesheet">
+    <link href="assets/css/common.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
-  <!-- Axios 是一个用于发起AJAX请求的简单、易于使用的库，它基于Promise，并提供了更现代的方式来处理HTTP请求 -->
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
- 
-  <!--A practical functional library for JavaScript programmers.-->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.29.1/ramda.min.js"></script>
+    <!-- Axios 是一个用于发起AJAX请求的简单、易于使用的库，它基于Promise，并提供了更现代的方式来处理HTTP请求 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-  <!-- JQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
-  
-  <!-- 小巧但功能强大的工具库，提供了大量的实用函数，包括数组操作、对象操作、函数式编程工具等。-->
-<!--  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=" crossorigin="anonymous"></script>-->
+    <!--A practical functional library for JavaScript programmers.-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.29.1/ramda.min.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/i18next.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.3/i18nextBrowserLanguageDetector.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.2/i18nextHttpBackend.min.js"></script>
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
 
-  <script src="assets/js/common/i18next/i18n.js"></script>
-  <script src="assets/js/common/common.js"></script>
-  <script src="assets/js/login/login-src.js"></script>
-  <title>Login Page</title>
+    <!-- 小巧但功能强大的工具库，提供了大量的实用函数，包括数组操作、对象操作、函数式编程工具等。-->
+    <!--  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=" crossorigin="anonymous"></script>-->
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.3/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.2/i18nextHttpBackend.min.js"></script>
+
+    <script src="assets/js/common/i18next/i18n.js"></script>
+    <script src="assets/js/common/common.js"></script>
+    <script src="assets/js/login/login-src.js"></script>
+    <title>Login Page</title>
 </head>
 <body>
-<!--<h1 data-i18n="intro.title">Le</h1>-->
-<!--<h1 data-i18n="intro.welcome">x2</h1>-->
-<!--<select name="language" id="languageSwitcher">1212</select>-->
-  <form id="loginForm">
-   
+<form id="loginForm">
+
     <div class="o-whole o-whole--with-bg">
-      <div class="o-whole__body-container">
-        <div class="o-whole__navigation">
-          
-        </div>
-        <div class="o-whole__body">
-            <div class="a-pulldown" style="max-width: 120px; float: right">
-                <select name="something" id="languageSwitcher" class="a-pulldown__select">
-                    <option value="ja">日本語</option>
-                    <option value="en">English</option>
-                    <option value="zh">中文</option>
-                </select>
-                <div class="a-pulldown__icon-container">
-                    <i class="a-icon a-icon--arrow-down"></i>
+        <div class="o-whole__body-container">
+            <div class="o-whole__navigation">
+
+            </div>
+            <div class="o-whole__body">
+                <div class="a-pulldown" style="max-width: 120px; float: right">
+                    <select name="something" id="languageSwitcher" class="a-pulldown__select">
+                        <option value="ja">日本語</option>
+                        <option value="en">English</option>
+                        <option value="zh">中文</option>
+                    </select>
+                    <div class="a-pulldown__icon-container">
+                        <i class="a-icon a-icon--arrow-down"></i>
+                    </div>
                 </div>
+                <section class="m-section m-section--no-padding p-list-content-holder">
+                    <div style="margin:10% 20% 0 20%">
+                        <section class="m-section m-section--fill-white">
+                            <div class="o-global-navigation__logo"><a href="#"><img
+                                    src="assets/images/logo-no-densin.svg" alt="Yamler"/></a></div>
+                            <br/><br/>
+                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12"
+                                 style="align-items:center">
+                                <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"
+                                                                                    data-i18n="login-page.loginId">ログインID</span>
+                                </h3>
+                                <div class="a-text-field a-text-field--type-text"><input id="name" type="text"
+                                                                                         name="name" value=""
+                                                                                         class="a-text-field__input"/>
+                                </div>
+                            </div>
+                            <br/><br/>
+                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12"
+                                 style="align-items:center">
+                                <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"
+                                                                                    data-i18n="login-page.password">パスワード</span>
+                                </h3>
+                                <div class="a-text-field a-text-field--type-text"><input id="pwd" type="password"
+                                                                                         name="pwd" value=""
+                                                                                         class="a-text-field__input"/>
+                                </div>
+                            </div>
+                            <footer class="o-modal__footer">
+                                <button id="login-btn" class="a-button a-button--primary a-button--huge"
+                                        data-link-spy="true">
+                                    <div class="a-button__label" data-i18n="login-page.loginButton">ログイン</div>
+                                </button>
+                            </footer>
+                        </section>
+                    </div>
+                </section>
             </div>
-          <section class="m-section m-section--no-padding p-list-content-holder">
-            <div style="margin:10% 20% 0 20%">
-              <section class="m-section m-section--fill-white">
-                  <div class="o-global-navigation__logo"><a href="#"><img src="assets/images/logo-no-densin.svg" alt="Yamler" /></a></div><br /><br />
-                  <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12" style="align-items:center">
-                    <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label" data-i18n="login-page.loginId">ログインID</span></h3>
-                    <div class="a-text-field a-text-field--type-text"><input id="name" type="text" name="name" value="" class="a-text-field__input" /></div>
-                  </div>
-                  <br /><br />
-                  <div  class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12" style="align-items:center">
-                    <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label" data-i18n="login-page.password">パスワード</span></h3>
-                    <div class="a-text-field a-text-field--type-text"><input id="pwd"  type="password" name="pwd" value="" class="a-text-field__input" /></div>
-                  </div>
-                <footer class="o-modal__footer"> <button id="login-btn" class="a-button a-button--primary a-button--huge"  data-link-spy="true">
-                  <div class="a-button__label" data-i18n="login-page.loginButton">ログイン</div>
-                </button></footer>
-              </section>
-            </div>
-          </section>
         </div>
-      </div>
     </div>
-    </form>
-  <div class="o-modal" id="custom-modal">
+</form>
+<div class="o-modal" id="custom-modal">
     <div class="o-modal__window">
-      <button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i></button>
-      <main class="o-modal__body">
-        <header class="o-modal__header o-modal__header--has-icon">
-          <p  class="modal-header-a"></p>
-        </header>
-        <p class="a-text a-text--align-left modal-content-a">
-        </p>
-      </main>
+        <button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i></button>
+        <main class="o-modal__body">
+            <header class="o-modal__header o-modal__header--has-icon">
+                <p class="modal-header-a"></p>
+            </header>
+            <p class="a-text a-text--align-left modal-content-a">
+
+        </main>
+<!--        <footer class="o-modal__footer">-->
+<!--            <button class="a-button a-button&#45;&#45;third a-button&#45;&#45;large ">-->
+<!--                <div class="a-button__label">はい</div>-->
+<!--            </button>-->
+<!--        </footer>-->
     </div>
-  </div>
+</div>
 </body>
 <script src="assets/js/build/components.js"></script>
 </html>

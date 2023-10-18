@@ -2,6 +2,8 @@
   "login-page": {
     "loginId": "ログインID",
     "password": "パスワード",
-    "loginButton": "ログ1イン"
+    "loginButton": "ログイン",
+    "usernameEmpty": "ユーザー名は空白できません",
+    "pwdEmpty": "パスワードは空白できません"
   }
 }

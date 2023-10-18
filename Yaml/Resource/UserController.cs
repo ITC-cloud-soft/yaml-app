@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -26,22 +27,7 @@ public class UserController : ApiControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginCommand command)
     {
-        
-        try
-        {
-            var userLoginResponse = await Mediator.Send(command);
-            if (userLoginResponse.IsSuccess)
-            {
-                return Ok(userLoginResponse);
-            }
-
-            string errorMessage = _sharedlocalizer["401unauthorized"];
-            return Unauthorized(errorMessage);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        var response = await Mediator.Send(command);
+        return StatusCode((int)response.Status, response);
     }
 }
