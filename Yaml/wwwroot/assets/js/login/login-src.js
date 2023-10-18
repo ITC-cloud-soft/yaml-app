@@ -3,8 +3,8 @@ $(function () {
     new Promise((resolve, reject) => {
         resolve(initI18next());
     }).then(function (result) {
-        initPage.initElementEvent();
-        initPage.initValidation(i18next);
+        initPage.bindEvents();
+        initPage.bindValidation(i18next);
     })
 
     // 阻止表单的默认提交行为
@@ -72,9 +72,9 @@ const initPage = (function ($) {
     }
 
     return {
-        initValidation: initValidation,
+        bindValidation: initValidation,
         render: render,
-        initElementEvent: initElementEvent
+        bindEvents: initElementEvent
     };
 })(jQuery)
 

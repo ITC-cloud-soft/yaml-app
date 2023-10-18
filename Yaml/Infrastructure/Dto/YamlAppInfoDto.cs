@@ -26,7 +26,7 @@ public class AppKeyVault
     {
     }
     
-    public AppKeyVault(string? tenantId, string? keyVaultName, string? managedId, List<string>? keyVault)
+    public AppKeyVault(string? tenantId, string? keyVaultName, string? managedId, List<string> keyVault)
     {
         TenantId = tenantId;
         KeyVaultName = keyVaultName;

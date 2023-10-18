@@ -42,14 +42,14 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
         var keyVault = await _context.KeyVaultInfo
             .AsNoTracking()
             .Where(e => e.ClusterId == appInfo.Id)
-            .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
+            .Select(e => e.Value!)
             .ToListAsync(cancellationToken);
         
         yamlAppInfoDto.KeyVault = new AppKeyVault(
             tenantId: appInfo.ManagedId, 
             keyVaultName: appInfo.KeyVaultName,
             managedId: appInfo.ManagedId, 
-            keyVault: null
+            keyVault: keyVault
         );
        
         // Get correspond cluster from DB

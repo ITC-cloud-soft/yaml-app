@@ -1,519 +1,985 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="assets/css/components.css" rel="stylesheet"></head>
-  <body>
-    <div class="o-whole o-whole--with-bg o-whole--with-navigation o-whole--global">
-      <div class="o-whole__body-container">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+<div class="o-whole o-whole--with-bg o-whole--with-navigation o-whole--global">
+    <div class="o-whole__body-container">
         <div class="o-whole__navigation" data-simplebar="true">
-          <div class="o-global-navigation">
-            <header class="o-global-navigation__header"><button type="button" class="o-global-navigation__toggle-button"><i class="a-icon a-icon--menu"></i></button>
-              <div class="o-global-navigation__logo"><a href="#"><img src="assets/images/logo-no-densin.svg" alt="Densin" /></a></div><button type="button" class="o-global-navigation__noti-button">
-                <div class="a-nav-icon a-nav-icon--news a-nav-icon--large"><i class="a-icon a-icon--news"></i></div>
-              </button>
-            </header><button type="button" class="o-global-navigation__close-button"><i class="a-icon a-icon--close"></i></button>
-            <nav class="o-global-navigation__nav">
-              <div class="m-nav-list o-global-navigation__nav-items">
-                <section class="m-section m-section--no-padding"> </section>
-                <div class="a-nav-item a-nav-item--labor-menu a-nav-item--selected"><a href="cd-control.html" class="a-nav-item__link">
-                    <div class="a-nav-icon a-nav-icon--labor-menu a-nav-icon--active a-nav-item__icon"><i class="a-icon a-icon--labor-menu-selected"></i></div><span class="a-nav-item__label">CDコントロール</span>
-                  </a></div>
-                <div class="a-nav-item a-nav-item--labor-menu"><a href="#" class="a-nav-item__link">
-                    <div class="a-nav-icon a-nav-icon--labor-menu a-nav-item__icon"><i class="a-icon a-icon--labor-menu"></i></div><span class="a-nav-item__label">クラウドストア</span>
-                  </a></div>
-                <div class="a-nav-item a-nav-item--labor-menu"><a href="#" class="a-nav-item__link">
-                    <div class="a-nav-icon a-nav-icon--labor-menu a-nav-item__icon"><i class="a-icon a-icon--labor-menu"></i></div><span class="a-nav-item__label">マニュアル</span>
-                  </a></div>
-              </div><button type="button" class="o-global-navigation__logout-button">ログアウト</button>
-              <div class="m-nav-list o-global-navigation__nav-system-action"></div>
-            </nav>
-            <div class="m-shortcut-nav"></div>
-          </div>
+            <div class="o-global-navigation">
+                <header class="o-global-navigation__header">
+                    <button type="button" class="o-global-navigation__toggle-button"><i class="a-icon a-icon--menu"></i>
+                    </button>
+                    <div class="o-global-navigation__logo"><a href="#"><img src="assets/images/logo-no-densin.svg"
+                                                                            alt="Densin"/></a></div>
+                    <button type="button" class="o-global-navigation__noti-button">
+                        <div class="a-nav-icon a-nav-icon--news a-nav-icon--large"><i class="a-icon a-icon--news"></i>
+                        </div>
+                    </button>
+                </header>
+                <button type="button" class="o-global-navigation__close-button"><i class="a-icon a-icon--close"></i>
+                </button>
+                <nav class="o-global-navigation__nav">
+                    <div class="m-nav-list o-global-navigation__nav-items">
+                        <section class="m-section m-section--no-padding"></section>
+                        <div class="a-nav-item a-nav-item--labor-menu a-nav-item--selected"><a href="cd-control.html"
+                                                                                               class="a-nav-item__link">
+                            <div class="a-nav-icon a-nav-icon--labor-menu a-nav-icon--active a-nav-item__icon"><i
+                                    class="a-icon a-icon--labor-menu-selected"></i></div>
+                            <span class="a-nav-item__label">CDコントロール</span>
+                        </a></div>
+                        <div class="a-nav-item a-nav-item--labor-menu"><a href="#" class="a-nav-item__link">
+                            <div class="a-nav-icon a-nav-icon--labor-menu a-nav-item__icon"><i
+                                    class="a-icon a-icon--labor-menu"></i></div>
+                            <span class="a-nav-item__label">クラウドストア</span>
+                        </a></div>
+                        <div class="a-nav-item a-nav-item--labor-menu"><a href="#" class="a-nav-item__link">
+                            <div class="a-nav-icon a-nav-icon--labor-menu a-nav-item__icon"><i
+                                    class="a-icon a-icon--labor-menu"></i></div>
+                            <span class="a-nav-item__label">マニュアル</span>
+                        </a></div>
+                    </div>
+                    <button type="button" class="o-global-navigation__logout-button">ログアウト</button>
+                    <div class="m-nav-list o-global-navigation__nav-system-action"></div>
+                </nav>
+                <div class="m-shortcut-nav"></div>
+            </div>
         </div>
         <div class="o-whole__body">
-          <section class="m-section m-section--no-padding">
-            <div class="m-page-heading">
-              <h1 class="a-heading a-heading--h1 undefined"><span class="a-heading__label">Yamler--CDコントロール</span></h1>
-            </div>
-          </section>
-          <section class="m-section m-section--no-padding p-list-content-holder">
-            <section class="m-section m-section--fill-white">
-              <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">全般</span></h3>
-              <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">システム・アプリ名   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                  <div class="m-form-field__content">
-                    <div class="a-text-field a-text-field--type-text"><input id="appName" type="text" name="appname" value="" class="a-text-field__input" /></div>
-                  </div>
+            <section class="m-section m-section--no-padding">
+                <div class="m-page-heading">
+                    <h1 class="a-heading a-heading--h1 undefined"><span
+                            class="a-heading__label">Yamler--CDコントロール</span></h1>
                 </div>
-                <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label"></label>
-                  <div class="m-form-field__content"><label>※英数字</label></div>
-                </div>
-              </div>
-              <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"> <label class="help-label">Container Registry接続   <div class="a-help-button" id="help-opener4"><i class="a-icon a-icon--help"></i></div> </label></span></h3>
-              <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">CR サーバー   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                  <div class="m-form-field__content">
-                    <div class="a-text-field a-text-field--type-text"><input type="text" name="servername" value="" class="a-text-field__input" /></div>
-                  </div>
-                </div>
-                <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">トークン：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                  <div class="m-form-field__content">
-                    <div class="a-text-field a-text-field--type-text"><input type="text" name="token" value="" class="a-text-field__input" /></div>
-                  </div>
-                </div>
-              </div>
-              <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">メールアドレス：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                  <div class="m-form-field__content">
-                    <div class="a-text-field a-text-field--type-text"><input type="text" name="mail" value="" class="a-text-field__input" /></div>
-                  </div>
-                </div>
-              </div>
-              <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center"><label class="a-checkbox chksingle"><input type="checkbox" class="a-checkbox__input" id="checkbox-single" name="keyconnect" value="1" />
-                  <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                    <div class="a-checkbox__label"><label class="help-label">KeyVault接続   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div></label></div>
-                  </div>
-                </label></div>
-              <div id="keyvalueDiv" style="display:none">
-                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                  <div class="m-form-field"><label class="m-form-field__label">tenantId：</label>
-                    <div class="m-form-field__content">
-                      <div class="a-text-field a-text-field--type-text"><input type="text" name="tenantId" value="" class="a-text-field__input" /></div>
-                    </div>
-                  </div>
-                  <div class="m-form-field"><label class="m-form-field__label">keyvault名：</label>
-                    <div class="m-form-field__content">
-                      <div class="a-text-field a-text-field--type-text"><input type="text" name="keyvault" value="" class="a-text-field__input" /></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                  <div class="m-form-field"><label class="m-form-field__label">managedID：</label>
-                    <div class="m-form-field__content">
-                      <div class="a-text-field a-text-field--type-text"><input type="text" name="manageid" value="" class="a-text-field__input" /></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                  <div id="keyvalue_div" style="display:none">
-                    <div class="m-data-table m-data-table--with-action-buttons undefined">
-                      <div class="m-data-table__container-card">
-                        <div class="m-data-table__card">
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"><label class="help-label">項目名   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span></div>
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+            </section>
+            <section class="m-section m-section--no-padding p-list-content-holder">
+
+                <!-- App Area -->
+                <form>
+                    <section class="m-section m-section--fill-white">
+                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">全般</span></h3>
+                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                             style="align-items:center">
+                            <div class="m-form-field p-setting-input-form__form-field"><label
+                                    class="m-form-field__label">システム・アプリ名  
+                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                <div class="m-form-field__content">
+                                    <div class="a-text-field a-text-field--type-text"><input id="appName" type="text"
+                                                                                             name="appname" value=""
+                                                                                             class="a-text-field__input"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-form-field p-setting-input-form__form-field"><label
+                                    class="m-form-field__label"></label>
+                                <div class="m-form-field__content"><label>※英数字</label></div>
+                            </div>
+                        </div>
+                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"> <label
+                                class="help-label">Container Registry接続   <div class="a-help-button"
+                                                                                 id="help-opener4"><i
+                                class="a-icon a-icon--help"></i></div> </label></span></h3>
+                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                             style="align-items:center">
+                            <div class="m-form-field p-setting-input-form__form-field"><label
+                                    class="m-form-field__label">CR サーバー  
+                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                <div class="m-form-field__content">
+                                    <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                             name="servername" value=""
+                                                                                             class="a-text-field__input"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-form-field p-setting-input-form__form-field"><label
+                                    class="m-form-field__label">トークン：<span class="m-form-field__label-addons"><span
+                                    class="a-tag">必須</span></span></label>
+                                <div class="m-form-field__content">
+                                    <div class="a-text-field a-text-field--type-text"><input type="text" name="token"
+                                                                                             value=""
+                                                                                             class="a-text-field__input"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                             style="align-items:center">
+                            <div class="m-form-field p-setting-input-form__form-field"><label
+                                    class="m-form-field__label">メールアドレス：<span class="m-form-field__label-addons"><span
+                                    class="a-tag">必須</span></span></label>
+                                <div class="m-form-field__content">
+                                    <div class="a-text-field a-text-field--type-text"><input type="text" name="mail"
+                                                                                             value=""
+                                                                                             class="a-text-field__input"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                             style="align-items:center"><label class="a-checkbox chksingle"><input type="checkbox"
+                                                                                                   class="a-checkbox__input"
+                                                                                                   id="checkbox-single"
+                                                                                                   name="keyconnect"
+                                                                                                   value="1"/>
+                            <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
+                                    class="a-icon a-icon--check-white"></i></span>
+                                <div class="a-checkbox__label"><label class="help-label">KeyVault接続  
+                                    <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                </label></div>
+                            </div>
+                        </label></div>
+                        <div id="keyvalueDiv" style="display:none">
+                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                 style="align-items:center">
+                                <div class="m-form-field"><label class="m-form-field__label">tenantId：</label>
+                                    <div class="m-form-field__content">
+                                        <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                 name="tenantId"
+                                                                                                 value=""
+                                                                                                 class="a-text-field__input"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-form-field"><label class="m-form-field__label">keyvault名：</label>
+                                    <div class="m-form-field__content">
+                                        <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                 name="keyvault"
+                                                                                                 value=""
+                                                                                                 class="a-text-field__input"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                 style="align-items:center">
+                                <div class="m-form-field"><label class="m-form-field__label">managedID：</label>
+                                    <div class="m-form-field__content">
+                                        <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                 name="manageid"
+                                                                                                 value=""
+                                                                                                 class="a-text-field__input"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                 style="align-items:center">
+                                <div id="keyvalue_div" style="display:none">
+                                    <div class="m-data-table m-data-table--with-action-buttons undefined">
+                                        <div class="m-data-table__container-card">
+                                            <div class="m-data-table__card">
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"><label
+                                                            class="help-label">項目名   <div class="a-help-button"><i
+                                                            class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                </div>
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                        class="a-button a-button--text">
                                 <div class="a-button__label">✖</div>
                               </button></span></div>
-                        </div>
-                      </div>
-                      <div class="m-data-table__container">
-                        <div class="m-data-table__header">
-                          <div class="m-data-table__header-content m-data-table__header-content--type-data"><label class="help-label">項目名   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></div>
-                          <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
-                        </div>
-                        <div class="m-data-table__container-item">
-                          <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">SendGridKey</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                            </div>
+                                        </div>
+                                        <div class="m-data-table__container">
+                                            <div class="m-data-table__header">
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                    <label class="help-label">項目名  
+                                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i>
+                                                        </div>
+                                                        （keyVaultのキー）</label></div>
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                            </div>
+                                            <div class="m-data-table__container-item">
+                                                <div class="m-data-table__item"><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content">SendGridKey</span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"><button
+                                                        class="a-button a-button--text">
                                   <div class="a-button__label">✖</div>
                                 </button></span></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <button type="button" class="a-add-item-button"><i
+                                            class="a-icon a-icon--add-item"></i>項目追加
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                    </div><br /><button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>項目追加</button>
-                  </div>
-                </div>
-              </div>
-              <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">基本設定</span></h3>
-              <div id="setting-table" class="m-data-table m-data-table--with-action-buttons undefined">
-                <div class="m-data-table__container-card">
-                  <div class="m-data-table__card">
-                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">クラスター名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">ccflow-apach</span></div>
-                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">イメージ</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">djpest.azurecr.io/ssflow-api:0.0.1</span></div>
-                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">起動POD数</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">3</span></div>
-                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">CPU</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">125m</span></div>
-                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">メモリ</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">1024Mi</span></div>
-                    <div class="m-data-table__card-item m-data-table__card-item--type-action"><span class="m-data-table__card-header m-data-table__card-header--type-action">操作</span><span class="m-data-table__card-content m-data-table__card-content--type-action m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">基本設定</span>
+                        </h3>
+                        <div id="setting-table" class="m-data-table m-data-table--with-action-buttons undefined">
+                            <div class="m-data-table__container-card">
+                                <div class="m-data-table__card">
+                                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data">クラスター名</span><span
+                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">ccflow-apach</span>
+                                    </div>
+                                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data">イメージ</span><span
+                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">djpest.azurecr.io/ssflow-api:0.0.1</span>
+                                    </div>
+                                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data">起動POD数</span><span
+                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">3</span>
+                                    </div>
+                                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data">CPU</span><span
+                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">125m</span>
+                                    </div>
+                                    <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data">メモリ</span><span
+                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">1024Mi</span>
+                                    </div>
+                                    <div class="m-data-table__card-item m-data-table__card-item--type-action"><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-action">操作</span><span
+                                            class="m-data-table__card-content m-data-table__card-content--type-action m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                            class="a-button a-button--text">
                           <div class="a-button__label">編集</div>
                         </button><button class="a-button a-button--text">
                           <div class="a-button__label">削除</div>
                         </button></span></div>
-                  </div>
-                </div>
-                <div class="m-data-table__container">
-                  <div class="m-data-table__header">
-                    <div class="m-data-table__header-content m-data-table__header-content--type-data">クラスター名</div>
-                    <div class="m-data-table__header-content m-data-table__header-content--type-data">イメージ</div>
-                    <div class="m-data-table__header-content m-data-table__header-content--type-data">起動POD数</div>
-                    <div class="m-data-table__header-content m-data-table__header-content--type-data">CPU</div>
-                    <div class="m-data-table__header-content m-data-table__header-content--type-data">メモリ</div>
-                    <div class="m-data-table__header-content m-data-table__header-content--type-action">操作</div>
-                  </div>
-                  <div class="m-data-table__container-item">
-                    <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">ccflow-apach</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">djpest.azurecr.io/ssflow-api:0.0.1</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">3</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">125m</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">1024Mi</span></span><span class="m-data-table__content m-data-table__content--type-action m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                </div>
+                            </div>
+                            <div class="m-data-table__container">
+                                <div class="m-data-table__header">
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                        クラスター名
+                                    </div>
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                        イメージ
+                                    </div>
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                        起動POD数
+                                    </div>
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                        CPU
+                                    </div>
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                        メモリ
+                                    </div>
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-action">
+                                        操作
+                                    </div>
+                                </div>
+                                <div class="m-data-table__container-item">
+                                    <div class="m-data-table__item"><span
+                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                            class="m-data-table__truncate-content">ccflow-apach</span></span><span
+                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                            class="m-data-table__truncate-content">djpest.azurecr.io/ssflow-api:0.0.1</span></span><span
+                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                            class="m-data-table__truncate-content">3</span></span><span
+                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                            class="m-data-table__truncate-content">125m</span></span><span
+                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                            class="m-data-table__truncate-content">1024Mi</span></span><span
+                                            class="m-data-table__content m-data-table__content--type-action m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                            class="m-data-table__truncate-content"><button
+                                            class="a-button a-button--text">
                             <div class="a-button__label">編集</div>
                           </button><button class="a-button a-button--text">
                             <div class="a-button__label">削除</div>
                           </button></span></span></div>
-                  </div>
-                </div>
-              </div><button type="button" id="clusterbtn" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>クラスター追加</button><br /><br />
-              <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">オプション</span></h3>
-              <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center"><label class="a-checkbox"><input type="checkbox" class="a-checkbox__input" name="Netdata" value="8" />
-                  <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                    <div class="a-checkbox__label"><label class="help-label">NetData   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div></label></div>
-                  </div>
-                </label></div>
-              <footer class="o-modal__footer"> <button class="a-button a-button--secondary a-button--huge" id="save-button">
-                  <div class="a-button__label">保存</div>
-                </button><button class="a-button a-button--third a-button--huge" id="download-button">
-                  <div class="a-button__label">ダウンロード</div>
-                </button><button class="a-button a-button--third a-button--huge" id="download-button">
-                  <div class="a-button__label">アップロード</div>
-                </button><button class="a-button a-button--primary a-button--huge" id="deploy-button">
-                  <div class="a-button__label">デプロイ</div>
-                </button></footer>
-            </section>
-            <div class="o-modal o-modal--fullscreen" id="modal-cluster">
-              <div class="o-modal__window"><button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i></button>
-                <main class="o-modal__body">
-                  <section class="m-section m-section--no-padding">
-                    <div class="m-page-heading">
-                      <h1 class="a-heading a-heading--h1 undefined"><span class="a-heading__label">クラスター編集</span></h1>
-                    </div>
-                  </section>
-                  <section class="m-section m-section--no-padding p-list-content-holder">
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">クラスター名   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                        <div class="m-form-field__content">
-                          <div class="a-text-field a-text-field--type-text"><input type="text" name="clustername" value="" class="a-text-field__input" /></div>
-                        </div>
-                      </div>
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label"></label>
-                        <div class="m-form-field__content"><label>※英数字</label></div>
-                      </div>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">イメージ   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                        <div class="m-form-field__content">
-                          <div class="a-text-field a-text-field--type-text"><input type="text" name="imagename" value="" class="a-text-field__input" /></div>
-                        </div>
-                      </div>
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label"></label>
-                        <div class="m-form-field__content"><label>※例 djpest.azurecr.io/ssflow-api:0.0.1</label></div>
-                      </div>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">起動POD数   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                        <div class="m-form-field__content">
-                          <div class="a-text-field a-text-field--type-text"><input type="text" name="podcnt" value="" class="a-text-field__input" /></div>
-                        </div>
-                      </div>
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label"></label>
-                        <div class="m-form-field__content"><label>※数字</label></div>
-                      </div>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                      <div class="m-form-field"><label class="m-form-field__label">CPU   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                        <div class="m-form-field__content">
-                          <div id="cpu" class="a-pulldown"><select name="cpu" class="a-pulldown__select">
-                              <option>125m</option>
-                              <option value=""></option>
-                              <option value="1">250m</option>
-                              <option value="2">500m</option>
-                              <option value="3">1000m</option>
-                            </select>
-                            <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="m-form-field"><label class="m-form-field__label">メモリ  <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
-                        <div class="m-form-field__content">
-                          <div id="memory" class="a-pulldown"><select name="memory" class="a-pulldown__select">
-                              <option>1024Mi</option>
-                              <option value=""></option>
-                              <option value="1">2048Mi</option>
-                              <option value="2">4096Mi</option>
-                            </select>
-                            <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">managedレベル   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：</label>
-                        <div class="m-form-field__content">
-                          <div class="a-text-field a-text-field--type-text"><input type="text" name="managedlevel" value="" class="a-text-field__input" /></div>
-                        </div>
-                      </div>
-                      <div class="m-form-field p-setting-input-form__form-field"><label class="m-form-field__label">Prefix   <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：</label>
-                        <div class="m-form-field__content">
-                          <div class="a-text-field a-text-field--type-text"><input type="text" name="prefix" value="" class="a-text-field__input" /></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center"><label class="a-checkbox KeyChkbox"><input type="checkbox" class="a-checkbox__input" id="diskCheckbox" name="KeyVault" value="2" />
-                        <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                          <div class="a-checkbox__label"><label class="help-label">Disk設置   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div></label></div>
-                        </div>
-                      </label></div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12" style="align-items:center">
-                      <div id="disk_div" style="display:none">
-                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                          <div class="m-form-field"><label class="m-form-field__label">ディスク サイズ  <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：</label>
-                            <div class="m-form-field__content">
-                              <div id="cpu" class="a-pulldown"><select name="cpu" class="a-pulldown__select">
-                                  <option>1G</option>
-                                  <option value="1">10G</option>
-                                  <option value="2">20G</option>
-                                  <option value="3">50G</option>
-                                </select>
-                                <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
-                              </div>
+                                </div>
                             </div>
-                          </div>
-                          <div class="m-form-field"><label class="m-form-field__label">ディスク クラス <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：</label>
-                            <div class="m-form-field__content">
-                              <div id="memory" class="a-pulldown"><select name="memory" class="a-pulldown__select">
-                                  <option>1024Mi</option>
-                                  <option value=""></option>
-                                  <option value="1">Azure Premium Storage</option>
-                                  <option value="2">Azure Standard Storage </option>
-                                </select>
-                                <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
-                              </div>
-                            </div>
-                          </div>
                         </div>
-                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                          <div class="m-data-table m-data-table--with-action-buttons undefined">
-                            <div class="m-data-table__container-card">
-                              <div class="m-data-table__card">
-                                <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">マウント 名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">path</span></div>
-                                <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">マウント バス</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">/var/data</span></div>
-                                <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                        <button type="button" id="clusterbtn" class="a-add-item-button"><i
+                                class="a-icon a-icon--add-item"></i>クラスター追加
+                        </button>
+                        <br/><br/>
+                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">オプション</span>
+                        </h3>
+                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                             style="align-items:center"><label class="a-checkbox"><input type="checkbox"
+                                                                                         class="a-checkbox__input"
+                                                                                         name="Netdata" value="8"/>
+                            <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
+                                    class="a-icon a-icon--check-white"></i></span>
+                                <div class="a-checkbox__label"><label class="help-label">NetData  
+                                    <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                </label></div>
+                            </div>
+                        </label></div>
+                        <footer class="o-modal__footer">
+                            <button class="a-button a-button--secondary a-button--huge" id="save-button">
+                                <div class="a-button__label">保存</div>
+                            </button>
+                            <button class="a-button a-button--third a-button--huge" id="download-button">
+                                <div class="a-button__label">ダウンロード</div>
+                            </button>
+                            <button class="a-button a-button--third a-button--huge" id="download-button">
+                                <div class="a-button__label">アップロード</div>
+                            </button>
+                            <button class="a-button a-button--primary a-button--huge" id="deploy-button">
+                                <div class="a-button__label">デプロイ</div>
+                            </button>
+                        </footer>
+                    </section>
+                </form>
+                <!-- End of app info area -->
+                <div class="o-modal o-modal--fullscreen" id="modal-cluster">
+                    <div class="o-modal__window">
+                        <button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i>
+                        </button>
+                        <main class="o-modal__body">
+                            <section class="m-section m-section--no-padding">
+                                <div class="m-page-heading">
+                                    <h1 class="a-heading a-heading--h1 undefined"><span
+                                            class="a-heading__label">クラスター編集</span></h1>
+                                </div>
+                            </section>
+                            <section class="m-section m-section--no-padding p-list-content-holder">
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center">
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label">クラスター名  
+                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                        </div>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        <div class="m-form-field__content">
+                                            <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                     name="clustername"
+                                                                                                     value=""
+                                                                                                     class="a-text-field__input"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label"></label>
+                                        <div class="m-form-field__content"><label>※英数字</label></div>
+                                    </div>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center">
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label">イメージ  
+                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                        </div>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        <div class="m-form-field__content">
+                                            <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                     name="imagename"
+                                                                                                     value=""
+                                                                                                     class="a-text-field__input"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label"></label>
+                                        <div class="m-form-field__content"><label>※例
+                                            djpest.azurecr.io/ssflow-api:0.0.1</label></div>
+                                    </div>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center">
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label">起動POD数  
+                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                        </div>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        <div class="m-form-field__content">
+                                            <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                     name="podcnt"
+                                                                                                     value=""
+                                                                                                     class="a-text-field__input"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label"></label>
+                                        <div class="m-form-field__content"><label>※数字</label></div>
+                                    </div>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center">
+                                    <div class="m-form-field"><label class="m-form-field__label">CPU  
+                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                        </div>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        <div class="m-form-field__content">
+                                            <div id="cpu" class="a-pulldown"><select name="cpu"
+                                                                                     class="a-pulldown__select">
+                                                <option>125m</option>
+                                                <option value=""></option>
+                                                <option value="1">250m</option>
+                                                <option value="2">500m</option>
+                                                <option value="3">1000m</option>
+                                            </select>
+                                                <div class="a-pulldown__icon-container"><i
+                                                        class="a-icon a-icon--arrow-down"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field"><label class="m-form-field__label">メモリ 
+                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                        </div>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        <div class="m-form-field__content">
+                                            <div id="memory" class="a-pulldown"><select name="memory"
+                                                                                        class="a-pulldown__select">
+                                                <option>1024Mi</option>
+                                                <option value=""></option>
+                                                <option value="1">2048Mi</option>
+                                                <option value="2">4096Mi</option>
+                                            </select>
+                                                <div class="a-pulldown__icon-container"><i
+                                                        class="a-icon a-icon--arrow-down"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center">
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label">managedレベル  
+                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                        </div>
+                                        ：</label>
+                                        <div class="m-form-field__content">
+                                            <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                     name="managedlevel"
+                                                                                                     value=""
+                                                                                                     class="a-text-field__input"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field p-setting-input-form__form-field"><label
+                                            class="m-form-field__label">Prefix  
+                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                        </div>
+                                        ：</label>
+                                        <div class="m-form-field__content">
+                                            <div class="a-text-field a-text-field--type-text"><input type="text"
+                                                                                                     name="prefix"
+                                                                                                     value=""
+                                                                                                     class="a-text-field__input"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center"><label class="a-checkbox KeyChkbox"><input
+                                        type="checkbox" class="a-checkbox__input" id="diskCheckbox" name="KeyVault"
+                                        value="2"/>
+                                    <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
+                                            class="a-icon a-icon--check-white"></i></span>
+                                        <div class="a-checkbox__label"><label class="help-label">Disk設置  
+                                            <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                        </label></div>
+                                    </div>
+                                </label></div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12"
+                                     style="align-items:center">
+                                    <div id="disk_div" style="display:none">
+                                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                             style="align-items:center">
+                                            <div class="m-form-field"><label class="m-form-field__label">ディスク サイズ 
+                                                <div class="a-help-button" id="help-opener5"><i
+                                                        class="a-icon a-icon--help"></i></div>
+                                                ：</label>
+                                                <div class="m-form-field__content">
+                                                    <div id="cpu" class="a-pulldown"><select name="cpu"
+                                                                                             class="a-pulldown__select">
+                                                        <option>1G</option>
+                                                        <option value="1">10G</option>
+                                                        <option value="2">20G</option>
+                                                        <option value="3">50G</option>
+                                                    </select>
+                                                        <div class="a-pulldown__icon-container"><i
+                                                                class="a-icon a-icon--arrow-down"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="m-form-field"><label class="m-form-field__label">ディスク クラス
+                                                <div class="a-help-button" id="help-opener5"><i
+                                                        class="a-icon a-icon--help"></i></div>
+                                                ：</label>
+                                                <div class="m-form-field__content">
+                                                    <div id="memory" class="a-pulldown"><select name="memory"
+                                                                                                class="a-pulldown__select">
+                                                        <option>1024Mi</option>
+                                                        <option value=""></option>
+                                                        <option value="1">Azure Premium Storage</option>
+                                                        <option value="2">Azure Standard Storage</option>
+                                                    </select>
+                                                        <div class="a-pulldown__icon-container"><i
+                                                                class="a-icon a-icon--arrow-down"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                             style="align-items:center">
+                                            <div class="m-data-table m-data-table--with-action-buttons undefined">
+                                                <div class="m-data-table__container-card">
+                                                    <div class="m-data-table__card">
+                                                        <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                            <span class="m-data-table__card-header m-data-table__card-header--type-data">マウント 名</span><span
+                                                                class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">path</span>
+                                                        </div>
+                                                        <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                            <span class="m-data-table__card-header m-data-table__card-header--type-data">マウント バス</span><span
+                                                                class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">/var/data</span>
+                                                        </div>
+                                                        <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                            <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                                class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                                class="a-button a-button--text">
                                       <div class="a-button__label">✖</div>
                                     </button></span></div>
-                              </div>
-                            </div>
-                            <div class="m-data-table__container">
-                              <div class="m-data-table__header">
-                                <div class="m-data-table__header-content m-data-table__header-content--type-data">マウント 名</div>
-                                <div class="m-data-table__header-content m-data-table__header-content--type-data">マウント バス</div>
-                                <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
-                              </div>
-                              <div class="m-data-table__container-item">
-                                <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">path</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">/var/data</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                                    </div>
+                                                </div>
+                                                <div class="m-data-table__container">
+                                                    <div class="m-data-table__header">
+                                                        <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                            マウント 名
+                                                        </div>
+                                                        <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                            マウント バス
+                                                        </div>
+                                                        <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                                    </div>
+                                                    <div class="m-data-table__container-item">
+                                                        <div class="m-data-table__item"><span
+                                                                class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                                class="m-data-table__truncate-content">path</span></span><span
+                                                                class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                                class="m-data-table__truncate-content">/var/data</span></span><span
+                                                                class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                                class="m-data-table__truncate-content"><button
+                                                                class="a-button a-button--text">
                                         <div class="a-button__label">✖</div>
                                       </button></span></span></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div><br /><button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>項目追加</button>
-                      </div>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center"><label class="a-checkbox KeyChkbox"><input type="checkbox" class="a-checkbox__input" id="KeyCheckbox" name="KeyVault" value="2" />
-                        <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                          <div class="a-checkbox__label"><label class="help-label">KeyVault設置   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div></label></div>
-                        </div>
-                      </label></div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                      <div id="KeyVault_div" style="display:none">
-                        <div class="m-data-table m-data-table--with-action-buttons undefined">
-                          <div class="m-data-table__container-card">
-                            <div class="m-data-table__card">
-                              <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"><label class="help-label">使用項目   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span></div>
-                              <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <button type="button" class="a-add-item-button"><i
+                                                class="a-icon a-icon--add-item"></i>項目追加
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center"><label class="a-checkbox KeyChkbox"><input
+                                        type="checkbox" class="a-checkbox__input" id="KeyCheckbox" name="KeyVault"
+                                        value="2"/>
+                                    <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
+                                            class="a-icon a-icon--check-white"></i></span>
+                                        <div class="a-checkbox__label"><label class="help-label">KeyVault設置  
+                                            <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                        </label></div>
+                                    </div>
+                                </label></div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center">
+                                    <div id="KeyVault_div" style="display:none">
+                                        <div class="m-data-table m-data-table--with-action-buttons undefined">
+                                            <div class="m-data-table__container-card">
+                                                <div class="m-data-table__card">
+                                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                        <span class="m-data-table__card-header m-data-table__card-header--type-data"><label
+                                                                class="help-label">使用項目   <div
+                                                                class="a-help-button"><i
+                                                                class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span
+                                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                    </div>
+                                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                        <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                            class="a-button a-button--text">
                                     <div class="a-button__label">✖</div>
                                   </button></span></div>
-                            </div>
-                            <div class="m-data-table__card">
-                              <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"><label class="help-label">使用項目   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span></div>
-                              <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                                </div>
+                                                <div class="m-data-table__card">
+                                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                        <span class="m-data-table__card-header m-data-table__card-header--type-data"><label
+                                                                class="help-label">使用項目   <div
+                                                                class="a-help-button"><i
+                                                                class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span
+                                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
+                                                    </div>
+                                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                        <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                            class="a-button a-button--text">
                                     <div class="a-button__label">✔</div>
                                   </button></span></div>
-                            </div>
-                          </div>
-                          <div class="m-data-table__container">
-                            <div class="m-data-table__header">
-                              <div class="m-data-table__header-content m-data-table__header-content--type-data"><label class="help-label">使用項目   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></div>
-                              <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
-                            </div>
-                            <div class="m-data-table__container-item">
-                              <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">SendGridKey</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                                </div>
+                                            </div>
+                                            <div class="m-data-table__container">
+                                                <div class="m-data-table__header">
+                                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                        <label class="help-label">使用項目  
+                                                            <div class="a-help-button"><i
+                                                                    class="a-icon a-icon--help"></i></div>
+                                                            （keyVaultのキー）</label></div>
+                                                    <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                                </div>
+                                                <div class="m-data-table__container-item">
+                                                    <div class="m-data-table__item"><span
+                                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                            class="m-data-table__truncate-content">SendGridKey</span></span><span
+                                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                            class="m-data-table__truncate-content"><button
+                                                            class="a-button a-button--text">
                                       <div class="a-button__label">✖</div>
                                     </button></span></span></div>
-                              <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                                    <div class="m-data-table__item"><span
+                                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                            class="m-data-table__truncate-content"></span></span><span
+                                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                            class="m-data-table__truncate-content"><button
+                                                            class="a-button a-button--text">
                                       <div class="a-button__label">✔</div>
                                     </button></span></span></div>
-                            </div>
-                          </div>
-                        </div><br /><button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>項目追加</button>
-                      </div>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center"><label class="a-checkbox"><input type="checkbox" class="a-checkbox__input" id="ConfigCheckbox" name="ConfigMap" value="3" />
-                        <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                          <div class="a-checkbox__label"><label class="help-label">ConfigMap設置（KV）  <div class="a-help-button"><i class="a-icon a-icon--help"></i></div></label></div>
-                        </div>
-                      </label></div>
-                    <div id="Config_div" style="display:none">
-                      <div class="m-data-table m-data-table--with-action-buttons undefined">
-                        <div class="m-data-table__container-card">
-                          <div class="m-data-table__card">
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">項目名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">項目英語名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <button type="button" class="a-add-item-button"><i
+                                                class="a-icon a-icon--add-item"></i>項目追加
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center"><label class="a-checkbox"><input type="checkbox"
+                                                                                                 class="a-checkbox__input"
+                                                                                                 id="ConfigCheckbox"
+                                                                                                 name="ConfigMap"
+                                                                                                 value="3"/>
+                                    <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
+                                            class="a-icon a-icon--check-white"></i></span>
+                                        <div class="a-checkbox__label"><label class="help-label">ConfigMap設置（KV） 
+                                            <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                        </label></div>
+                                    </div>
+                                </label></div>
+                                <div id="Config_div" style="display:none">
+                                    <div class="m-data-table m-data-table--with-action-buttons undefined">
+                                        <div class="m-data-table__container-card">
+                                            <div class="m-data-table__card">
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目名</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                </div>
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目英語名</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                </div>
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                        class="a-button a-button--text">
                                   <div class="a-button__label">✖</div>
                                 </button></span></div>
-                          </div>
-                          <div class="m-data-table__card">
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">項目名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">項目英語名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                            </div>
+                                            <div class="m-data-table__card">
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目名</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
+                                                </div>
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目英語名</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
+                                                </div>
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                        class="a-button a-button--text">
                                   <div class="a-button__label">✔</div>
                                 </button></span></div>
-                          </div>
-                        </div>
-                        <div class="m-data-table__container">
-                          <div class="m-data-table__header">
-                            <div class="m-data-table__header-content m-data-table__header-content--type-data">項目名</div>
-                            <div class="m-data-table__header-content m-data-table__header-content--type-data">項目英語名</div>
-                            <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
-                          </div>
-                          <div class="m-data-table__container-item">
-                            <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">SendGridKey</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">SendGridKey</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                            </div>
+                                        </div>
+                                        <div class="m-data-table__container">
+                                            <div class="m-data-table__header">
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                    項目名
+                                                </div>
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                    項目英語名
+                                                </div>
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                            </div>
+                                            <div class="m-data-table__container-item">
+                                                <div class="m-data-table__item"><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content">SendGridKey</span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content">SendGridKey</span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"><button
+                                                        class="a-button a-button--text">
                                     <div class="a-button__label">✖</div>
                                   </button></span></span></div>
-                            <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                                <div class="m-data-table__item"><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"></span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"></span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"><button
+                                                        class="a-button a-button--text">
                                     <div class="a-button__label">✔</div>
                                   </button></span></span></div>
-                          </div>
-                        </div>
-                      </div><br /><button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>項目追加</button>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center"><label class="a-checkbox"><input type="checkbox" class="a-checkbox__input" id="ConfigFileChk" name="ConfigMapFile" value="4" />
-                        <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                          <div class="a-checkbox__label">ConfigMap設置（FILE）</div>
-                        </div>
-                      </label></div>
-                    <div id="ConfigFile_div" style="display:none">
-                      <div class="m-data-table m-data-table--with-action-buttons undefined">
-                        <div class="m-data-table__container-card">
-                          <div class="m-data-table__card">
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルパス</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">configs/applog.conf</span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルリンク</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <button type="button" class="a-add-item-button"><i
+                                            class="a-icon a-icon--add-item"></i>項目追加
+                                    </button>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center"><label class="a-checkbox"><input type="checkbox"
+                                                                                                 class="a-checkbox__input"
+                                                                                                 id="ConfigFileChk"
+                                                                                                 name="ConfigMapFile"
+                                                                                                 value="4"/>
+                                    <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
+                                            class="a-icon a-icon--check-white"></i></span>
+                                        <div class="a-checkbox__label">ConfigMap設置（FILE）</div>
+                                    </div>
+                                </label></div>
+                                <div id="ConfigFile_div" style="display:none">
+                                    <div class="m-data-table m-data-table--with-action-buttons undefined">
+                                        <div class="m-data-table__container-card">
+                                            <div class="m-data-table__card">
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルパス</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">configs/applog.conf</span>
+                                                </div>
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルリンク</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                        class="a-button a-button--text">
                                   <div class="a-button__label">applog.conf</div>
                                 </button></span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                        class="a-button a-button--text">
                                   <div class="a-button__label">✖</div>
                                 </button></span></div>
-                          </div>
-                          <div class="m-data-table__card">
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルパス</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルリンク</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--primary">
+                                            </div>
+                                            <div class="m-data-table__card">
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルパス</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
+                                                </div>
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">ファイルリンク</span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                        class="a-button a-button--primary">
                                   <div class="a-button__label">アップロード</div>
                                 </button></span></div>
-                            <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                        class="a-button a-button--text">
                                   <div class="a-button__label">✔</div>
                                 </button></span></div>
-                          </div>
-                        </div>
-                        <div class="m-data-table__container">
-                          <div class="m-data-table__header">
-                            <div class="m-data-table__header-content m-data-table__header-content--type-data">ファイルパス</div>
-                            <div class="m-data-table__header-content m-data-table__header-content--type-data">ファイルリンク</div>
-                            <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
-                          </div>
-                          <div class="m-data-table__container-item">
-                            <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">configs/applog.conf</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                            </div>
+                                        </div>
+                                        <div class="m-data-table__container">
+                                            <div class="m-data-table__header">
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                    ファイルパス
+                                                </div>
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                    ファイルリンク
+                                                </div>
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                            </div>
+                                            <div class="m-data-table__container-item">
+                                                <div class="m-data-table__item"><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content">configs/applog.conf</span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"><button
+                                                        class="a-button a-button--text">
                                     <div class="a-button__label">applog.conf</div>
-                                  </button></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                  </button></span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"><button
+                                                        class="a-button a-button--text">
                                     <div class="a-button__label">✖</div>
                                   </button></span></span></div>
-                            <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--primary">
+                                                <div class="m-data-table__item"><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"></span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"><button
+                                                        class="a-button a-button--primary">
                                     <div class="a-button__label">アップロード</div>
-                                  </button></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                  </button></span></span><span
+                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                        class="m-data-table__truncate-content"><button
+                                                        class="a-button a-button--text">
                                     <div class="a-button__label">✔</div>
                                   </button></span></span></div>
-                          </div>
-                        </div>
-                      </div><br /><button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>項目追加</button>
-                    </div>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center"><label class="help-label">ドメイン   <div class="a-help-button"><i class="a-icon a-icon--help"></i></div></label></div>
-                    <div class="m-data-table m-data-table--with-action-buttons undefined">
-                      <div class="m-data-table__container-card">
-                        <div class="m-data-table__card">
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">ドメイン名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">sample.aeonpeople.biz</span></div>
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">証明書</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <button type="button" class="a-add-item-button"><i
+                                            class="a-icon a-icon--add-item"></i>項目追加
+                                    </button>
+                                </div>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
+                                     style="align-items:center"><label class="help-label">ドメイン  
+                                    <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                </label></div>
+                                <div class="m-data-table m-data-table--with-action-buttons undefined">
+                                    <div class="m-data-table__container-card">
+                                        <div class="m-data-table__card">
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data">ドメイン名</span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">sample.aeonpeople.biz</span>
+                                            </div>
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data">証明書</span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                    class="a-button a-button--text">
                                 <div class="a-button__label">sample.crt</div>
                               </button></span></div>
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">プライベートキー</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data">プライベートキー</span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                    class="a-button a-button--text">
                                 <div class="a-button__label">sample.key</div>
                               </button></span></div>
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                    class="a-button a-button--text">
                                 <div class="a-button__label">✖</div>
                               </button></span></div>
-                        </div>
-                        <div class="m-data-table__card">
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">ドメイン名</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span></div>
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">証明書</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button type="button" class="a-button a-button--primary">
+                                        </div>
+                                        <div class="m-data-table__card">
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data">ドメイン名</span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
+                                            </div>
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data">証明書</span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                    type="button" class="a-button a-button--primary">
                                 <div class="a-button__label">アップロード</div>
                               </button></span></div>
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data">プライベートキー</span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button type="button" class="a-button a-button--primary">
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data">プライベートキー</span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                    type="button" class="a-button a-button--primary">
                                 <div class="a-button__label">アップロード</div>
                               </button></span></div>
-                          <div class="m-data-table__card-item m-data-table__card-item--type-data"><span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button class="a-button a-button--text">
+                                            <div class="m-data-table__card-item m-data-table__card-item--type-data">
+                                                <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
+                                                    class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
+                                                    class="a-button a-button--text">
                                 <div class="a-button__label">✔</div>
                               </button></span></div>
-                        </div>
-                      </div>
-                      <div class="m-data-table__container">
-                        <div class="m-data-table__header">
-                          <div class="m-data-table__header-content m-data-table__header-content--type-data">ドメイン名</div>
-                          <div class="m-data-table__header-content m-data-table__header-content--type-data">証明書</div>
-                          <div class="m-data-table__header-content m-data-table__header-content--type-data">プライベートキー</div>
-                          <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
-                        </div>
-                        <div class="m-data-table__container-item">
-                          <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content">sample.aeonpeople.biz</span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                        </div>
+                                    </div>
+                                    <div class="m-data-table__container">
+                                        <div class="m-data-table__header">
+                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                ドメイン名
+                                            </div>
+                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                証明書
+                                            </div>
+                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                プライベートキー
+                                            </div>
+                                            <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                        </div>
+                                        <div class="m-data-table__container-item">
+                                            <div class="m-data-table__item"><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content">sample.aeonpeople.biz</span></span><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content"><button
+                                                    class="a-button a-button--text">
                                   <div class="a-button__label">sample.crt</div>
-                                </button></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                </button></span></span><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content"><button
+                                                    class="a-button a-button--text">
                                   <div class="a-button__label">sample.key</div>
-                                </button></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                </button></span></span><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content"><button
+                                                    class="a-button a-button--text">
                                   <div class="a-button__label">✖</div>
                                 </button></span></span></div>
-                          <div class="m-data-table__item"><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button type="button" class="a-button a-button--primary">
+                                            <div class="m-data-table__item"><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content"></span></span><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content"><button type="button"
+                                                                                                   class="a-button a-button--primary">
                                   <div class="a-button__label">アップロード</div>
-                                </button></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button type="button" class="a-button a-button--primary">
+                                </button></span></span><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content"><button type="button"
+                                                                                                   class="a-button a-button--primary">
                                   <div class="a-button__label">アップロード</div>
-                                </button></span></span><span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button class="a-button a-button--text">
+                                </button></span></span><span
+                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                                    class="m-data-table__truncate-content"><button
+                                                    class="a-button a-button--text">
                                   <div class="a-button__label">✔</div>
                                 </button></span></span></div>
-                        </div>
-                      </div>
-                    </div><br /><button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>ドメイン追加</button><br />
-                  </section>
-                  <footer>
-                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-3" style="align-items:center"><button class="a-button a-button--primary a-button--huge" id="confirm-button">
-                        <div class="a-button__label">確定</div>
-                      </button><button class="a-button a-button--third a-button--huge" id="cancel-button">
-                        <div class="a-button__label">取消</div>
-                      </button></div>
-                  </footer>
-                </main>
-              </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                                <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>ドメイン追加
+                                </button>
+                                <br/>
+                            </section>
+                            <footer>
+                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-3"
+                                     style="align-items:center">
+                                    <button class="a-button a-button--primary a-button--huge" id="confirm-button">
+                                        <div class="a-button__label">確定</div>
+                                    </button>
+                                    <button class="a-button a-button--third a-button--huge" id="cancel-button">
+                                        <div class="a-button__label">取消</div>
+                                    </button>
+                                </div>
+                            </footer>
+                        </main>
+                    </div>
+                </div>
+            </section>
+            <div class="o-modal" id="modal-help3">
+                <div class="o-modal__window">
+                    <button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i></button>
+                    <main class="o-modal__body">
+                        <header class="o-modal__header undefined">
+                            <p>システム・アプリ名とは？</p>
+                        </header>
+                        <p class="a-text a-text--align-left">「システム・アプリ名」は.........</p>
+                    </main>
+                </div>
             </div>
-          </section>
-          <div class="o-modal" id="modal-help3">
-            <div class="o-modal__window"><button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i></button>
-              <main class="o-modal__body">
-                <header class="o-modal__header undefined">
-                  <p>システム・アプリ名とは？</p>
-                </header>
-                <p class="a-text a-text--align-left">「システム・アプリ名」は.........</p>
-              </main>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-<<<<<<< HEAD
-  <script src="assets/js/build/components.js"></script><script src="assets/js/cd-control.js"></script></body>
-=======
-  <script src="assets/js/components.js"></script><script src="assets/js/cd-control.js"></script></body>
->>>>>>> origin/dev
+</div>
+<script src="assets/js/build/components.js"></script>
+<script src="assets/js/cd-control.js"></script>
+</body>
 </html>
