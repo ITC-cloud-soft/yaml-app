@@ -1,4 +1,7 @@
 {
+  "common":{
+    "notNull": "{{fieldName}} は空白できません"
+  },
   "login-page": {
     "loginId": "ログインID",
     "password": "パスワード",

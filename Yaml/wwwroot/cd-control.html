@@ -34,6 +34,7 @@
     <script src="assets/js/common/i18next/i18n.js"></script>
     <script src="assets/js/common/common.js"></script>
     <script src="assets/js/cd-control-extra.js"></script>
+    <script src="assets/js/cd-control/selectors.js"></script>
     <title>ルグイン</title>
 </head>
 <body>
@@ -111,8 +112,7 @@
                                     class="m-form-field__label"><label
                                     data-i18n="appInfoPage.appName">システム・アプリ名</label>  
                                 <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                ：<span class="m-form-field__label-addons"><span class="a-tag"
-                                                                                data-i18n="appInfoPage.required">必須</span></span></label>
+                                ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span></label>
                                 <div class="m-form-field__content">
                                     <div class="a-text-field a-text-field--type-text">
                                         <input id="appName" type="text" name="appName" value=""
@@ -142,7 +142,7 @@
                                 </label>
                                 <div class="m-form-field__content">
                                     <div class="a-text-field a-text-field--type-text">
-                                        <input type="text" name="servername" value="" class="a-text-field__input"/>
+                                        <input type="text" name="crServer" id="crServer" value="" class="a-text-field__input"/>
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +151,7 @@
                                     class="a-tag" data-i18n="appInfoPage.required">必須</span></span></label>
                                 <div class="m-form-field__content">
                                     <div class="a-text-field a-text-field--type-text">
-                                        <input type="text" name="token" value="" class="a-text-field__input"/>
+                                        <input type="text" name="token" id="token" value="" class="a-text-field__input"/>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@
                         </div>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                              style="align-items:center"><label class="a-checkbox chksingle">
-                            <input type="checkbox" class="a-checkbox__input" id="checkbox-single" name="keyconnect"
+                            <input type="checkbox" class="a-checkbox__input" id="checkbox-single" name="keyConnect"
                                    value="1"/>
                             <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
                                     class="a-icon a-icon--check-white"></i></span>
@@ -200,7 +200,7 @@
                                 </label>
                                     <div class="m-form-field__content">
                                         <div class="a-text-field a-text-field--type-text">
-                                            <input type="text" name="keyvault" value="" class="a-text-field__input"/>
+                                            <input type="text" name="keyVault" value="" class="a-text-field__input"/>
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@
                                 <div class="m-form-field"><label class="m-form-field__label">managedID：</label>
                                     <div class="m-form-field__content">
                                         <div class="a-text-field a-text-field--type-text">
-                                            <input type="text" name="manageid" value="" class="a-text-field__input"/>
+                                            <input type="text" name="manageId" value="" class="a-text-field__input"/>
                                         </div>
                                     </div>
                                 </div>
@@ -247,17 +247,30 @@
                                                         <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
                                                           <label data-i18n="appInfoPage.keyVaultsKey">(keyVaultのキー)</label>
                                                     </label></div>
-                                                <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                      <span class="m-data-table__truncate-content">
+                                                            <button class="a-button a-button--text">
+                                                                + new
+                                                            </button>
+                                                            <button class="a-button a-button--third a-button--huge" id="cancelButton">
+                                                                <div class="a-button__label" data-i18n="appInfoPage.cancel">取消</div>
+                                                            </button>
+                                                      </span>
+                                                </div>
                                             </div>
                                             <div class="m-data-table__container-item">
-                                                <div class="m-data-table__item"><span
-                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
-                                                        class="m-data-table__truncate-content">SendGridKey</span></span><span
-                                                        class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
-                                                        class="m-data-table__truncate-content"><button
-                                                        class="a-button a-button--text">
-                                  <div class="a-button__label">✖</div>
-                                </button></span></span></div>
+                                                <div class="m-data-table__item">
+                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                                        <span class="m-data-table__truncate-content">SendGridKey</span>
+                                                    </span>
+                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                                        <span class="m-data-table__truncate-content">
+                                                            <button class="a-button a-button--text">
+                                                                <div class="a-button__label">✖</div>
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -329,14 +342,17 @@
                                     </div>
                                 </div>
                                 <div class="m-data-table__container-item">
-                                    <div class="m-data-table__item"><span
-                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
-                                            class="m-data-table__truncate-content">ccflow-apach</span></span><span
-                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
-                                            class="m-data-table__truncate-content">djpest.azurecr.io/ssflow-api:0.0.1</span></span><span
-                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
-                                            class="m-data-table__truncate-content">3</span></span><span
-                                            class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
+                                    <div class="m-data-table__item">
+                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                            <span class="m-data-table__truncate-content">ccflow-apach</span>
+                                        </span>
+                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                            <span class="m-data-table__truncate-content">djpest.azurecr.io/ssflow-api:0.0.1</span>
+                                        </span>
+                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                            <span class="m-data-table__truncate-content">3</span>
+                                        </span>
+                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
                                             class="m-data-table__truncate-content">125m</span></span><span
                                             class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
                                             class="m-data-table__truncate-content">1024Mi</span></span><span
@@ -357,9 +373,8 @@
                         <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"><label data-i18n="appInfoPage.option">オプション</label></span>
                         </h3>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
-                             style="align-items:center"><label class="a-checkbox"><input type="checkbox"
-                                                                                         class="a-checkbox__input"
-                                                                                         name="Netdata" value="8"/>
+                             style="align-items:center"><label class="a-checkbox">
+                            <input type="checkbox" class="a-checkbox__input" name="Netdata" value="8"/>
                             <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
                                     class="a-icon a-icon--check-white"></i></span>
                                 <div class="a-checkbox__label"><label class="help-label">NetData  
@@ -374,7 +389,7 @@
                             <button class="a-button a-button--third a-button--huge" id="download-button">
                                 <div class="a-button__label" data-i18n="appInfoPage.download">ダウンロード</div>
                             </button>
-                            <button class="a-button a-button--third a-button--huge" id="download-button" >
+                            <button class="a-button a-button--third a-button--huge" id="upload-button" >
                                 <div class="a-button__label" data-i18n="appInfoPage.upload">アップロード</div>
                             </button>
                             <button class="a-button a-button--primary a-button--huge" id="deploy-button">
@@ -400,17 +415,17 @@
                             <section class="m-section m-section--no-padding p-list-content-holder">
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center">
-                                    <div class="m-form-field p-setting-input-form__form-field"><label
-                                            class="m-form-field__label"><label data-i18n="appInfoPage.clusterName">クラスター名</label>  
-                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
-                                        </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
-                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
+                                    <div class="m-form-field p-setting-input-form__form-field">
+                                        <label class="m-form-field__label">
+                                            <label data-i18n="appInfoPage.clusterName">クラスター名</label>  
+                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                            </div>
+                                            ：<span class="m-form-field__label-addons">
+                                                <span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
+                                            </label>
                                         <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                     name="clustername"
-                                                                                                     value=""
-                                                                                                     class="a-text-field__input"/>
+                                            <div class="a-text-field a-text-field--type-text">
+                                                <input type="text" name="clusterName" value="" class="a-text-field__input"/>
                                             </div>
                                         </div>
                                     </div>
@@ -425,13 +440,10 @@
                                             class="m-form-field__label"><label data-i18n="appInfoPage.image">イメージ</label>  
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
-                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span></label>
                                         <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                     name="imagename"
-                                                                                                     value=""
-                                                                                                     class="a-text-field__input"/>
+                                            <div class="a-text-field a-text-field--type-text">
+                                                <input type="text" name="imageName" value="" class="a-text-field__input"/>
                                             </div>
                                         </div>
                                     </div>
@@ -443,15 +455,17 @@
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center">
-                                    <div class="m-form-field p-setting-input-form__form-field"><label
-                                            class="m-form-field__label"><label  data-i18n="appInfoPage.podNum">起動POD数</label>  
-                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
-                                        </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
-                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
+                                    <div class="m-form-field p-setting-input-form__form-field">
+                                        <label class="m-form-field__label"><label  data-i18n="appInfoPage.podNum">起動POD数</label>  
+                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
+                                            </div>
+                                            ：<span class="m-form-field__label-addons">
+                                                <span class="a-tag" data-i18n="appInfoPage.required">必須</span>
+                                            </span>
+                                        </label>
                                         <div class="m-form-field__content">
                                             <div class="a-text-field a-text-field--type-text">
-                                                <input type="text" name="podcnt" value="" class="a-text-field__input"/>
+                                                <input type="text" name="podCount" value="" class="a-text-field__input"/>
                                             </div>
                                         </div>
                                     </div>
@@ -468,16 +482,17 @@
                                         ：<span class="m-form-field__label-addons"><span class="a-tag"
                                                                                         data-i18n="appInfoPage.required">必須</span></span></label>
                                         <div class="m-form-field__content">
-                                            <div id="cpu" class="a-pulldown"><select name="cpu"
-                                                                                     class="a-pulldown__select">
+                                            <div id="cpu" class="a-pulldown">
+                                                <select name="cpu" class="a-pulldown__select">
                                                 <option>125m</option>
                                                 <option value=""></option>
                                                 <option value="1">250m</option>
                                                 <option value="2">500m</option>
                                                 <option value="3">1000m</option>
                                             </select>
-                                                <div class="a-pulldown__icon-container"><i
-                                                        class="a-icon a-icon--arrow-down"></i></div>
+                                                <div class="a-pulldown__icon-container">
+                                                    <i class="a-icon a-icon--arrow-down"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -508,10 +523,8 @@
                                         </div>
                                         ：</label>
                                         <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                     name="managedlevel"
-                                                                                                     value=""
-                                                                                                     class="a-text-field__input"/>
+                                            <div class="a-text-field a-text-field--type-text">
+                                                <input type="text" name="managedLevel" value="" class="a-text-field__input"/>
                                             </div>
                                         </div>
                                     </div>
@@ -521,18 +534,16 @@
                                         </div>
                                         ：</label>
                                         <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                     name="prefix"
-                                                                                                     value=""
-                                                                                                     class="a-text-field__input"/>
+                                            <div class="a-text-field a-text-field--type-text">
+                                                <input type="text" name="prefix" value="" class="a-text-field__input"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center"><label class="a-checkbox KeyChkbox"><input
-                                        type="checkbox" class="a-checkbox__input" id="diskCheckbox" name="KeyVault"
-                                        value="2"/>
+                                        type="checkbox" class="a-checkbox__input" id="diskCheckbox" name="diskCheckbox"
+                                        value=""/>
                                     <div class="a-checkbox__body">
                                         <span class="a-checkbox__indicator">
                                             <i class="a-icon a-icon--check-white"></i>
@@ -555,15 +566,14 @@
                                                     <label data-i18n="appInfoPage.diskSize">ディスク サイズ</label> 
                                                     <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：</label>
                                                 <div class="m-form-field__content">
-                                                    <div id="cpu" class="a-pulldown"><select name="cpu"
-                                                                                             class="a-pulldown__select">
+                                                    <div id="cpu" class="a-pulldown">
+                                                        <select name="diskSize" class="a-pulldown__select">
                                                         <option>1G</option>
                                                         <option value="1">10G</option>
                                                         <option value="2">20G</option>
                                                         <option value="3">50G</option>
                                                     </select>
-                                                        <div class="a-pulldown__icon-container"><i
-                                                                class="a-icon a-icon--arrow-down"></i></div>
+                                                        <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -572,7 +582,7 @@
                                                 <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
                                                 ：</label>
                                                 <div class="m-form-field__content">
-                                                    <div id="memory" class="a-pulldown">
+                                                    <div id="diskType" class="a-pulldown">
                                                         <select name="memory" class="a-pulldown__select">
                                                             <option>1024Mi</option>
                                                             <option value=""></option>
@@ -636,18 +646,18 @@
                                         </div>
                                         <br/>
                                         <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>
-                                            <label data-i18n="appInfoPage.newItem">項目追加</label> 
+                                            <label data-i18n="appInfoPage.newItem">項目追加</label>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center"><label class="a-checkbox KeyChkbox"><input
-                                        type="checkbox" class="a-checkbox__input" id="KeyCheckbox" name="KeyVault"
+                                        type="checkbox" class="a-checkbox__input" id="KeyCheckbox" name="KeyCheckbox"
                                         value="2"/>
                                     <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
                                             class="a-icon a-icon--check-white"></i></span>
                                         <div class="a-checkbox__label">
-                                            <label class="help-label"> 
+                                            <label class="help-label">
                                                 <label data-i18n="appInfoPage.keyVaultSet">KeyVault設置</label>   
                                                 <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
                                             </label>
@@ -666,7 +676,7 @@
                                                                 <label data-i18n="appInfoPage.useProject">使用項目</label>  
                                                                 <div class="a-help-button">
                                                                     <i class="a-icon a-icon--help"></i>
-                                                                </div> <label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label> 
+                                                                </div> <label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label>
                                                             </label>
                                                         </span>
                                                         <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
@@ -730,11 +740,8 @@
                                     </div>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
-                                     style="align-items:center"><label class="a-checkbox"><input type="checkbox"
-                                                                                                 class="a-checkbox__input"
-                                                                                                 id="ConfigCheckbox"
-                                                                                                 name="ConfigMap"
-                                                                                                 value="3"/>
+                                     style="align-items:center"><label class="a-checkbox">
+                                    <input type="checkbox" class="a-checkbox__input" id="ConfigCheckbox" name="ConfigCheckbox" value="3"/>
                                     <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
                                             class="a-icon a-icon--check-white"></i></span>
                                         <div class="a-checkbox__label"><label class="help-label">
@@ -823,11 +830,8 @@
                                     </button>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
-                                     style="align-items:center"><label class="a-checkbox"><input type="checkbox"
-                                                                                                 class="a-checkbox__input"
-                                                                                                 id="ConfigFileChk"
-                                                                                                 name="ConfigMapFile"
-                                                                                                 value="4"/>
+                                     style="align-items:center"><label class="a-checkbox">
+                                    <input type="checkbox" class="a-checkbox__input" id="ConfigFileChk" name="ConfigMapFileCheckbox" value="4"/>
                                     <div class="a-checkbox__body">
                                         <span class="a-checkbox__indicator">
                                             <i class="a-icon a-icon--check-white"></i>
@@ -1013,12 +1017,13 @@
                                                     class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
                                                     class="m-data-table__truncate-content"></span></span><span
                                                     class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
-                                                    class="m-data-table__truncate-content"><button type="button"
-                                                                                                   class="a-button a-button--primary">
-                                  <div class="a-button__label">アップロード</div>
-                                </button></span></span><span
-                                                    class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span
-                                                    class="m-data-table__truncate-content"><button type="button"
+                                                    class="m-data-table__truncate-content">
+                                                <button type="button" class="a-button a-button--primary">
+                                                    <div class="a-button__label">アップロード</div>
+                                                </button>
+                                            </span>
+                                            </span>
+                                                <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center"><span class="m-data-table__truncate-content"><button type="button"
                                                                                                    class="a-button a-button--primary">
                                   <div class="a-button__label">アップロード</div>
                                 </button></span></span><span
@@ -1039,10 +1044,10 @@
                             <footer>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-3"
                                      style="align-items:center">
-                                    <button class="a-button a-button--primary a-button--huge" id="confirm-button">
+                                    <button class="a-button a-button--primary a-button--huge" id="confirmButton">
                                         <div class="a-button__label" data-i18n="appInfoPage.confirm">確定</div>
                                     </button>
-                                    <button class="a-button a-button--third a-button--huge" id="cancel-button">
+                                    <button class="a-button a-button--third a-button--huge" id="cancelButton">
                                         <div class="a-button__label" data-i18n="appInfoPage.cancel">取消</div>
                                     </button>
                                 </div>
@@ -1068,6 +1073,6 @@
     </div>
 </div>
 <script src="assets/js/build/components.js"></script>
-<script src="assets/js/cd-control.js"></script>
+<script src="assets/js/build/cd-control.js"></script>
 </body>
 </html>

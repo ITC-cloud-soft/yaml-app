@@ -11,19 +11,21 @@ $(function () {
     $('#appForm').submit(function (event) {
         event.preventDefault();
     });
-
+    
+    outerFun();
+    
     // bind switch language event
     $('#languageSwitcher').change((a, b, c) => {
         const chosenLng = $(this).find("option:selected").attr('value');
         i18next.changeLanguage(chosenLng, () => {
             render();
-            initPage.render();
-            userLanguage = chosenLng;
+            initPage.renderErrorI18();
+            commonFunctions.userLanguage = chosenLng;
         });
     });
 })
 
-const initPage = (function ($) {
+const initPage = (($) => {
     "use strict"
 
     function initElementEvent() {
@@ -33,55 +35,54 @@ const initPage = (function ($) {
     function initValidation(i18next) {
 
         const rules = {
-            name: "required",
+            appName: {required: true},
+            crServer: {required: true},
+            token: {required: true},
+            mail: {required: true},
+        }
+        
+        const fieldName =  i18next.t('appInfoPage.appName');
+        const appName = i18next.t('common.notNull', {fieldName});
+        const messages = {
+            appName: appName, 
             pwd: {
-                required: true
+                required: i18next.t('login-page.pwdEmpty')
             }
         }
 
-        const loginForm = $("#loginForm");
+        const loginForm = $("#appForm");
         loginForm.validate({
             focusCleanup: true,
             onkeyup: false,
             ignore: "",
             onfocusin: false,
-            rules: {
-                name: "required",
-                pwd: {
-                    required: true,
-                }
-            },
-            messages: {
-                name: i18next.t('login-page.usernameEmpty'),
-                pwd: {
-                    required: i18next.t('login-page.pwdEmpty')
-                }
-            },
+            rules,
+            messages,
             errorPlacement: function (error, element) {
                 error.insertAfter(element.parent());
             }
         })
     }
 
-    function render() {
-        $("#name-error").text(i18next.t('login-page.usernameEmpty'));
-        $("#pwd-error").text(i18next.t('login-page.pwdEmpty'));
+    function renderErrorI18() {
+   
     }
 
     return {
         bindValidation: initValidation,
-        render: render,
+        renderErrorI18: renderErrorI18,
         bindEvents: initElementEvent
     };
 })(jQuery)
 
-const loginComponent = (function ($) {
+const loginComponent = (($) =>  {
     "use strict"
 
     function login(name, pwd) {
-        if ($("#loginForm").valid()) {
+        if ($("#appForm").valid()) {
             commonFunctions.axios().post('/api/User/login', {
-                name: name, password: pwd
+                name: name,
+                password: pwd
             }).then(function (res) {
                 window.location.href = "../../../cd-control.html";
             }).catch(function (error) {
@@ -95,4 +96,21 @@ const loginComponent = (function ($) {
         login: login
     };
 })(jQuery);
+
+const appComponent = (($) =>  {
+   function deploy (){
+       
+   }
+    
+    
+    return {
+       deploy : deploy
+    }
+    
+})(jQuery)
+const outerFun = ()=>{
+    console.log('qwe')
+    $(selectors.appName).val("123");
+    $(selectors.token).val("123");
+}
 

@@ -17,7 +17,7 @@ $(function () {
         i18next.changeLanguage(chosenLng, () => {
             render();
             initPage.render();
-            userLanguage = chosenLng;
+            commonFunctions.userLanguage = chosenLng;
         });
     });
 })
