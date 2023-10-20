@@ -12,8 +12,6 @@ $(function () {
         event.preventDefault();
     });
     
-    outerFun();
-    
     // bind switch language event
     $('#languageSwitcher').change((a, b, c) => {
         const chosenLng = $(this).find("option:selected").attr('value');
@@ -23,12 +21,19 @@ $(function () {
             commonFunctions.userLanguage = chosenLng;
         });
     });
+
+    // init table content
+    tableComponemt.initComponent(2, selectors.keyVaultId);
+    tableComponemt.initComponent(3, selectors.configMapId);
 })
 
 const initPage = (($) => {
     "use strict"
 
     function initElementEvent() {
+        $("#newKeyVaultBtn").click(() => {
+
+        })
 
     }
 
@@ -40,11 +45,11 @@ const initPage = (($) => {
             token: {required: true},
             mail: {required: true},
         }
-        
-        const fieldName =  i18next.t('appInfoPage.appName');
+
+        const fieldName = i18next.t('appInfoPage.appName');
         const appName = i18next.t('common.notNull', {fieldName});
         const messages = {
-            appName: appName, 
+            appName: appName,
             pwd: {
                 required: i18next.t('login-page.pwdEmpty')
             }
@@ -65,7 +70,7 @@ const initPage = (($) => {
     }
 
     function renderErrorI18() {
-   
+
     }
 
     return {
@@ -75,7 +80,7 @@ const initPage = (($) => {
     };
 })(jQuery)
 
-const loginComponent = (($) =>  {
+const loginComponent = (($) => {
     "use strict"
 
     function login(name, pwd) {
@@ -92,25 +97,20 @@ const loginComponent = (($) =>  {
             })
         }
     }
+
     return {
         login: login
     };
 })(jQuery);
 
-const appComponent = (($) =>  {
-   function deploy (){
-       
-   }
-    
-    
-    return {
-       deploy : deploy
-    }
-    
-})(jQuery)
-const outerFun = ()=>{
-    console.log('qwe')
-    $(selectors.appName).val("123");
-    $(selectors.token).val("123");
-}
+const appComponent = (($) => {
+    function deploy() {
 
+    }
+
+
+    return {
+        deploy: deploy
+    }
+
+})(jQuery)

@@ -59,6 +59,4 @@ var userLanguage = "jp";
         removeLoading: removeLoading,
         axios: axiosWithInterceptor
     };
-    
-    
 })()

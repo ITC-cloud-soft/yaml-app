@@ -35,6 +35,7 @@
     <script src="assets/js/common/common.js"></script>
     <script src="assets/js/cd-control-extra.js"></script>
     <script src="assets/js/cd-control/selectors.js"></script>
+    <script src="assets/js/cd-control/tableComponemt.js"></script>
     <title>ルグイン</title>
 </head>
 <body>
@@ -215,29 +216,7 @@
                             </div>
                             <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
                                 <div id="keyvalue_div" style="display:none">
-                                    <div class="m-data-table m-data-table--with-action-buttons undefined">
-                                        <div class="m-data-table__container-card">
-                                            <div class="m-data-table__card">
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">
-                                                        <label class="help-label">
-                                                            <label data-i18n="appInfoPage.projectName">項目名</label> &nbsp
-                                                            <div class="a-help-button">
-                                                                <i class="a-icon a-icon--help"></i>
-                                                            </div>
-                                                            <label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label>
-                                                        </label>
-                                                    </span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
-                                                </div>
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">
-                                                        <button class="a-button a-button--text"><div class="a-button__label">✖</div></button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="m-data-table m-data-table--with-action-buttons">
                                         <div class="m-data-table__container">
                                             <div class="m-data-table__header">
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
@@ -249,24 +228,22 @@
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
                                                     <span class="m-data-table__truncate-content">
-                                                        <button class="a-button a-button--text">
-                                                            + new
-                                                        </button>
-                                                        <button class="a-button a-button--third a-button--huge" id="cancelButton">
-                                                            <div class="a-button__label" data-i18n="appInfoPage.cancel">取消</div>
-                                                        </button>
+                                                        <button type="button" id="keyVault-add" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newItem">項目追加</label></button>
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div class="m-data-table__container-item">
-                                                <div class="m-data-table__item">
+                                            <div class="m-data-table__container-item" id="keyVault-content" >
+                                         
+                                                <div class="m-data-table__item" id="keyVault-btnGroup">
                                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content">SendGridKey</span>
+                                                          <div class="a-text-field a-text-field--type-text">    
+                                                             <button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
+                                                          </div>
                                                     </span>
                                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                                         <span class="m-data-table__truncate-content">
                                                             <button class="a-button a-button--text">
-                                                                <div class="a-button__label">✖</div>
+                                                                   <button type="button" class="a-add-item-button"><i class="a-icon a-icon--close-hover"></i></button> 
                                                             </button>
                                                         </span>
                                                     </span>
@@ -275,7 +252,6 @@
                                         </div>
                                     </div>
                                     <br />
-                                    <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newItem">項目追加</label></button>
                                 </div>
                             </div>
                         </div>
@@ -783,48 +759,6 @@
                                 </div>
                                 <div id="Config_div" style="display:none">
                                     <div class="m-data-table m-data-table--with-action-buttons undefined">
-                                        <div class="m-data-table__container-card">
-                                            <div class="m-data-table__card">
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">
-                                                        <label data-i18n="appInfoPage.projectName">項目名</label>
-                                                    </span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
-                                                </div>
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">
-                                                        <label data-i18n="appInfoPage.projectEnName">項目英語名</label>
-                                                    </span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
-                                                </div>
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">
-                                                        <button class="a-button a-button--text">
-                                                            <div class="a-button__label">✖</div>
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="m-data-table__card">
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項1目名</span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
-                                                </div>
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目英語名</span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
-                                                </div>
-                                                <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"></span>
-                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">
-                                                        <button class="a-button a-button--text">
-                                                            <div class="a-button__label">✔</div>
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="m-data-table__container">
                                             <div class="m-data-table__header">
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
@@ -833,39 +767,43 @@
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
                                                     <label data-i18n="appInfoPage.projectEnName">項目英語名</label>
                                                 </div>
-                                                <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
+                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                    <span class="m-data-table__truncate-content">
+                                                        <button type="button" id="configMap-add" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newItem">項目追加</label></button>
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div class="m-data-table__container-item">
-                                                <div class="m-data-table__item">
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content">SendGridKey</span>
-                                                    </span>
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content">SendGridKey</span>
-                                                    </span>
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content">
-                                                            <button class="a-button a-button--text">
-                                                                <div class="a-button__label">✖</div>
-                                                            </button>
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                                <div class="m-data-table__item">
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content"></span>
-                                                    </span>
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content"></span>
-                                                    </span>
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content">
-                                                            <button class="a-button a-button--text">
-                                                                <div class="a-button__label">✔</div>
-                                                            </button>
-                                                        </span>
-                                                    </span>
-                                                </div>
+                                            <div class="m-data-table__container-item" id="configMap-content">
+<!--                                                <div class="m-data-table__item">-->
+<!--                                                    <span class="m-data-table__content m-data-table__content&#45;&#45;type-data m-data-table__content&#45;&#45;align-left m-data-table__content&#45;&#45;valign-center">-->
+<!--                                                        <span class="m-data-table__truncate-content">SendGridKey</span>-->
+<!--                                                    </span>-->
+<!--                                                    <span class="m-data-table__content m-data-table__content&#45;&#45;type-data m-data-table__content&#45;&#45;align-left m-data-table__content&#45;&#45;valign-center">-->
+<!--                                                        <span class="m-data-table__truncate-content">SendGridKey</span>-->
+<!--                                                    </span>-->
+<!--                                                    <span class="m-data-table__content m-data-table__content&#45;&#45;type-data m-data-table__content&#45;&#45;align-left m-data-table__content&#45;&#45;valign-center">-->
+<!--                                                        <span class="m-data-table__truncate-content">-->
+<!--                                                            <button class="a-button a-button&#45;&#45;text">-->
+<!--                                                                <div class="a-button__label">✖</div>-->
+<!--                                                            </button>-->
+<!--                                                        </span>-->
+<!--                                                    </span>-->
+<!--                                                </div>-->
+<!--                                                <div class="m-data-table__item">-->
+<!--                                                    <span class="m-data-table__content m-data-table__content&#45;&#45;type-data m-data-table__content&#45;&#45;align-left m-data-table__content&#45;&#45;valign-center">-->
+<!--                                                        <span class="m-data-table__truncate-content"></span>-->
+<!--                                                    </span>-->
+<!--                                                    <span class="m-data-table__content m-data-table__content&#45;&#45;type-data m-data-table__content&#45;&#45;align-left m-data-table__content&#45;&#45;valign-center">-->
+<!--                                                        <span class="m-data-table__truncate-content"></span>-->
+<!--                                                    </span>-->
+<!--                                                    <span class="m-data-table__content m-data-table__content&#45;&#45;type-data m-data-table__content&#45;&#45;align-left m-data-table__content&#45;&#45;valign-center">-->
+<!--                                                        <span class="m-data-table__truncate-content">-->
+<!--                                                            <button class="a-button a-button&#45;&#45;text">-->
+<!--                                                                <div class="a-button__label">✔</div>-->
+<!--                                                            </button>-->
+<!--                                                        </span>-->
+<!--                                                    </span>-->
+<!--                                                </div>-->
                                             </div>
                                         </div>
                                     </div>
