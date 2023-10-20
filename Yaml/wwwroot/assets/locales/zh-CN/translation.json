@@ -5,5 +5,8 @@
     "loginButton": "登录",
     "usernameEmpty": "用户名不能为空",
     "pwdEmpty": "密码不能为空"
+  },
+  "appInfoPage":{
+    "title": "Yamler--CD Controller"
   }
 }

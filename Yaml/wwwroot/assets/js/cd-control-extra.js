@@ -8,7 +8,7 @@ $(function () {
     })
 
     // 阻止表单的默认提交行为
-    $('#loginForm').submit(function (event) {
+    $('#appForm').submit(function (event) {
         event.preventDefault();
     });
 
@@ -27,11 +27,7 @@ const initPage = (function ($) {
     "use strict"
 
     function initElementEvent() {
-        $("#login-btn").click(function () {
-            const name = $("#name").val();
-            const pwd = $("#pwd").val();
-            loginComponent.login(name, pwd)
-        })
+
     }
 
     function initValidation(i18next) {
@@ -95,7 +91,6 @@ const loginComponent = (function ($) {
             })
         }
     }
-
     return {
         login: login
     };

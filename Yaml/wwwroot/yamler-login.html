@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="assets/css/components.css" rel="stylesheet">
     <link href="assets/css/common.css" rel="stylesheet">
+    
+    <!-- Promise for async operation -->
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
+    
     <!-- Axios 是一个用于发起AJAX请求的简单、易于使用的库，它基于Promise，并提供了更现代的方式来处理HTTP请求 -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+    
     <!--A practical functional library for JavaScript programmers.-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.29.1/ramda.min.js"></script>
 
@@ -21,15 +24,17 @@
     <!-- 小巧但功能强大的工具库，提供了大量的实用函数，包括数组操作、对象操作、函数式编程工具等。-->
     <!--  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=" crossorigin="anonymous"></script>-->
 
+    <!-- translation tool -->
     <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/i18next.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.3/i18nextBrowserLanguageDetector.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.2/i18nextHttpBackend.min.js"></script>
-
+    
+    <!-- custom js -->
     <script src="assets/js/common/i18next/i18n.js"></script>
     <script src="assets/js/common/common.js"></script>
-    <script src="assets/js/login/login-src.js"></script>
-    <title>Login Page</title>
+    <script src="assets/js/login/login-extra.js"></script>
+    <title>ルグイン</title>
 </head>
 <body>
 <form id="loginForm">
@@ -40,6 +45,7 @@
 
             </div>
             <div class="o-whole__body">
+                <!-- language select drop list -->
                 <div class="a-pulldown" style="max-width: 120px; float: right">
                     <select name="something" id="languageSwitcher" class="a-pulldown__select">
                         <option value="ja">日本語</option>
@@ -50,6 +56,7 @@
                         <i class="a-icon a-icon--arrow-down"></i>
                     </div>
                 </div>
+                
                 <section class="m-section m-section--no-padding p-list-content-holder">
                     <div style="margin:10% 20% 0 20%">
                         <section class="m-section m-section--fill-white">

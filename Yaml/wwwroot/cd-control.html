@@ -1,10 +1,40 @@
 <!doctype html>
-<html>
+<html lang="utf-8">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="assets/css/components.css" rel="stylesheet">
+    <link href="assets/css/common.css" rel="stylesheet">
+
+    <!-- Promise for async operation -->
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
+
+    <!-- Axios 是一个用于发起AJAX请求的简单、易于使用的库，它基于Promise，并提供了更现代的方式来处理HTTP请求 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!--A practical functional library for JavaScript programmers.-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.29.1/ramda.min.js"></script>
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+
+    <!-- 小巧但功能强大的工具库，提供了大量的实用函数，包括数组操作、对象操作、函数式编程工具等。-->
+    <!--  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=" crossorigin="anonymous"></script>-->
+
+    <!-- translation tool -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.3/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.2/i18nextHttpBackend.min.js"></script>
+
+    <!-- custom js -->
+    <script src="assets/js/common/i18next/i18n.js"></script>
+    <script src="assets/js/common/common.js"></script>
+    <script src="assets/js/cd-control-extra.js"></script>
+    <title>ルグイン</title>
 </head>
 <body>
 <div class="o-whole o-whole--with-bg o-whole--with-navigation o-whole--global">
@@ -30,17 +60,17 @@
                                                                                                class="a-nav-item__link">
                             <div class="a-nav-icon a-nav-icon--labor-menu a-nav-icon--active a-nav-item__icon"><i
                                     class="a-icon a-icon--labor-menu-selected"></i></div>
-                            <span class="a-nav-item__label">CDコントロール</span>
+                            <span class="a-nav-item__label" data-i18n="appInfoPage.controller">CDコントロール</span>
                         </a></div>
                         <div class="a-nav-item a-nav-item--labor-menu"><a href="#" class="a-nav-item__link">
                             <div class="a-nav-icon a-nav-icon--labor-menu a-nav-item__icon"><i
                                     class="a-icon a-icon--labor-menu"></i></div>
-                            <span class="a-nav-item__label">クラウドストア</span>
+                            <span class="a-nav-item__label" data-i18n="appInfoPage.clusterStorage">クラウドストア</span>
                         </a></div>
                         <div class="a-nav-item a-nav-item--labor-menu"><a href="#" class="a-nav-item__link">
                             <div class="a-nav-icon a-nav-icon--labor-menu a-nav-item__icon"><i
                                     class="a-icon a-icon--labor-menu"></i></div>
-                            <span class="a-nav-item__label">マニュアル</span>
+                            <span class="a-nav-item__label" data-i18n="appInfoPage.manual">マニュアル</span>
                         </a></div>
                     </div>
                     <button type="button" class="o-global-navigation__logout-button">ログアウト</button>
@@ -50,88 +80,109 @@
             </div>
         </div>
         <div class="o-whole__body">
+            <!-- language select drop list -->
+            <div class="a-pulldown" style="max-width: 120px; float: right">
+                <select name="something" id="languageSwitcher" class="a-pulldown__select">
+                    <option value="ja">日本語</option>
+                    <option value="en">English</option>
+                    <option value="zh">中文</option>
+                </select>
+                <div class="a-pulldown__icon-container">
+                    <i class="a-icon a-icon--arrow-down"></i>
+                </div>
+            </div>
+
             <section class="m-section m-section--no-padding">
                 <div class="m-page-heading">
                     <h1 class="a-heading a-heading--h1 undefined"><span
-                            class="a-heading__label">Yamler--CDコントロール</span></h1>
+                            class="a-heading__label" data-i18n="appInfoPage.title">Yamler--CDコントロール</span></h1>
                 </div>
             </section>
             <section class="m-section m-section--no-padding p-list-content-holder">
 
                 <!-- App Area -->
-                <form>
+                <form id="appForm">
                     <section class="m-section m-section--fill-white">
-                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">全般</span></h3>
+                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"
+                                                                            data-i18n="appInfoPage.all">全般</span></h3>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                              style="align-items:center">
                             <div class="m-form-field p-setting-input-form__form-field"><label
-                                    class="m-form-field__label">システム・アプリ名  
+                                    class="m-form-field__label"><label
+                                    data-i18n="appInfoPage.appName">システム・アプリ名</label>  
                                 <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                ：<span class="m-form-field__label-addons"><span class="a-tag"
+                                                                                data-i18n="appInfoPage.required">必須</span></span></label>
                                 <div class="m-form-field__content">
-                                    <div class="a-text-field a-text-field--type-text"><input id="appName" type="text"
-                                                                                             name="appname" value=""
-                                                                                             class="a-text-field__input"/>
+                                    <div class="a-text-field a-text-field--type-text">
+                                        <input id="appName" type="text" name="appName" value=""
+                                               class="a-text-field__input"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="m-form-field p-setting-input-form__form-field"><label
                                     class="m-form-field__label"></label>
-                                <div class="m-form-field__content"><label>※英数字</label></div>
+                                <div class="m-form-field__content"><label data-i18n="appInfoPage.letter">※英数字</label>
+                                </div>
                             </div>
                         </div>
                         <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"> <label
-                                class="help-label">Container Registry接続   <div class="a-help-button"
-                                                                                 id="help-opener4"><i
+                                class="help-label"><label
+                                data-i18n="appInfoPage.containerRegistry">Container Registry接続</label>   <div
+                                class="a-help-button"
+                                id="help-opener4"><i
                                 class="a-icon a-icon--help"></i></div> </label></span></h3>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                              style="align-items:center">
-                            <div class="m-form-field p-setting-input-form__form-field"><label
-                                    class="m-form-field__label">CR サーバー  
-                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                            <div class="m-form-field p-setting-input-form__form-field">
+                                <label class="m-form-field__label" >
+                                    <label data-i18n="appInfoPage.crServer" >CR サーバー </label> 
+                                    <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                    ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
+                                </label>
                                 <div class="m-form-field__content">
-                                    <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                             name="servername" value=""
-                                                                                             class="a-text-field__input"/>
+                                    <div class="a-text-field a-text-field--type-text">
+                                        <input type="text" name="servername" value="" class="a-text-field__input"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="m-form-field p-setting-input-form__form-field"><label
-                                    class="m-form-field__label">トークン：<span class="m-form-field__label-addons"><span
-                                    class="a-tag">必須</span></span></label>
+                                    class="m-form-field__label" ><label  data-i18n="appInfoPage.token">トークン</label>：<span class="m-form-field__label-addons"><span
+                                    class="a-tag" data-i18n="appInfoPage.required">必須</span></span></label>
                                 <div class="m-form-field__content">
-                                    <div class="a-text-field a-text-field--type-text"><input type="text" name="token"
-                                                                                             value=""
-                                                                                             class="a-text-field__input"/>
+                                    <div class="a-text-field a-text-field--type-text">
+                                        <input type="text" name="token" value="" class="a-text-field__input"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                              style="align-items:center">
-                            <div class="m-form-field p-setting-input-form__form-field"><label
-                                    class="m-form-field__label">メールアドレス：<span class="m-form-field__label-addons"><span
-                                    class="a-tag">必須</span></span></label>
+                            <div class="m-form-field p-setting-input-form__form-field">
+                                <label class="m-form-field__label" >
+                                    <label data-i18n="appInfoPage.mail" > メールアドレス</label>：
+                                    <span class="m-form-field__label-addons">
+                                        <span class="a-tag" data-i18n="appInfoPage.required">必須</span>
+                                    </span>
+                                </label>
                                 <div class="m-form-field__content">
-                                    <div class="a-text-field a-text-field--type-text"><input type="text" name="mail"
-                                                                                             value=""
-                                                                                             class="a-text-field__input"/>
+                                    <div class="a-text-field a-text-field--type-text">
+                                        <input type="text" name="mail" value="" class="a-text-field__input"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
-                             style="align-items:center"><label class="a-checkbox chksingle"><input type="checkbox"
-                                                                                                   class="a-checkbox__input"
-                                                                                                   id="checkbox-single"
-                                                                                                   name="keyconnect"
-                                                                                                   value="1"/>
+                             style="align-items:center"><label class="a-checkbox chksingle">
+                            <input type="checkbox" class="a-checkbox__input" id="checkbox-single" name="keyconnect"
+                                   value="1"/>
                             <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
                                     class="a-icon a-icon--check-white"></i></span>
-                                <div class="a-checkbox__label"><label class="help-label">KeyVault接続  
-                                    <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                </label></div>
+                                <div class="a-checkbox__label">
+                                    <label class="help-label"><label data-i18n="appInfoPage.keyVaultConnection">KeyVault接続</label>  
+                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                    </label>
+                                </div>
                             </div>
                         </label></div>
                         <div id="keyvalueDiv" style="display:none">
@@ -139,19 +190,17 @@
                                  style="align-items:center">
                                 <div class="m-form-field"><label class="m-form-field__label">tenantId：</label>
                                     <div class="m-form-field__content">
-                                        <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                 name="tenantId"
-                                                                                                 value=""
-                                                                                                 class="a-text-field__input"/>
+                                        <div class="a-text-field a-text-field--type-text">
+                                            <input type="text" name="tenantId" value="" class="a-text-field__input"/>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="m-form-field"><label class="m-form-field__label">keyvault名：</label>
+                                <div class="m-form-field"><label class="m-form-field__label">
+                                    <label data-i18n="appInfoPage.keyVaultName">keyvault名：</label>
+                                </label>
                                     <div class="m-form-field__content">
-                                        <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                 name="keyvault"
-                                                                                                 value=""
-                                                                                                 class="a-text-field__input"/>
+                                        <div class="a-text-field a-text-field--type-text">
+                                            <input type="text" name="keyvault" value="" class="a-text-field__input"/>
                                         </div>
                                     </div>
                                 </div>
@@ -160,10 +209,8 @@
                                  style="align-items:center">
                                 <div class="m-form-field"><label class="m-form-field__label">managedID：</label>
                                     <div class="m-form-field__content">
-                                        <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                 name="manageid"
-                                                                                                 value=""
-                                                                                                 class="a-text-field__input"/>
+                                        <div class="a-text-field a-text-field--type-text">
+                                            <input type="text" name="manageid" value="" class="a-text-field__input"/>
                                         </div>
                                     </div>
                                 </div>
@@ -175,26 +222,31 @@
                                         <div class="m-data-table__container-card">
                                             <div class="m-data-table__card">
                                                 <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data"><label
-                                                            class="help-label">項目名   <div class="a-help-button"><i
-                                                            class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span
-                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">
+                                                        <label
+                                                                class="help-label"><label data-i18n="appInfoPage.projectName">項目名</label>  
+                                                            <div class="a-help-button">
+                                                                <i class="a-icon a-icon--help"></i>
+                                                            </div><label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label>
+                                                        </label>
+                                                    </span>
+                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
                                                 </div>
                                                 <div class="m-data-table__card-item m-data-table__card-item--type-data">
                                                     <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
                                                         class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
-                                                        class="a-button a-button--text">
-                                <div class="a-button__label">✖</div>
-                              </button></span></div>
+                                                        class="a-button a-button--text"><div class="a-button__label">✖</div></button>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="m-data-table__container">
                                             <div class="m-data-table__header">
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    <label class="help-label">項目名  
-                                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i>
-                                                        </div>
-                                                        （keyVaultのキー）</label></div>
+                                                    <label class="help-label"><label data-i18n="appInfoPage.projectName">項目名</label>   
+                                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                                          <label data-i18n="appInfoPage.keyVaultsKey">(keyVaultのキー)</label>
+                                                    </label></div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
                                             </div>
                                             <div class="m-data-table__container-item">
@@ -211,26 +263,26 @@
                                     </div>
                                     <br/>
                                     <button type="button" class="a-add-item-button"><i
-                                            class="a-icon a-icon--add-item"></i>項目追加
+                                            class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newItem">項目追加</label>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">基本設定</span>
+                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label" data-i18n="appInfoPage.basicSetup">基本設定</span>
                         </h3>
                         <div id="setting-table" class="m-data-table m-data-table--with-action-buttons undefined">
                             <div class="m-data-table__container-card">
                                 <div class="m-data-table__card">
                                     <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
-                                            class="m-data-table__card-header m-data-table__card-header--type-data">クラスター名</span><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data" ><label data-i18n="appInfoPage.clusterName">クラスター名</label></span><span
                                             class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">ccflow-apach</span>
                                     </div>
                                     <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
-                                            class="m-data-table__card-header m-data-table__card-header--type-data">イメージ</span><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data" data-i18n="appInfoPage.image">イメージ</span><span
                                             class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">djpest.azurecr.io/ssflow-api:0.0.1</span>
                                     </div>
                                     <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
-                                            class="m-data-table__card-header m-data-table__card-header--type-data">起動POD数</span><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data" data-i18n="appInfoPage.podNum">起動POD数</span><span
                                             class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">3</span>
                                     </div>
                                     <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
@@ -238,37 +290,41 @@
                                             class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">125m</span>
                                     </div>
                                     <div class="m-data-table__card-item m-data-table__card-item--type-data"><span
-                                            class="m-data-table__card-header m-data-table__card-header--type-data">メモリ</span><span
+                                            class="m-data-table__card-header m-data-table__card-header--type-data" >data-i18n="appInfoPage.Memory"メモリ</span><span
                                             class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">1024Mi</span>
                                     </div>
                                     <div class="m-data-table__card-item m-data-table__card-item--type-action"><span
-                                            class="m-data-table__card-header m-data-table__card-header--type-action">操作</span><span
-                                            class="m-data-table__card-content m-data-table__card-content--type-action m-data-table__card-content--align-left m-data-table__card-content--valign-top"><button
-                                            class="a-button a-button--text">
-                          <div class="a-button__label">編集</div>
-                        </button><button class="a-button a-button--text">
-                          <div class="a-button__label">削除</div>
-                        </button></span></div>
+                                            class="m-data-table__card-header m-data-table__card-header--type-action">操作</span>
+                                        <span
+                                            class="m-data-table__card-content m-data-table__card-content--type-action m-data-table__card-content--align-left m-data-table__card-content--valign-top">
+                                            <button class="a-button a-button--text">
+                                              <div class="a-button__label">編集</div>
+                                            </button>
+                                            <button class="a-button a-button--text">
+                                                  <div class="a-button__label">削除</div>
+                                            </button>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="m-data-table__container">
                                 <div class="m-data-table__header">
                                     <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                        クラスター名
+                                        <label data-i18n="appInfoPage.clusterName">クラスター名</label>
                                     </div>
-                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data" data-i18n="appInfoPage.image">
                                         イメージ
                                     </div>
-                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data" data-i18n="appInfoPage.podNum">
                                         起動POD数
                                     </div>
                                     <div class="m-data-table__header-content m-data-table__header-content--type-data">
                                         CPU
                                     </div>
-                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-data" data-i18n="appInfoPage.memory">
                                         メモリ
                                     </div>
-                                    <div class="m-data-table__header-content m-data-table__header-content--type-action">
+                                    <div class="m-data-table__header-content m-data-table__header-content--type-action" data-i18n="appInfoPage.operation">
                                         操作
                                     </div>
                                 </div>
@@ -295,10 +351,10 @@
                             </div>
                         </div>
                         <button type="button" id="clusterbtn" class="a-add-item-button"><i
-                                class="a-icon a-icon--add-item"></i>クラスター追加
+                                class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newCluster">クラスター追加</label>
                         </button>
                         <br/><br/>
-                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label">オプション</span>
+                        <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label"><label data-i18n="appInfoPage.option">オプション</label></span>
                         </h3>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                              style="align-items:center"><label class="a-checkbox"><input type="checkbox"
@@ -313,21 +369,23 @@
                         </label></div>
                         <footer class="o-modal__footer">
                             <button class="a-button a-button--secondary a-button--huge" id="save-button">
-                                <div class="a-button__label">保存</div>
+                                <div class="a-button__label" data-i18n="appInfoPage.save">保存</div>
                             </button>
                             <button class="a-button a-button--third a-button--huge" id="download-button">
-                                <div class="a-button__label">ダウンロード</div>
+                                <div class="a-button__label" data-i18n="appInfoPage.download">ダウンロード</div>
                             </button>
-                            <button class="a-button a-button--third a-button--huge" id="download-button">
-                                <div class="a-button__label">アップロード</div>
+                            <button class="a-button a-button--third a-button--huge" id="download-button" >
+                                <div class="a-button__label" data-i18n="appInfoPage.upload">アップロード</div>
                             </button>
                             <button class="a-button a-button--primary a-button--huge" id="deploy-button">
-                                <div class="a-button__label">デプロイ</div>
+                                <div class="a-button__label" data-i18n="appInfoPage.deploy">デプロイ</div>
                             </button>
                         </footer>
                     </section>
                 </form>
                 <!-- End of app info area -->
+
+                <!-- Cluster Info Area -->
                 <div class="o-modal o-modal--fullscreen" id="modal-cluster">
                     <div class="o-modal__window">
                         <button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i>
@@ -336,17 +394,18 @@
                             <section class="m-section m-section--no-padding">
                                 <div class="m-page-heading">
                                     <h1 class="a-heading a-heading--h1 undefined"><span
-                                            class="a-heading__label">クラスター編集</span></h1>
+                                            class="a-heading__label" data-i18n="appInfoPage.clusterEdition">クラスター編集</span></h1>
                                 </div>
                             </section>
                             <section class="m-section m-section--no-padding p-list-content-holder">
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center">
                                     <div class="m-form-field p-setting-input-form__form-field"><label
-                                            class="m-form-field__label">クラスター名  
+                                            class="m-form-field__label"><label data-i18n="appInfoPage.clusterName">クラスター名</label>  
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
+                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
                                         <div class="m-form-field__content">
                                             <div class="a-text-field a-text-field--type-text"><input type="text"
                                                                                                      name="clustername"
@@ -357,16 +416,17 @@
                                     </div>
                                     <div class="m-form-field p-setting-input-form__form-field"><label
                                             class="m-form-field__label"></label>
-                                        <div class="m-form-field__content"><label>※英数字</label></div>
+                                        <div class="m-form-field__content"><label data-i18n="appInfoPage.letter">※英数字</label></div>
                                     </div>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center">
                                     <div class="m-form-field p-setting-input-form__form-field"><label
-                                            class="m-form-field__label">イメージ  
+                                            class="m-form-field__label"><label data-i18n="appInfoPage.image">イメージ</label>  
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
+                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
                                         <div class="m-form-field__content">
                                             <div class="a-text-field a-text-field--type-text"><input type="text"
                                                                                                      name="imagename"
@@ -384,21 +444,20 @@
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center">
                                     <div class="m-form-field p-setting-input-form__form-field"><label
-                                            class="m-form-field__label">起動POD数  
+                                            class="m-form-field__label"><label  data-i18n="appInfoPage.podNum">起動POD数</label>  
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
+                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
                                         <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text"><input type="text"
-                                                                                                     name="podcnt"
-                                                                                                     value=""
-                                                                                                     class="a-text-field__input"/>
+                                            <div class="a-text-field a-text-field--type-text">
+                                                <input type="text" name="podcnt" value="" class="a-text-field__input"/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="m-form-field p-setting-input-form__form-field"><label
                                             class="m-form-field__label"></label>
-                                        <div class="m-form-field__content"><label>※数字</label></div>
+                                        <div class="m-form-field__content"><label data-i18n="appInfoPage.number">※数字</label></div>
                                     </div>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
@@ -406,7 +465,8 @@
                                     <div class="m-form-field"><label class="m-form-field__label">CPU  
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
+                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
                                         <div class="m-form-field__content">
                                             <div id="cpu" class="a-pulldown"><select name="cpu"
                                                                                      class="a-pulldown__select">
@@ -421,10 +481,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="m-form-field"><label class="m-form-field__label">メモリ 
+                                    <div class="m-form-field"><label class="m-form-field__label"><label data-i18n="appInfoPage.memory">メモリ</label> 
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
-                                        ：<span class="m-form-field__label-addons"><span class="a-tag">必須</span></span></label>
+                                        ：<span class="m-form-field__label-addons"><span class="a-tag"
+                                                                                        data-i18n="appInfoPage.required">必須</span></span></label>
                                         <div class="m-form-field__content">
                                             <div id="memory" class="a-pulldown"><select name="memory"
                                                                                         class="a-pulldown__select">
@@ -442,7 +503,7 @@
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                      style="align-items:center">
                                     <div class="m-form-field p-setting-input-form__form-field"><label
-                                            class="m-form-field__label">managedレベル  
+                                            class="m-form-field__label"><label data-i18n="appInfoPage.manageLevel" >managedレベル </label> 
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
                                         ：</label>
@@ -455,7 +516,7 @@
                                         </div>
                                     </div>
                                     <div class="m-form-field p-setting-input-form__form-field"><label
-                                            class="m-form-field__label">Prefix  
+                                            class="m-form-field__label"><label data-i18n="appInfoPage.prefix">Prefix</label>  
                                         <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i>
                                         </div>
                                         ：</label>
@@ -472,11 +533,16 @@
                                      style="align-items:center"><label class="a-checkbox KeyChkbox"><input
                                         type="checkbox" class="a-checkbox__input" id="diskCheckbox" name="KeyVault"
                                         value="2"/>
-                                    <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
-                                            class="a-icon a-icon--check-white"></i></span>
-                                        <div class="a-checkbox__label"><label class="help-label">Disk設置  
+                                    <div class="a-checkbox__body">
+                                        <span class="a-checkbox__indicator">
+                                            <i class="a-icon a-icon--check-white"></i>
+                                        </span>
+                                        <div class="a-checkbox__label">
+                                            <label class="help-label">
+                                                <label data-i18n="appInfoPage.diskSet" >Disk設置 </label> 
                                             <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                        </label></div>
+                                            </label>
+                                        </div>
                                     </div>
                                 </label></div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12"
@@ -484,10 +550,10 @@
                                     <div id="disk_div" style="display:none">
                                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
                                              style="align-items:center">
-                                            <div class="m-form-field"><label class="m-form-field__label">ディスク サイズ 
-                                                <div class="a-help-button" id="help-opener5"><i
-                                                        class="a-icon a-icon--help"></i></div>
-                                                ：</label>
+                                            <div class="m-form-field">
+                                                <label class="m-form-field__label">
+                                                    <label data-i18n="appInfoPage.diskSize">ディスク サイズ</label> 
+                                                    <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>：</label>
                                                 <div class="m-form-field__content">
                                                     <div id="cpu" class="a-pulldown"><select name="cpu"
                                                                                              class="a-pulldown__select">
@@ -501,20 +567,19 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="m-form-field"><label class="m-form-field__label">ディスク クラス
-                                                <div class="a-help-button" id="help-opener5"><i
-                                                        class="a-icon a-icon--help"></i></div>
+                                            <div class="m-form-field"><label class="m-form-field__label">
+                                                <label data-i18n="appInfoPage.diskClass">ディスク クラス</label>
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
                                                 ：</label>
                                                 <div class="m-form-field__content">
-                                                    <div id="memory" class="a-pulldown"><select name="memory"
-                                                                                                class="a-pulldown__select">
-                                                        <option>1024Mi</option>
-                                                        <option value=""></option>
-                                                        <option value="1">Azure Premium Storage</option>
-                                                        <option value="2">Azure Standard Storage</option>
-                                                    </select>
-                                                        <div class="a-pulldown__icon-container"><i
-                                                                class="a-icon a-icon--arrow-down"></i></div>
+                                                    <div id="memory" class="a-pulldown">
+                                                        <select name="memory" class="a-pulldown__select">
+                                                            <option>1024Mi</option>
+                                                            <option value=""></option>
+                                                            <option value="1">Azure Premium Storage</option>
+                                                            <option value="2">Azure Standard Storage</option>
+                                                        </select>
+                                                        <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -525,12 +590,16 @@
                                                 <div class="m-data-table__container-card">
                                                     <div class="m-data-table__card">
                                                         <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                            <span class="m-data-table__card-header m-data-table__card-header--type-data">マウント 名</span><span
-                                                                class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">path</span>
+                                                            <span class="m-data-table__card-header m-data-table__card-header--type-data">
+                                                                <label data-i18n="appInfoPage.mountName">マウント 名</label>
+                                                            </span>
+                                                            <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">path</span>
                                                         </div>
                                                         <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                            <span class="m-data-table__card-header m-data-table__card-header--type-data">マウント バス</span><span
-                                                                class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">/var/data</span>
+                                                            <span class="m-data-table__card-header m-data-table__card-header--type-data">
+                                                                <label data-i18n="appInfoPage.mountPath">マウント バス</label>
+                                                            </span>
+                                                            <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">/var/data</span>
                                                         </div>
                                                         <div class="m-data-table__card-item m-data-table__card-item--type-data">
                                                             <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
@@ -543,10 +612,10 @@
                                                 <div class="m-data-table__container">
                                                     <div class="m-data-table__header">
                                                         <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                            マウント 名
+                                                            <label data-i18n="appInfoPage.mountName">マウント 名</label>
                                                         </div>
                                                         <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                            マウント バス
+                                                            <label data-i18n="appInfoPage.mountPath">マウント バス</label>
                                                         </div>
                                                         <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
                                                     </div>
@@ -566,8 +635,8 @@
                                             </div>
                                         </div>
                                         <br/>
-                                        <button type="button" class="a-add-item-button"><i
-                                                class="a-icon a-icon--add-item"></i>項目追加
+                                        <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>
+                                            <label data-i18n="appInfoPage.newItem">項目追加</label> 
                                         </button>
                                     </div>
                                 </div>
@@ -577,9 +646,12 @@
                                         value="2"/>
                                     <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
                                             class="a-icon a-icon--check-white"></i></span>
-                                        <div class="a-checkbox__label"><label class="help-label">KeyVault設置  
-                                            <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                        </label></div>
+                                        <div class="a-checkbox__label">
+                                            <label class="help-label"> 
+                                                <label data-i18n="appInfoPage.keyVaultSet">KeyVault設置</label>   
+                                                <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                            </label>
+                                        </div>
                                     </div>
                                 </label></div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
@@ -589,11 +661,15 @@
                                             <div class="m-data-table__container-card">
                                                 <div class="m-data-table__card">
                                                     <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                        <span class="m-data-table__card-header m-data-table__card-header--type-data"><label
-                                                                class="help-label">使用項目   <div
-                                                                class="a-help-button"><i
-                                                                class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span
-                                                            class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                        <span class="m-data-table__card-header m-data-table__card-header--type-data">
+                                                            <label class="help-label">
+                                                                <label data-i18n="appInfoPage.useProject">使用項目</label>  
+                                                                <div class="a-help-button">
+                                                                    <i class="a-icon a-icon--help"></i>
+                                                                </div> <label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label> 
+                                                            </label>
+                                                        </span>
+                                                        <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
                                                     </div>
                                                     <div class="m-data-table__card-item m-data-table__card-item--type-data">
                                                         <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
@@ -605,9 +681,9 @@
                                                 <div class="m-data-table__card">
                                                     <div class="m-data-table__card-item m-data-table__card-item--type-data">
                                                         <span class="m-data-table__card-header m-data-table__card-header--type-data"><label
-                                                                class="help-label">使用項目   <div
+                                                                class="help-label"> <label data-i18n="appInfoPage.useProject">使用項目</label>   <div
                                                                 class="a-help-button"><i
-                                                                class="a-icon a-icon--help"></i></div>（keyVaultのキー）</label></span><span
+                                                                class="a-icon a-icon--help"></i></div><label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label> </label></span><span
                                                             class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
                                                     </div>
                                                     <div class="m-data-table__card-item m-data-table__card-item--type-data">
@@ -621,10 +697,10 @@
                                             <div class="m-data-table__container">
                                                 <div class="m-data-table__header">
                                                     <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                        <label class="help-label">使用項目  
-                                                            <div class="a-help-button"><i
-                                                                    class="a-icon a-icon--help"></i></div>
-                                                            （keyVaultのキー）</label></div>
+                                                        <label class="help-label"><label data-i18n="appInfoPage.useProject">使用項目</label>  
+                                                            <div class="a-help-button"><i class="a-icon a-icon--help"></i>
+                                                            </div>
+                                                            <label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label></label></div>
                                                     <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
                                                 </div>
                                                 <div class="m-data-table__container-item">
@@ -648,8 +724,8 @@
                                             </div>
                                         </div>
                                         <br/>
-                                        <button type="button" class="a-add-item-button"><i
-                                                class="a-icon a-icon--add-item"></i>項目追加
+                                        <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>
+                                            <label data-i18n="appInfoPage.newItem">項目追加</label>
                                         </button>
                                     </div>
                                 </div>
@@ -661,7 +737,8 @@
                                                                                                  value="3"/>
                                     <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
                                             class="a-icon a-icon--check-white"></i></span>
-                                        <div class="a-checkbox__label"><label class="help-label">ConfigMap設置（KV） 
+                                        <div class="a-checkbox__label"><label class="help-label">
+                                            <label data-i18n="appInfoPage.configMapSet">ConfigMap設置（KV）</label> 
                                             <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
                                         </label></div>
                                     </div>
@@ -671,12 +748,16 @@
                                         <div class="m-data-table__container-card">
                                             <div class="m-data-table__card">
                                                 <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目名</span><span
-                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">
+                                                        <label data-i18n="appInfoPage.projectName">項目名</label>
+                                                    </span>
+                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
                                                 </div>
                                                 <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目英語名</span><span
-                                                        class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">
+                                                        <label data-i18n="appInfoPage.projectEnName">項目英語名</label>
+                                                    </span>
+                                                    <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">SendGridKey</span>
                                                 </div>
                                                 <div class="m-data-table__card-item m-data-table__card-item--type-data">
                                                     <span class="m-data-table__card-header m-data-table__card-header--type-data"></span><span
@@ -687,7 +768,7 @@
                                             </div>
                                             <div class="m-data-table__card">
                                                 <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項目名</span><span
+                                                    <span class="m-data-table__card-header m-data-table__card-header--type-data">項1目名</span><span
                                                         class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top"></span>
                                                 </div>
                                                 <div class="m-data-table__card-item m-data-table__card-item--type-data">
@@ -705,10 +786,10 @@
                                         <div class="m-data-table__container">
                                             <div class="m-data-table__header">
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    項目名
+                                                    <label data-i18n="appInfoPage.projectName">項目名</label>
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    項目英語名
+                                                    <label data-i18n="appInfoPage.projectEnName">項目英語名</label>
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
                                             </div>
@@ -737,8 +818,8 @@
                                         </div>
                                     </div>
                                     <br/>
-                                    <button type="button" class="a-add-item-button"><i
-                                            class="a-icon a-icon--add-item"></i>項目追加
+                                    <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>
+                                        <label data-i18n="appInfoPage.newItem">項目追加</label>
                                     </button>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
@@ -747,9 +828,13 @@
                                                                                                  id="ConfigFileChk"
                                                                                                  name="ConfigMapFile"
                                                                                                  value="4"/>
-                                    <div class="a-checkbox__body"><span class="a-checkbox__indicator"><i
-                                            class="a-icon a-icon--check-white"></i></span>
-                                        <div class="a-checkbox__label">ConfigMap設置（FILE）</div>
+                                    <div class="a-checkbox__body">
+                                        <span class="a-checkbox__indicator">
+                                            <i class="a-icon a-icon--check-white"></i>
+                                        </span>
+                                        <div class="a-checkbox__label">
+                                            <label data-i18n="appInfoPage.configMapFileSet">ConfigMap設置（FILE）</label>
+                                        </div>
                                     </div>
                                 </label></div>
                                 <div id="ConfigFile_div" style="display:none">
@@ -795,10 +880,10 @@
                                         <div class="m-data-table__container">
                                             <div class="m-data-table__header">
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    ファイルパス
+                                                    <label data-i18n="appInfoPage.filePath">ファイルパス</label>
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    ファイルリンク
+                                                    <label data-i18n="appInfoPage.fileLink">ファイルリンク</label>
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
                                             </div>
@@ -833,12 +918,12 @@
                                         </div>
                                     </div>
                                     <br/>
-                                    <button type="button" class="a-add-item-button"><i
-                                            class="a-icon a-icon--add-item"></i>項目追加
+                                    <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>
+                                        <label data-i18n="appInfoPage.newItem">項目追加</label>
                                     </button>
                                 </div>
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6"
-                                     style="align-items:center"><label class="help-label">ドメイン  
+                                     style="align-items:center"><label class="help-label">  <label data-i18n="appInfoPage.domain">ドメイン</label>  
                                     <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
                                 </label></div>
                                 <div class="m-data-table m-data-table--with-action-buttons undefined">
@@ -895,13 +980,13 @@
                                     <div class="m-data-table__container">
                                         <div class="m-data-table__header">
                                             <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                ドメイン名
+                                                <label data-i18n="appInfoPage.domainName">ドメイン名</label>
                                             </div>
                                             <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                証明書
+                                                 <label data-i18n="appInfoPage.certification">証明書</label>
                                             </div>
                                             <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                プライベートキー
+                                                <label data-i18n="appInfoPage.privateKey">プライベートキー</label>
                                             </div>
                                             <div class="m-data-table__header-content m-data-table__header-content--type-data"></div>
                                         </div>
@@ -946,7 +1031,8 @@
                                     </div>
                                 </div>
                                 <br/>
-                                <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>ドメイン追加
+                                <button type="button" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i>
+                                    <label data-i18n="appInfoPage.newDomain">ドメイン追加</label>
                                 </button>
                                 <br/>
                             </section>
@@ -954,16 +1040,18 @@
                                 <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-3"
                                      style="align-items:center">
                                     <button class="a-button a-button--primary a-button--huge" id="confirm-button">
-                                        <div class="a-button__label">確定</div>
+                                        <div class="a-button__label" data-i18n="appInfoPage.confirm">確定</div>
                                     </button>
                                     <button class="a-button a-button--third a-button--huge" id="cancel-button">
-                                        <div class="a-button__label">取消</div>
+                                        <div class="a-button__label" data-i18n="appInfoPage.cancel">取消</div>
                                     </button>
                                 </div>
                             </footer>
                         </main>
                     </div>
                 </div>
+                <!-- End of Cluster Info Area -->
+
             </section>
             <div class="o-modal" id="modal-help3">
                 <div class="o-modal__window">
