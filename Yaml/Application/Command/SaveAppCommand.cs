@@ -56,36 +56,55 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 await _context.SaveChangesAsync(cancellationToken);
     
                 // save domain 
-                var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(yamlClusterInfoDto.Domain);
-                clusterDomain.ClusterId = cluster.Id;
-                await _context.Domain.AddAsync(clusterDomain, cancellationToken);
-                    
-                // save ConfigMap
-                var configMapList = yamlClusterInfoDto.ConfigMap?.Select(dto =>
+                if (yamlClusterInfoDto.Domain != null )
                 {
-                    var configMap = _mapper.Map<YamlClusterConfigMapInfo>(dto);
-                    configMap.ClusterId = cluster.Id;
-                    return configMap;
-                }).ToList(); 
-                await _context.ConfigMap.AddRangeAsync(configMapList, cancellationToken);
+                    var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(yamlClusterInfoDto.Domain);
+                    clusterDomain.ClusterId = cluster.Id;
+                    await _context.Domain.AddAsync(clusterDomain, cancellationToken);
+                }
+              
+                // save ConfigMap
+                if (yamlClusterInfoDto.ConfigMapFlag)
+                {
+                    var configMapList = yamlClusterInfoDto.ConfigMap?.Select(dto =>
+                    {
+                        var configMap = _mapper.Map<YamlClusterConfigMapInfo>(dto);
+                        configMap.ClusterId = cluster.Id;
+                        return configMap;
+                    }).ToList(); 
+                    await _context.ConfigMap.AddRangeAsync(configMapList, cancellationToken);
+                }
 
                 // save ConfigMapFile
-                var configFileList = yamlClusterInfoDto.ConfigFile?.Select(dto =>
+                if (yamlClusterInfoDto.ConfigMapFileFlag)
                 {
-                    var configFile = _mapper.Map<YamlClusterConfigFileInfo>(dto);
-                    configFile.ClusterId = cluster.Id;
-                    return configFile;
-                }).ToList();
-                await _context.ConfigFile.AddRangeAsync(configFileList, cancellationToken);
+                    var configFileList = yamlClusterInfoDto.ConfigFile?.Select(dto =>
+                    {
+                        var configFile = _mapper.Map<YamlClusterConfigFileInfo>(dto);
+                        configFile.ClusterId = cluster.Id;
+                        return configFile;
+                    }).ToList();
+                    await _context.ConfigFile.AddRangeAsync(configFileList, cancellationToken);
+                }
                 
-                // keyvault
-               var keyVaultInfoList = yamlClusterInfoDto.KeyVault?.Select(dto => new YamlKeyVaultInfo
-                   {
-                       ClusterId = cluster.Id,
-                       ConfigKey = dto.ConfigKey
-                   }
-               ).ToList();
-               await _context.KeyVaultInfo.AddRangeAsync(keyVaultInfoList, cancellationToken);
+                // Key Vault
+                if (yamlClusterInfoDto.KeyVaultFlag)
+                {
+                    var keyVaultInfoList = yamlClusterInfoDto.KeyVault?.Select(dto => new YamlKeyVaultInfo
+                        {
+                            ClusterId = cluster.Id,
+                            ConfigKey = dto.ConfigKey
+                        }
+                    ).ToList();
+                    await _context.KeyVaultInfo.AddRangeAsync(keyVaultInfoList, cancellationToken);
+                }
+      
+               // Disk info
+               if (yamlClusterInfoDto.DiskInfoFlag)
+               {
+                   Console.WriteLine(yamlClusterInfoDto.Disk.MountPath.Length);
+                   // TODO yamlClusterInfoDto.Disk
+               }
                
             }
             await _context.SaveChangesAsync(cancellationToken);

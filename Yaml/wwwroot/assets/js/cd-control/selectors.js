@@ -14,14 +14,14 @@ const selectors = {
     podCount : "[name='podCount']",
     cpu : "[name='cpu']",
     memory : "[name='memory']",
-    managedLevel : "[name='managedLevel']",
+    manageLevel : "[name='managedLevel']",
     prefix : "[name='prefix']",
     diskCheckbox : "[name='diskCheckbox']",
     diskSize : "[name='diskSize']",
     diskType : "[name='diskType']",
     KeyCheckbox : "[name='KeyCheckbox']",
     configCheckbox : "[name='ConfigCheckbox']",
-    configMapFileCheckbox : "[name='ConfigMapFileCheckbox']",
+    configMapFileCheckbox : "#ConfigFileChk",
     configMapId : "#configMap",
     
     confirmButton : "#confirmButton",
@@ -31,5 +31,4 @@ const selectors = {
     domainContent : "#domain-content",
     configMapField : "#configMapField",
     clusterKeyVault : "#clusterKeyVault",
-    "":""
 }

@@ -34,14 +34,6 @@ const initPage = (function ($) {
     }
 
     function initValidation(i18next) {
-
-        const rules = {
-            name: "required",
-            pwd: {
-                required: true
-            }
-        }
-
         const loginForm = $("#loginForm");
         loginForm.validate({
             focusCleanup: true,

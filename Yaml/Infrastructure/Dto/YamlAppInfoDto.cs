@@ -70,15 +70,19 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     
     // Domain
     public DomainDto? Domain { set; get; }
-
 }
 
 public class DiskInfo
 {
     public string? Size { set; get; }
     public string? Type { set; get; }
-    public string[]? MountPath { set; get; }
+    public MountPath[]? MountPath { set; get; }
 
+}
+public class MountPath
+{
+    public string? Name { set; get; }
+    public string? Path { set; get; }
 }
 public class ConfigMapDto
 {

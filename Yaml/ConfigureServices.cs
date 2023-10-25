@@ -25,7 +25,18 @@ public static class ConfigureServices
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
         
- 
+        // Cors
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin", builder =>
+            {
+                builder
+                    .WithOrigins("http://localhost:5173") // 允许的源
+                    .AllowAnyMethod() // 允许任何 HTTP 方法
+                    .AllowAnyHeader(); // 允许任何 HTTP 标头
+            });
+        });
+      
         
         // Inject RazorLight into Container
         services.AddRazorLight(() =>

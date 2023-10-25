@@ -173,15 +173,53 @@ const tableComponemt = (() => {
         }
         return itemList;
     }
-
-    function getTableDataWithFileUpload(selector){
+    
+    function getAppKeyVaultData(selector){
         const itemList = [];
-        const rows = $(selector + content).find(".m-data-table__item");
+        const rows = $(selector + content).find("[colcount]");
+        for (let i = 0; i < rows.length; i++) {
+            const row = $(rows[i]);
+            const cols =row.find("[name]");
+            const col = $(cols[0]);
+            console.log(col.val())
+            itemList.push(col.val())
+        }
+        return itemList;
+    }
+
+    function getDomainTableData(selector){
+        const itemList = [];
+        const rows = $(selector + "-content").find(".m-data-table__item");
         for (let i = 0; i < rows.length; i++) {
             const item = {};
-            const row = $(rows[i]);
-            row.find()
-            console.log(item)
+            const j = i + 1;
+            const key = "#domain" + i;
+            const domainName = $("[name='" + key +"-0']").val();
+            const certification =  $("[file-input='" + key +"-1']").val();
+            const privateKey =   $("[file-input='" + key +"-2']").val();
+            const certificationFile =  $("[file-input='" + key +"-1']")[0].files[0];
+            const privateKeyFile =   $("[file-input='" + key +"-2']")[0].files[0];
+            
+            item.domainName = domainName;
+            item.certification = certification;
+            item.privateKey = privateKey;
+
+            item.certificationFile = certificationFile;
+            item.privateKeyFile = privateKeyFile;
+            itemList.push(item)
+        }
+        return itemList;
+    }
+    function getConfigMapFileData(selector){
+        const itemList = [];
+        const rows = $(selector + "-content").find(".m-data-table__item");
+        for (let i = 0; i < rows.length; i++) {
+            const item = {};
+            const key = "#domain" + i;
+            const filePath = $("[name='" + key +"-0']").val();
+            const fileLink =  $("[file-input='" + key +"-1']").val();
+            item.filePath = filePath;
+            item.fileLink = fileLink;
             itemList.push(item)
         }
         return itemList;
@@ -218,7 +256,9 @@ const tableComponemt = (() => {
     return {
         initComponent: init,
         getTableData: getTableData,
-        getTableDataWithFileUpload: getTableDataWithFileUpload,
+        getAppKeyVaultData: getAppKeyVaultData,
+        getDomainTableData: getDomainTableData,
+        getConfigMapFileData: getConfigMapFileData,
         removeRow: removeRow
     }
 })(jQuery)

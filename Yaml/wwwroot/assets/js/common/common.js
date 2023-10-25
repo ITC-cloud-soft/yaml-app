@@ -13,6 +13,21 @@ var userLanguage = "jp";
             return modal.opened = !1
         }
     }
+    function showCustomModal(selector){
+        let modal = $(selector)[0].__component;
+        modal.opened = !0;
+        modal.onCloseRequested = function () {
+            return modal.opened = !1
+        }
+    }
+
+    function closeCustomModal(selector){
+        let modal = $(selector)[0].__component;
+        modal.opened = !1;
+        modal.onCloseRequested = function () {
+            return modal.opened = !1
+        }
+    }
 
     function setLoading(){
         const htmlValue = "<div class='a-loading a-loading--overlay'><div class='a-loading__dot-grid' ><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div ></div >";
@@ -56,6 +71,8 @@ var userLanguage = "jp";
     window.commonFunctions = {
         showModal: showModal,
         setLoading: setLoading,
+        showCustomModal: showCustomModal,
+        closeCustomModal: closeCustomModal,
         removeLoading: removeLoading,
         axios: axiosWithInterceptor
     };

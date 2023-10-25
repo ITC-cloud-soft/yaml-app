@@ -245,41 +245,6 @@
                         </div>
                         <h3 class="a-heading a-heading--h3 undefined"><span class="a-heading__label" data-i18n="appInfoPage.basicSetup">基本設定</span></h3>
                         <div id="setting-table" class="m-data-table m-data-table--with-action-buttons undefined">
-                            <div class="m-data-table__container-card">
-                                <div class="m-data-table__card">
-                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                        <span class="m-data-table__card-header m-data-table__card-header--type-data"><label data-i18n="appInfoPage.clusterName">クラスター名</label></span>
-                                        <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">ccflow-apach</span>
-                                    </div>
-                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                        <span class="m-data-table__card-header m-data-table__card-header--type-data" data-i18n="appInfoPage.image">イメージ</span>
-                                        <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">djpest.azurecr.io/ssflow-api:0.0.1</span>
-                                    </div>
-                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                        <span class="m-data-table__card-header m-data-table__card-header--type-data" data-i18n="appInfoPage.podNum">起動POD数</span>
-                                        <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">3</span>
-                                    </div>
-                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                        <span class="m-data-table__card-header m-data-table__card-header--type-data">CPU</span>
-                                        <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">125m</span>
-                                    </div>
-                                    <div class="m-data-table__card-item m-data-table__card-item--type-data">
-                                        <span class="m-data-table__card-header m-data-table__card-header--type-data">data-i18n="appInfoPage.Memory"メモリ</span>
-                                        <span class="m-data-table__card-content m-data-table__card-content--type-data m-data-table__card-content--align-left m-data-table__card-content--valign-top">1024Mi</span>
-                                    </div>
-                                    <div class="m-data-table__card-item m-data-table__card-item--type-action">
-                                        <span class="m-data-table__card-header m-data-table__card-header--type-action">操作</span>
-                                        <span class="m-data-table__card-content m-data-table__card-content--type-action m-data-table__card-content--align-left m-data-table__card-content--valign-top">
-                                            <button class="a-button a-button--text">
-                                                <div class="a-button__label">編集</div>
-                                            </button>
-                                            <button class="a-button a-button--text">
-                                                <div class="a-button__label">削除</div>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="m-data-table__container">
                                 <div class="m-data-table__header">
                                     <div class="m-data-table__header-content m-data-table__header-content--type-data">
@@ -301,38 +266,12 @@
                                         操作
                                     </div>
                                 </div>
-                                <div class="m-data-table__container-item">
-                                    <div class="m-data-table__item">
-                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                            <span class="m-data-table__truncate-content">ccflow-apach</span>
-                                        </span>
-                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                            <span class="m-data-table__truncate-content">djpest.azurecr.io/ssflow-api:0.0.1</span>
-                                        </span>
-                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                            <span class="m-data-table__truncate-content">3</span>
-                                        </span>
-                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                            <span class="m-data-table__truncate-content">125m</span>
-                                        </span>
-                                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                            <span class="m-data-table__truncate-content">1024Mi</span>
-                                        </span>
-                                        <span class="m-data-table__content m-data-table__content--type-action m-data-table__content--align-left m-data-table__content--valign-center">
-                                            <span class="m-data-table__truncate-content">
-                                                <button class="a-button a-button--text">
-                                                    <div class="a-button__label">編集</div>
-                                                </button>
-                                                <button class="a-button a-button--text">
-                                                    <div class="a-button__label">削除</div>
-                                                </button>
-                                            </span>
-                                        </span>
-                                    </div>
+                                <div class="m-data-table__container-item" id="setting-table-content">
+                                    <!-- cluster information table -->
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="clusterbtn" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newCluster">クラスター追加</label></button>
+                        <button type="button" id="new-cluster-btn" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newCluster">クラスター追加</label></button>
                         <br />
                         <br />
                         <h3 class="a-heading a-heading--h3 undefined">
@@ -340,7 +279,7 @@
                         </h3>
                         <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
                             <label class="a-checkbox">
-                                <input type="checkbox" class="a-checkbox__input" name="Netdata" value="8" />
+                                <input type="checkbox" class="a-checkbox__input" name="Netdata"  />
                                 <div class="a-checkbox__body">
                                     <span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
                                     <div class="a-checkbox__label">
@@ -374,405 +313,384 @@
                 <div class="o-modal o-modal--fullscreen" id="modal-cluster">
                     <div class="o-modal__window">
                         <button class="o-modal__close-button" type="button"><i class="a-icon a-icon--close"></i></button>
-                        <main class="o-modal__body">
-                            <section class="m-section m-section--no-padding">
-                                <div class="m-page-heading">
-                                    <h1 class="a-heading a-heading--h1 undefined"><span class="a-heading__label" data-i18n="appInfoPage.clusterEdition">クラスター編集</span></h1>
-                                </div>
-                            </section>
-                            <section class="m-section m-section--no-padding p-list-content-holder">
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label">
-                                            <label data-i18n="appInfoPage.clusterName">クラスター名</label> &nbsp
-                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                            ：<span class="m-form-field__label-addons"> <span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
-                                        </label>
-                                        <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text">
-                                                <input type="text" name="clusterName" value="" class="a-text-field__input" />
+                        <form id="clusterForm" style="overflow: scroll">
+                            <main class="o-modal__body" >
+                                <section class="m-section m-section--no-padding">
+                                    <div class="m-page-heading">
+                                        <h1 class="a-heading a-heading--h1 undefined"><span class="a-heading__label" data-i18n="appInfoPage.clusterEdition">クラスター編集</span></h1>
+                                    </div>
+                                </section>
+                                <section class="m-section m-section--no-padding p-list-content-holder">
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label">
+                                                <label data-i18n="appInfoPage.clusterName">クラスター名</label> &nbsp
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                ：<span class="m-form-field__label-addons"> <span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
+                                            </label>
+                                            <div class="m-form-field__content">
+                                                <div class="a-text-field a-text-field--type-text">
+                                                    <input type="text" name="clusterName" value="" class="a-text-field__input" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label"></label>
-                                        <div class="m-form-field__content"><label data-i18n="appInfoPage.letter">※英数字</label></div>
-                                    </div>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label">
-                                            <label data-i18n="appInfoPage.image">イメージ</label> &nbsp
-                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                            ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
-                                        </label>
-                                        <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text">
-                                                <input type="text" name="imageName" value="" class="a-text-field__input" />
-                                            </div>
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label"></label>
+                                            <div class="m-form-field__content"><label data-i18n="appInfoPage.letter">※英数字</label></div>
                                         </div>
                                     </div>
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label"></label>
-                                        <div class="m-form-field__content"><label>※例 djpest.azurecr.io/ssflow-api:0.0.1</label></div>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label">
+                                                <label data-i18n="appInfoPage.image">イメージ</label> &nbsp
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
+                                            </label>
+                                            <div class="m-form-field__content">
+                                                <div class="a-text-field a-text-field--type-text">
+                                                    <input type="text" name="imageName" value="" class="a-text-field__input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label"></label>
+                                            <div class="m-form-field__content"><label>※例 djpest.azurecr.io/ssflow-api:0.0.1</label></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label">
-                                            <label data-i18n="appInfoPage.podNum">起動POD数</label> &nbsp
-                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                            ：
-                                            <span class="m-form-field__label-addons">
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label">
+                                                <label data-i18n="appInfoPage.podNum">起動POD数</label> &nbsp
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                ：
+                                                <span class="m-form-field__label-addons">
                                                 <span class="a-tag" data-i18n="appInfoPage.required">必須</span>
                                             </span>
-                                        </label>
-                                        <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text">
-                                                <input type="text" name="podCount" value="" class="a-text-field__input" />
+                                            </label>
+                                            <div class="m-form-field__content">
+                                                <div class="a-text-field a-text-field--type-text">
+                                                    <input type="text" name="podCount" value="" class="a-text-field__input" />
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label"></label>
+                                            <div class="m-form-field__content"><label data-i18n="appInfoPage.number">※数字</label></div>
+                                        </div>
                                     </div>
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label"></label>
-                                        <div class="m-form-field__content"><label data-i18n="appInfoPage.number">※数字</label></div>
-                                    </div>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <div class="m-form-field">
-                                        <label class="m-form-field__label">
-                                            CPU &nbsp
-                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                            ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
-                                        </label>
-                                        <div class="m-form-field__content">
-                                            <div id="cpu" class="a-pulldown">
-                                                <select name="cpu" class="a-pulldown__select">
-                                                    <option>125m</option>
-                                                    <option value=""></option>
-                                                    <option value="1">250m</option>
-                                                    <option value="2">500m</option>
-                                                    <option value="3">1000m</option>
-                                                </select>
-                                                <div class="a-pulldown__icon-container">
-                                                    <i class="a-icon a-icon--arrow-down"></i>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <div class="m-form-field">
+                                            <label class="m-form-field__label">
+                                                CPU &nbsp
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
+                                            </label>
+                                            <div class="m-form-field__content">
+                                                <div id="cpu" class="a-pulldown">
+                                                    <select name="cpu" class="a-pulldown__select">
+                                                        <option>125m</option>
+                                                        <option value=""></option>
+                                                        <option value="1">250m</option>
+                                                        <option value="2">500m</option>
+                                                        <option value="3">1000m</option>
+                                                    </select>
+                                                    <div class="a-pulldown__icon-container">
+                                                        <i class="a-icon a-icon--arrow-down"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field">
+                                            <label class="m-form-field__label">
+                                                <label data-i18n="appInfoPage.memory">メモリ</label>&nbsp
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
+                                            </label>
+                                            <div class="m-form-field__content">
+                                                <div id="memory" class="a-pulldown">
+                                                    <select name="memory" class="a-pulldown__select">
+                                                        <option>1024Mi</option>
+                                                        <option value=""></option>
+                                                        <option value="1">2048Mi</option>
+                                                        <option value="2">4096Mi</option>
+                                                    </select>
+                                                    <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="m-form-field">
-                                        <label class="m-form-field__label">
-                                            <label data-i18n="appInfoPage.memory">メモリ</label>&nbsp
-                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                            ：<span class="m-form-field__label-addons"><span class="a-tag" data-i18n="appInfoPage.required">必須</span></span>
-                                        </label>
-                                        <div class="m-form-field__content">
-                                            <div id="memory" class="a-pulldown">
-                                                <select name="memory" class="a-pulldown__select">
-                                                    <option>1024Mi</option>
-                                                    <option value=""></option>
-                                                    <option value="1">2048Mi</option>
-                                                    <option value="2">4096Mi</option>
-                                                </select>
-                                                <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label">
+                                                <label data-i18n="appInfoPage.manageLevel">managedレベル </label>&nbsp
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                ：
+                                            </label>
+                                            <div class="m-form-field__content">
+                                                <div class="a-text-field a-text-field--type-text">
+                                                    <input type="text" name="managedLevel" value="" class="a-text-field__input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field p-setting-input-form__form-field">
+                                            <label class="m-form-field__label">
+                                                <label data-i18n="appInfoPage.prefix">Prefix</label> &nbsp
+                                                <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                ：
+                                            </label>
+                                            <div class="m-form-field__content">
+                                                <div class="a-text-field a-text-field--type-text">
+                                                    <input type="text" name="prefix" value="" class="a-text-field__input" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label">
-                                            <label data-i18n="appInfoPage.manageLevel">managedレベル </label>&nbsp
-                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                            ：
-                                        </label>
-                                        <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text">
-                                                <input type="text" name="managedLevel" value="" class="a-text-field__input" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="m-form-field p-setting-input-form__form-field">
-                                        <label class="m-form-field__label">
-                                            <label data-i18n="appInfoPage.prefix">Prefix</label> &nbsp
-                                            <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                            ：
-                                        </label>
-                                        <div class="m-form-field__content">
-                                            <div class="a-text-field a-text-field--type-text">
-                                                <input type="text" name="prefix" value="" class="a-text-field__input" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <label class="a-checkbox KeyChkbox">
-                                        <input type="checkbox" class="a-checkbox__input" id="diskCheckbox" name="diskCheckbox" value="" />
-                                        <div class="a-checkbox__body">
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <label class="a-checkbox KeyChkbox">
+                                            <input type="checkbox" class="a-checkbox__input" id="diskCheckbox" name="diskCheckbox" value="" />
+                                            <div class="a-checkbox__body">
                                             <span class="a-checkbox__indicator">
                                                 <i class="a-icon a-icon--check-white"></i>
                                             </span>
-                                            <div class="a-checkbox__label">
-                                                <label class="help-label">
-                                                    <label data-i18n="appInfoPage.diskSet">Disk設置 </label>&nbsp
-                                                    <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                                </label>
+                                                <div class="a-checkbox__label">
+                                                    <label class="help-label">
+                                                        <label data-i18n="appInfoPage.diskSet">Disk設置 </label>&nbsp
+                                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12" style="align-items:center">
-                                    <div id="disk_div" style="display:none">
-                                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                            <div class="m-form-field">
-                                                <label class="m-form-field__label">
-                                                    <label data-i18n="appInfoPage.diskSize">ディスク サイズ</label>&nbsp
-                                                    <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                                    ：
-                                                </label>
-                                                <div class="m-form-field__content">
-                                                    <div id="cpu" class="a-pulldown">
-                                                        <select name="diskSize" class="a-pulldown__select">
-                                                            <option>1G</option>
-                                                            <option value="1">10G</option>
-                                                            <option value="2">20G</option>
-                                                            <option value="3">50G</option>
-                                                        </select>
-                                                        <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
+                                        </label>
+                                    </div>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12" style="align-items:center">
+                                        <div id="disk_div" style="display:none">
+                                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                                <div class="m-form-field">
+                                                    <label class="m-form-field__label">
+                                                        <label data-i18n="appInfoPage.diskSize">ディスク サイズ</label>&nbsp
+                                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                        ：
+                                                    </label>
+                                                    <div class="m-form-field__content">
+                                                        <div id="cpu" class="a-pulldown">
+                                                            <select name="diskSize" class="a-pulldown__select">
+                                                                <option>1G</option>
+                                                                <option value="1">10G</option>
+                                                                <option value="2">20G</option>
+                                                                <option value="3">50G</option>
+                                                            </select>
+                                                            <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="m-form-field">
+                                                    <label class="m-form-field__label">
+                                                        <label data-i18n="appInfoPage.diskClass">ディスク クラス</label>
+                                                        <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
+                                                        ：
+                                                    </label>
+                                                    <div class="m-form-field__content">
+                                                        <div id="diskType" class="a-pulldown">
+                                                            <select name="diskType" class="a-pulldown__select">
+                                                                <option>1024Mi</option>
+                                                                <option value=""></option>
+                                                                <option value="1">Azure Premium Storage</option>
+                                                                <option value="2">Azure Standard Storage</option>
+                                                            </select>
+                                                            <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="m-form-field">
-                                                <label class="m-form-field__label">
-                                                    <label data-i18n="appInfoPage.diskClass">ディスク クラス</label>
-                                                    <div class="a-help-button" id="help-opener5"><i class="a-icon a-icon--help"></i></div>
-                                                    ：
-                                                </label>
-                                                <div class="m-form-field__content">
-                                                    <div id="diskType" class="a-pulldown">
-                                                        <select name="memory" class="a-pulldown__select">
-                                                            <option>1024Mi</option>
-                                                            <option value=""></option>
-                                                            <option value="1">Azure Premium Storage</option>
-                                                            <option value="2">Azure Standard Storage</option>
-                                                        </select>
-                                                        <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
+                                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                                <div class="m-data-table m-data-table--with-action-buttons undefined">
+                                                    <div class="m-data-table__container">
+                                                        <div class="m-data-table__header">
+                                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                                <label data-i18n="appInfoPage.mountName">マウント 名</label>
+                                                            </div>
+                                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                                <label data-i18n="appInfoPage.mountPath">マウント バス</label>
+                                                            </div>
+                                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                                <button type="button" id="diskConfig-add"  class="a-add-item-button">
+                                                                    <i class="a-icon a-icon--add-item"></i>
+                                                                    <label data-i18n="appInfoPage.newItem">項目追加</label>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="m-data-table__container-item" id="diskConfig-content">
+
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <br />
+
                                         </div>
-                                        <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                    </div>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <label class="a-checkbox KeyChkbox">
+                                            <input type="checkbox" class="a-checkbox__input" id="KeyCheckbox" name="KeyCheckbox" value="2" />
+                                            <div class="a-checkbox__body">
+                                                <span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
+                                                <div class="a-checkbox__label">
+                                                    <label class="help-label">
+                                                        <label data-i18n="appInfoPage.keyVaultSet">KeyVault設置</label> &nbsp
+                                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <div id="KeyVault_div" style="display:none">
                                             <div class="m-data-table m-data-table--with-action-buttons undefined">
                                                 <div class="m-data-table__container">
                                                     <div class="m-data-table__header">
                                                         <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                            <label data-i18n="appInfoPage.mountName">マウント 名</label>
+                                                            <label class="help-label">
+                                                                <label data-i18n="appInfoPage.useProject">使用項目</label> &nbsp
+                                                                <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                                                <label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label>
+                                                            </label>
                                                         </div>
                                                         <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                            <label data-i18n="appInfoPage.mountPath">マウント バス</label>
-                                                        </div>
-                                                        <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                            <button type="button" id="diskConfig-add"  class="a-add-item-button">
+                                                            <button type="button" id="clusterKeyVault-add" class="a-add-item-button">
                                                                 <i class="a-icon a-icon--add-item"></i>
                                                                 <label data-i18n="appInfoPage.newItem">項目追加</label>
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div class="m-data-table__container-item" id="diskConfig-content">
+                                                    <div class="m-data-table__container-item" id="clusterKeyVault-content">
 
                                                     </div>
                                                 </div>
                                             </div>
+                                            <br />
+
                                         </div>
-                                        <br />
-                  
                                     </div>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <label class="a-checkbox KeyChkbox">
-                                        <input type="checkbox" class="a-checkbox__input" id="KeyCheckbox" name="KeyCheckbox" value="2" />
-                                        <div class="a-checkbox__body">
-                                            <span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                                            <div class="a-checkbox__label">
-                                                <label class="help-label">
-                                                    <label data-i18n="appInfoPage.keyVaultSet">KeyVault設置</label> &nbsp
-                                                    <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                                </label>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <label class="a-checkbox">
+                                            <input type="checkbox" class="a-checkbox__input" id="ConfigCheckbox" name="ConfigCheckbox" value="3" />
+                                            <div class="a-checkbox__body">
+                                                <span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
+                                                <div class="a-checkbox__label">
+                                                    <label class="help-label">
+                                                        <label data-i18n="appInfoPage.configMapSet">ConfigMap設置（KV）</label>&nbsp
+                                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <div id="KeyVault_div" style="display:none">
+                                        </label>
+                                    </div>
+                                    <div id="Config_div" style="display:none">
                                         <div class="m-data-table m-data-table--with-action-buttons undefined">
                                             <div class="m-data-table__container">
                                                 <div class="m-data-table__header">
                                                     <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                        <label class="help-label">
-                                                            <label data-i18n="appInfoPage.useProject">使用項目</label> &nbsp
-                                                            <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                                            <label data-i18n="appInfoPage.keyVaultsKey">（keyVaultのキー）</label>
-                                                        </label>
+                                                        <label data-i18n="appInfoPage.projectName">項目名</label>
                                                     </div>
                                                     <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                        <button type="button" id="clusterKeyVault-add" class="a-add-item-button">
+                                                        <label data-i18n="appInfoPage.projectEnName">項目英語名</label>
+                                                    </div>
+                                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                    <span class="m-data-table__truncate-content">
+                                                        <button type="button" id="configMap-add" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newItem">項目追加</label></button>
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                                <div class="m-data-table__container-item" id="configMap-content">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                    </div>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <label class="a-checkbox">
+                                            <input type="checkbox" class="a-checkbox__input" id="ConfigFileChk" name="ConfigMapFileCheckbox" value="4" />
+                                            <div class="a-checkbox__body">
+                                            <span class="a-checkbox__indicator">
+                                                <i class="a-icon a-icon--check-white"></i>
+                                            </span>
+                                                <div class="a-checkbox__label">
+                                                    <label data-i18n="appInfoPage.configMapFileSet">ConfigMap設置（FILE）</label>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div id="ConfigFile_div" style="display:none">
+                                        <div class="m-data-table m-data-table--with-action-buttons undefined">
+
+                                            <div class="m-data-table__container" id="configMapField-content">
+                                                <div class="m-data-table__header">
+                                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                        <label data-i18n="appInfoPage.filePath">ファイルパス</label>
+                                                    </div>
+                                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                        <label data-i18n="appInfoPage.fileLink">ファイルリンク</label>
+                                                    </div>
+                                                    <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                        <button type="button" id="configMapField-add" class="a-add-item-button">
                                                             <i class="a-icon a-icon--add-item"></i>
                                                             <label data-i18n="appInfoPage.newItem">項目追加</label>
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div class="m-data-table__container-item" id="clusterKeyVault-content">
-                                                
+                                                <div class="m-data-table__container-item">
+
                                                 </div>
                                             </div>
                                         </div>
                                         <br />
-                               
+
                                     </div>
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <label class="a-checkbox">
-                                        <input type="checkbox" class="a-checkbox__input" id="ConfigCheckbox" name="ConfigCheckbox" value="3" />
-                                        <div class="a-checkbox__body">
-                                            <span class="a-checkbox__indicator"><i class="a-icon a-icon--check-white"></i></span>
-                                            <div class="a-checkbox__label">
-                                                <label class="help-label">
-                                                    <label data-i18n="appInfoPage.configMapSet">ConfigMap設置（KV）</label>&nbsp
-                                                    <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div id="Config_div" style="display:none">
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
+                                        <label class="help-label">
+                                            <label data-i18n="appInfoPage.domain">ドメイン</label> &nbsp
+                                            <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
+                                        </label>
+                                    </div>
                                     <div class="m-data-table m-data-table--with-action-buttons undefined">
                                         <div class="m-data-table__container">
                                             <div class="m-data-table__header">
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    <label data-i18n="appInfoPage.projectName">項目名</label>
+                                                    <label data-i18n="appInfoPage.domainName">ドメイン名</label>
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    <label data-i18n="appInfoPage.projectEnName">項目英語名</label>
+                                                    <label data-i18n="appInfoPage.certification">証明書</label>
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    <span class="m-data-table__truncate-content">
-                                                        <button type="button" id="configMap-add" class="a-add-item-button"><i class="a-icon a-icon--add-item"></i><label data-i18n="appInfoPage.newItem">項目追加</label></button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="m-data-table__container-item" id="configMap-content">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br />
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <label class="a-checkbox">
-                                        <input type="checkbox" class="a-checkbox__input" id="ConfigFileChk" name="ConfigMapFileCheckbox" value="4" />
-                                        <div class="a-checkbox__body">
-                                            <span class="a-checkbox__indicator">
-                                                <i class="a-icon a-icon--check-white"></i>
-                                            </span>
-                                            <div class="a-checkbox__label">
-                                                <label data-i18n="appInfoPage.configMapFileSet">ConfigMap設置（FILE）</label>
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div id="ConfigFile_div" style="display:none">
-                                    <div class="m-data-table m-data-table--with-action-buttons undefined">
-
-                                        <div class="m-data-table__container" id="configMapField-content">
-                                            <div class="m-data-table__header">
-                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    <label data-i18n="appInfoPage.filePath">ファイルパス</label>
+                                                    <label data-i18n="appInfoPage.privateKey">プライベートキー</label>
                                                 </div>
                                                 <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    <label data-i18n="appInfoPage.fileLink">ファイルリンク</label>
-                                                </div>
-                                                <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                    <button type="button" id="configMapField-add" class="a-add-item-button">
+                                                    <button type="button" id="domain-add" class="a-add-item-button">
                                                         <i class="a-icon a-icon--add-item"></i>
-                                                        <label data-i18n="appInfoPage.newItem">項目追加</label>
+                                                        <label data-i18n="appInfoPage.newDomain">ドメイン追加</label>
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="m-data-table__container-item">
-                                                <div class="m-data-table__item">
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content"></span>
-                                                    </span>
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content">
-                                                            <button class="a-button a-button--primary">
-                                                                <div class="a-button__label">アップロード</div>
-                                                            </button>
-                                                        </span>
-                                                    </span>
-                                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                        <span class="m-data-table__truncate-content">
-                                                            <button class="a-button a-button--text">
-                                                                <div class="a-button__label">✔</div>
-                                                            </button>
-                                                        </span>
-                                                    </span>
-                                                </div>
+                                            <div class="m-data-table__container-item" id="domain-content">
+
+
                                             </div>
                                         </div>
                                     </div>
                                     <br />
-                            
-                                </div>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                    <label class="help-label">
-                                        <label data-i18n="appInfoPage.domain">ドメイン</label> &nbsp
-                                        <div class="a-help-button"><i class="a-icon a-icon--help"></i></div>
-                                    </label>
-                                </div>
-                                <div class="m-data-table m-data-table--with-action-buttons undefined">
-                                    <div class="m-data-table__container">
-                                        <div class="m-data-table__header">
-                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                <label data-i18n="appInfoPage.domainName">ドメイン名</label>
-                                            </div>
-                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                <label data-i18n="appInfoPage.certification">証明書</label>
-                                            </div>
-                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                <label data-i18n="appInfoPage.privateKey">プライベートキー</label>
-                                            </div>
-                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                <button type="button" id="domain-add" class="a-add-item-button">
-                                                    <i class="a-icon a-icon--add-item"></i>
-                                                    <label data-i18n="appInfoPage.newDomain">ドメイン追加</label>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="m-data-table__container-item" id="domain-content">
-
-                                            <div class="m-data-table__item">
-                                                <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                                    <span class="m-data-table__truncate-content"></span>
-                                                </span>
-                                                
-                                            </div>
-                                        </div>
+                                </section>
+                                <footer>
+                                    <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-3" style="align-items:center">
+                                        <button class="a-button a-button--primary a-button--huge" id="confirmButton">
+                                            <div class="a-button__label" data-i18n="appInfoPage.confirm">確定</div>
+                                        </button>
+                                        <button type="button" class="a-button a-button--third a-button--huge" id="cancelButton">
+                                            <div class="a-button__label" data-i18n="appInfoPage.cancel">取消</div>
+                                        </button>
                                     </div>
-                                </div>
-                                <br />
-                            </section>
-                            <footer>
-                                <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-3" style="align-items:center">
-                                    <button class="a-button a-button--primary a-button--huge" id="confirmButton">
-                                        <div class="a-button__label" data-i18n="appInfoPage.confirm">確定</div>
-                                    </button>
-                                    <button class="a-button a-button--third a-button--huge" id="cancelButton">
-                                        <div class="a-button__label" data-i18n="appInfoPage.cancel">取消</div>
-                                    </button>
-                                </div>
-                            </footer>
-                        </main>
+                                </footer>
+                            </main>
+                        </form>
                     </div>
                 </div>
                 <!-- End of Cluster Info Area -->

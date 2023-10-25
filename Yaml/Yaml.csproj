@@ -30,6 +30,7 @@
     <ItemGroup>
       <Folder Include="Domain\" />
       <Folder Include="Infrastructure\Presistence\" />
+      <Folder Include="uploads\" />
       <Folder Include="wwwroot\assets\locales\en\" />
       <Folder Include="wwwroot\assets\locales\ja\" />
       <Folder Include="YamlFile\json\" />

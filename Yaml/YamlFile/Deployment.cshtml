@@ -1,3 +1,4 @@
+@using Yaml.Infrastructure.Dto
 @model Yaml.Infrastructure.Dto.YamlClusterInfoDto
 apiVersion: apps/v1
 kind: Deployment
@@ -48,9 +49,9 @@ spec:
           ports: 
            - containerPort: 80
           volumeMounts:
-          @foreach (var path in @Model.Disk?.MountPath ?? Enumerable.Empty<String>())
+          @foreach (var path in @Model.Disk?.MountPath ?? Enumerable.Empty<MountPath>())
           {
-            string mountPath = $"           - mountPath: {path}\n" +
+            string mountPath = $"           - mountPath: {path.Path}\n" +
                                $"             name: {Model.ClusterName}-pvc \n";
             @mountPath
           }

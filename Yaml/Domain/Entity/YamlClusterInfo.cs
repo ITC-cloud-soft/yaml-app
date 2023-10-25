@@ -16,7 +16,6 @@ public class YamlClusterInfo : CommonFields
     
     [Column("image")]
     public string? Image { get; set; }
-
     
     [Column("pod_num")]
     public int? PodNum { get; set; }

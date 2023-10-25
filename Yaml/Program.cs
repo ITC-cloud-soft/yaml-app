@@ -61,6 +61,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
+app.UseRouting();
+app.UseCors("AllowSpecificOrigin"); // 使用名为 "AllowSpecificOrigin" 的 CORS 策略
 app.UseMiddleware<ExceptionHandlingInterceptor>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
