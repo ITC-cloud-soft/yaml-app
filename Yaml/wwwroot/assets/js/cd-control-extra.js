@@ -23,8 +23,13 @@ $(function () {
     });
 
     // init table content
-    tableComponemt.initComponent(2, selectors.keyVaultId);
-    tableComponemt.initComponent(3, selectors.configMapId);
+    tableComponemt.initComponent(2, selectors.keyVaultId, [], ["keyVault"]);
+    tableComponemt.initComponent(2, selectors.clusterKeyVault, [], ["keyVault"]);
+    tableComponemt.initComponent(3, selectors.configMapId, [], ["key", "value"]);
+    tableComponemt.initComponent(3, selectors.diskConfig,[], ["name", "path" ]);
+    tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""]);
+    tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"]);
+
 })
 
 const initPage = (($) => {
@@ -34,9 +39,12 @@ const initPage = (($) => {
         $("#newKeyVaultBtn").click(() => {
 
         })
-
+        
+        $("#save-button").click(() =>{
+           const pageData = getControllerData();
+        })
     }
-
+    
     function initValidation(i18next) {
 
         const rules = {
@@ -72,11 +80,25 @@ const initPage = (($) => {
     function renderErrorI18() {
 
     }
+    
+    function getControllerData(){
+        const diskTableData = tableComponemt.getTableData(selectors.diskConfig)
+        const keyVaultClusterData = tableComponemt.getTableData(selectors.clusterKeyVault)
+        const keyVaultAppData = tableComponemt.getTableData(selectors.keyVaultId)
+        const configMapTableData = tableComponemt.getTableData(selectors.configMapId)
+        const configMapFileTableData = tableComponemt.getTableDataWithFileUpload(selectors.configMapField)
+        const domainData = tableComponemt.getTableDataWithFileUpload(selectors.domain)
+        console.log(domainData);
+    }
+    
+    function getDomainTableData(){
+        $(selectors.domainContent).find()
+    }
 
     return {
         bindValidation: initValidation,
         renderErrorI18: renderErrorI18,
-        bindEvents: initElementEvent
+        bindEvents: initElementEvent,
     };
 })(jQuery)
 
@@ -102,15 +124,3 @@ const loginComponent = (($) => {
         login: login
     };
 })(jQuery);
-
-const appComponent = (($) => {
-    function deploy() {
-
-    }
-
-
-    return {
-        deploy: deploy
-    }
-
-})(jQuery)

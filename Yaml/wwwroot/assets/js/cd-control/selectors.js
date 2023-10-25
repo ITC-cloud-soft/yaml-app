@@ -20,10 +20,16 @@ const selectors = {
     diskSize : "[name='diskSize']",
     diskType : "[name='diskType']",
     KeyCheckbox : "[name='KeyCheckbox']",
-    onfigCheckbox : "[name='ConfigCheckbox']",
+    configCheckbox : "[name='ConfigCheckbox']",
     configMapFileCheckbox : "[name='ConfigMapFileCheckbox']",
     configMapId : "#configMap",
-    'confirmButton' : "#confirmButton",
-    'cancelButton' : "#cancelButton",
+    
+    confirmButton : "#confirmButton",
+    cancelButton : "#cancelButton",
+    diskConfig : "#diskConfig",
+    domain : "#domain",
+    domainContent : "#domain-content",
+    configMapField : "#configMapField",
+    clusterKeyVault : "#clusterKeyVault",
     "":""
 }
