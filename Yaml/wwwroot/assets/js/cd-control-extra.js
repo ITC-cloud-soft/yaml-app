@@ -35,9 +35,7 @@ $(function () {
     tableComponemt.initComponent(3, selectors.diskConfig, [], ["name", "path"]);
     tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""]);
     tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"]);
-
     cdPlugin.getAppDataDtoFromBackend('1')
-
 })
 
 
@@ -57,18 +55,18 @@ const cdPlugin = (($) => {
                 $(selectors.memory).val(cluster.memory)
                 $(selectors.manageLevel).val(cluster.manageLabel)
                 $(selectors.prefix).val(cluster.prefix)
-                
-                if(cluster.diskInfoFlag){
+
+                if (cluster.diskInfoFlag) {
                     $(selectors.diskCheckbox).prop('checked', true)
                 }
-                if(cluster.keyVaultFlag){
+                if (cluster.keyVaultFlag) {
                     $(selectors.KeyCheckbox).prop('checked', true)
                     renderArea(cluster.keyVaultFlag, '#KeyVault_div')
                     for (let i = 0; i < cluster.keyVault.length; i++) {
                         console.log(cluster.keyVault.length)
                         $('#clusterKeyVault-content').append(
                             `
-                                <div class="m-data-table__item" id="{{columnId}}" colcount="${i+1}">
+                                <div class="m-data-table__item" id="{{columnId}}" colcount="${i + 1}">
                                      <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <div class="a-text-field a-text-field--type-text">    
                                           <input type="text" name="#clusterKeyVault-${i}" value="${cluster.keyVault[i].configKey}" colname="configKey" class="a-text-field__input">
@@ -80,36 +78,139 @@ const cdPlugin = (($) => {
                                             <button class="a-button a-button--text">
                                                </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
                                                <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this)"><i class="a-icon a-icon--close-hover"></i></button> 
-                                            
                                         </span>
                                     </span>
                                 </div>
                             `
                         )
                     }
-                }  
-                if(cluster.configMapFlag){
+                }
+                if (cluster.configMapFlag) {
                     $(selectors.configCheckbox).prop('checked', true)
                     renderArea(cluster.keyVaultFlag, '#Config_div')
+                    for (let i = 0; i < cluster.configMap.length; i++) {
+                        $('#configMap-content').append(
+                            `
+                                <div class="m-data-table__item" id="{{columnId}}" colcount="${i + 1}">
+                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                        <div class="a-text-field a-text-field--type-text">    
+                                          <input type="text" name="#configMap-0" value="${cluster.configMap[i].configKey}" colname="configKey" class="a-text-field__input">
+                                        </div>
+                                    </span>
+                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                        <div class="a-text-field a-text-field--type-text">    
+                                          <input type="text" name="#configMap-1" value="${cluster.configMap[i].value}" colname="value" class="a-text-field__input">
+                                        </div>
+                                    </span>
+                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                        <span class="m-data-table__truncate-content">
+                                            <button class="a-button a-button--text">
+                                               </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
+                                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this)"><i class="a-icon a-icon--close-hover"></i></button> 
+                                        </span>
+                                    </span>
+                                </div>
+                            `
+                        )
+                    }
                 }
-                if(cluster.configMapFileFlag){
+                if (cluster.configMapFileFlag) {
                     $(selectors.configMapFileCheckbox).prop('checked', true)
                     renderArea(cluster.keyVaultFlag, '#ConfigFile_div')
+                    const configMapFiles = cluster.configFile;
+                    for (let i = 0; i < configMapFiles.length; i++) {
+                        // render page
+                        $('#configMapField-table-body').append(`
+                            <div class="m-data-table__item" columnid="{{columnId}}">
+                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                    <div class="a-text-field a-text-field--type-text">    
+                                          <input type="text" name="#configMapField${i}-0" value="${configMapFiles[i].filePath}" colname="filePath" class="a-text-field__input">
+                                    </div>
+                                </span>
+                                
+                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                    <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
+                                        <input type="file" file-input="#configMapField${i}-1" style="display: none"> 
+                                        <span class="a-upload-field__description" selected-file="#configMapField${i}-1"> ${configMapFiles[i].fileLink} </span>
+                                        <button type="button" class="a-button a-button--primary" file-upload-button="#configMapField${i}-1" colname="fileLink" name="#configMapField${i}-1">
+                                            upload
+                                        </button>
+                                    </div>
+                                </span>
+                                
+                                <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                    <span class="m-data-table__truncate-content">
+                                       <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this)">
+                                         <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
+                                       </button> 
+                                    </span>
+                                </span>
+                            </div>
+                        `)
+
+                        // bind upload event fn
+                        tableComponemt.bindUploadEvent(
+                            '#configMapField-content',
+                            "[file-upload-button='#configMapField" + i + "-1']",
+                            "[file-input='#configMapField" + i + "-1']",
+                            "[selected-file='#configMapField" + i + "-1']",
+                        )
+                    }
+                }
+                
+                if (cluster.domain != null){
+                    $('#domain-content').append(`
+                        <div class="m-data-table__item" columnid="{{columnId}}">
+                             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                <div class="a-text-field a-text-field--type-text">    
+                                      <input type="text" name="#domain0-0" value="${cluster.domain.domainName}" colname="domainName" class="a-text-field__input">
+                                </div>
+                            </span>
+                             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
+                                    <input type="file" file-input="#domain0-1" style="display: none"> 
+                                    <span class="a-upload-field__description" selected-file="#domain0-1">${cluster.domain.certification}</span>
+                                    <button type="button" class="a-button a-button--primary" file-upload-button="#domain0-1" colname="certification" name="#domain0-1">
+                                        upload
+                                    </button>
+                                </div>
+                            </span>
+                             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
+                                    <input type="file" file-input="#domain0-2" style="display: none"> 
+                                    <span class="a-upload-field__description" selected-file="#domain0-2">${cluster.domain.privateKey}</span>
+                                    <button type="button" class="a-button a-button--primary" file-upload-button="#domain0-2" colname="privateKey" name="#domain0-2">
+                                        upload
+                                    </button>
+                                </div>
+                            </span>
+                            <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                <span class="m-data-table__truncate-content">
+                                   <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this)">
+                                     <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
+                                   </button> 
+                                </span>
+                            </span>
+                        </div>
+                    
+                    `)
+
+                    // bind upload event fn
+                    tableComponemt.bindUploadEvent(
+                        '#configMapField-content',
+                        "[file-upload-button='#configMapField" + 0 + "-1']",
+                        "[file-input='#configMapField" + 0 + "-1']",
+                        "[selected-file='#configMapField" + 0 + "-1']",
+                    )
                 }
             }
         })
     }
-    
-    function renderKeyVaultTableContent(){
-        
-        
-        
-        
+
+    function renderArea(ifRender, selector) {
+        ifRender ? $(selector).css({"display": "block"}) : $(selector).css({"display": "none"})
     }
 
-    function renderArea(ifRender, selector){
-        ifRender ? $(selector).css({"display":"block"}) :  $(selector).css({"display": "none"})
-    }
     function getAppDataDtoFromBackend(appId) {
 
         commonFunctions.axios()
@@ -122,9 +223,9 @@ const cdPlugin = (($) => {
     }
 
     function renderPage(appInfoDto) {
-        
+
         clusterInfoList = appInfoDto.clusterInfoList;
-        
+
         // App Info Page
         $(selectors.appName).val(appInfoDto.appName)
         $(selectors.crServer).val(appInfoDto.cr)
@@ -165,36 +266,38 @@ const cdPlugin = (($) => {
         if (appInfoDto.clusterInfoList != null) {
             appInfoDto.clusterInfoList.forEach(function (cluster) {
                 $('#setting-table-content').append(`
-                <div class="m-data-table__item">
-                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                      <span class="m-data-table__truncate-content">${cluster.clusterName}</span>
-                    </span>
-                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                      <span class="m-data-table__truncate-content">${cluster.image}</span>
-                    </span>
-                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                      <span class="m-data-table__truncate-content">${cluster.podNum}</span>
-                    </span>
-                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                      <span class="m-data-table__truncate-content">${cluster.cpu}</span>
-                    </span>
-                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                      <span class="m-data-table__truncate-content">${cluster.memory}</span>
-                    </span>
-                    <span class="m-data-table__content m-data-table__content--type-action m-data-table__content--align-left m-data-table__content--valign-center">
-                      <span class="m-data-table__truncate-content">
-                          <button class="a-button a-button--text" onclick="cdPlugin.renderClusterPage(${cluster.id})">
-                              <div class="a-button__label">編集</div>
-                          </button>
-                          <button class="a-button a-button--text" onclick="cdPlugin.renderClusterPage(${cluster.id})">
-                              <div class="a-button__label">削除 </div>
-                          </button>
-                      </span>
-                    </span>
-                </div>
-        `)
+                    <div class="m-data-table__item">
+                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                          <span class="m-data-table__truncate-content">${cluster.clusterName}</span>
+                        </span>
+                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                          <span class="m-data-table__truncate-content">${cluster.image}</span>
+                        </span>
+                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                          <span class="m-data-table__truncate-content">${cluster.podNum}</span>
+                        </span>
+                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                          <span class="m-data-table__truncate-content">${cluster.cpu}</span>
+                        </span>
+                        <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                          <span class="m-data-table__truncate-content">${cluster.memory}</span>
+                        </span>
+                        <span class="m-data-table__content m-data-table__content--type-action m-data-table__content--align-left m-data-table__content--valign-center">
+                          <span class="m-data-table__truncate-content">
+                              <button class="a-button a-button--text" onclick="cdPlugin.renderClusterPage(${cluster.id})">
+                                  <div class="a-button__label">編集</div>
+                              </button>
+                              <button class="a-button a-button--text" onclick="cdPlugin.renderClusterPage(${cluster.id})">
+                                  <div class="a-button__label">削除 </div>
+                              </button>
+                          </span>
+                        </span>
+                    </div>
+                `)
             })
         }
+        
+        
     }
 
     function initElementEvent() {

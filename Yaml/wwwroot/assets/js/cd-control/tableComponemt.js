@@ -244,7 +244,7 @@ const tableComponemt = (() => {
                 for (let i = 0; i < selectedFiles.length; i++) {
                     fileNames.push(selectedFiles[i].name);
                 }
-                $(selectedFileNames).text(`  ${fileNames.join(', ')}`);
+                $(selectedFileNames).text(`${fileNames.join(', ')}`);
                 // Send the selected files to the server
                 // uploadFiles(selectedFiles);
             } else {
@@ -255,6 +255,7 @@ const tableComponemt = (() => {
     
     return {
         initComponent: init,
+        bindUploadEvent: bindUploadEvent,
         getTableData: getTableData,
         getAppKeyVaultData: getAppKeyVaultData,
         getDomainTableData: getDomainTableData,
