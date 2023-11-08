@@ -134,7 +134,7 @@ const cdPlugin = (($) => {
                         }
                         // render page
                         $('#configMapField-table-body').append(`
-                            <div class="m-data-table__item" columnid="{{columnId}}">
+                            <div class="m-data-table__item" rowId="${configMapFiles[i].id}" columnid="{{columnId}}">
                                  <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                     <div class="a-text-field a-text-field--type-text">    
                                           <input type="text" name="#configMapField${i}-0" value="${configMapFiles[i].filePath}" colname="filePath" class="a-text-field__input">

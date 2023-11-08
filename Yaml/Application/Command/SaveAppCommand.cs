@@ -36,15 +36,15 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             await _context.SaveChangesAsync(cancellationToken);
 
             // save app key vault info
-            // foreach (var kv in yamlAppInfoDto.KeyVault.KeyVault ?? Enumerable.Empty<string>())
-            // {
-            //     var yamlKeyVaultInfo = new YamlKeyVaultInfo()
-            //     {
-            //         ConfigKey = kv, 
-            //         AppId = yamlAppInfo.Id
-            //     };
-            //     await _context.KeyVaultInfo.AddAsync(yamlKeyVaultInfo, cancellationToken);
-            // }
+            foreach (var kv in yamlAppInfoDto.KeyVault.KeyVault ?? Enumerable.Empty<string>())
+            {
+                var yamlKeyVaultInfo = new YamlKeyVaultInfo()
+                {
+                    ConfigKey = kv, 
+                    AppId = yamlAppInfo.Id
+                };
+                await _context.KeyVaultInfo.AddAsync(yamlKeyVaultInfo, cancellationToken);
+            }
 
             // save whole cluster info
             foreach (var yamlClusterInfoDto in yamlAppInfoDto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
@@ -90,25 +90,25 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                    }).ToList() ?? new List<YamlClusterConfigFileInfo>();
                    _context.ConfigFile.UpdateRange(configFileList);
                }
-               //  
-               //  // Key Vault
-               // if (yamlClusterInfoDto.KeyVaultFlag)
-               // {
-               //     var keyVaultInfoList = yamlClusterInfoDto.KeyVault?.Select(dto => new YamlKeyVaultInfo
-               //         {
-               //             ClusterId = cluster.Id,
-               //             ConfigKey = dto.ConfigKey
-               //         }
-               //     ).ToList() ?? new List<YamlKeyVaultInfo>();
-               //     _context.KeyVaultInfo.UpdateRange(keyVaultInfoList);
-               // }
-               //
-               // // Disk info
-               // if (yamlClusterInfoDto.DiskInfoFlag)
-               // {
-               //     Console.WriteLine(yamlClusterInfoDto.Disk.MountPath.Length);
-               //     // TODO yamlClusterInfoDto.Disk
-               // }
+                
+                // save KeyVault
+               if (yamlClusterInfoDto.KeyVaultFlag)
+               {
+                   var keyVaultInfoList = yamlClusterInfoDto.KeyVault?.Select(dto => new YamlKeyVaultInfo
+                       {
+                           ClusterId = cluster.Id,
+                           ConfigKey = dto.ConfigKey
+                       }
+                   ).ToList() ?? new List<YamlKeyVaultInfo>();
+                   _context.KeyVaultInfo.UpdateRange(keyVaultInfoList);
+               }
+               
+               // Disk info
+               if (yamlClusterInfoDto.DiskInfoFlag)
+               {
+                   Console.WriteLine(yamlClusterInfoDto.Disk.MountPath.Length);
+                   // TODO yamlClusterInfoDto.Disk
+               }
                
             }
             await _context.SaveChangesAsync(cancellationToken);

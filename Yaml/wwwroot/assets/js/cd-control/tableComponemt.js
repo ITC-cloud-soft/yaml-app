@@ -18,7 +18,7 @@ const tableComponemt = (() => {
         
         let tabContent = 
             `
-            <div class="m-data-table__item" id={{columnId}} rowId="-1" colCount={{colCount}}>
+            <div class="m-data-table__item" id={{columnId}} rowId="0" colCount={{colCount}}>
                 {{content}}
             </div>
             `
@@ -76,7 +76,7 @@ const tableComponemt = (() => {
 
         let tabContent =
             `
-            <div class="m-data-table__item" columnId={{columnId}}>
+            <div class="m-data-table__item" rowId="0" columnId={{columnId}}>
                 {{content}}
             </div>
             `
@@ -114,12 +114,8 @@ const tableComponemt = (() => {
             </span>
             `     
         // column auto increment
-        if(count[selector] === undefined){
-            count[selector] = 0;
-        }else {
-            count[selector] = $(selector + content).find('[columnId]').length + 1;
-        }
-
+        count[selector] = ($(selector + content).find('[columnId]').length) + (count[selector] !== undefined ? 1 : 0);
+       
         // assemble table column like :  [colItem | colItem | button]
         let column = ''
         for (let i = 0; i < columnSize - 1; i++) {
@@ -221,6 +217,7 @@ const tableComponemt = (() => {
             const fileLink =  $("[selected-file='" + key +"-1']").attr('data-filename');
             item.filePath = filePath;
             item.fileLink = fileLink;
+            item.id =  $(rows[i]).attr('rowId')
             itemList.push(item)
         }
         return itemList;
