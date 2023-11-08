@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Yaml.Application;
 using Yaml.Infrastructure.Presistence.dao;
 namespace Yaml.Domain.Entity;
@@ -9,6 +10,7 @@ namespace Yaml.Domain.Entity;
 public class YamlClusterInfo : CommonFields
 {
     [Required]
+    [Key]
     public int Id { get; set; }
  
     [Column("cluster_name")]

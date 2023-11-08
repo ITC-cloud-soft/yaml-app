@@ -22,6 +22,7 @@ var userLanguage = "jp";
     }
 
     function closeCustomModal(selector){
+        
         let modal = $(selector)[0].__component;
         modal.opened = !1;
         modal.onCloseRequested = function () {

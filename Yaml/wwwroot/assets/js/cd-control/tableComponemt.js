@@ -18,7 +18,7 @@ const tableComponemt = (() => {
         
         let tabContent = 
             `
-            <div class="m-data-table__item" id={{columnId}} colCount={{colCount}}>
+            <div class="m-data-table__item" id={{columnId}} rowId="-1" colCount={{colCount}}>
                 {{content}}
             </div>
             `
@@ -86,7 +86,7 @@ const tableComponemt = (() => {
              <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                 <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
                     <input type="file" file-input="{{name}}"  style="display: none" /> 
-                    <span class="a-upload-field__description" selected-file="{{name}}"></span>
+                    <span class="a-upload-field__description" data-filename ='' selected-file="{{name}}"></span>
                     <button type="button" class="a-button a-button--primary" file-upload-button="{{name}}" colname="{{colname}}"  name="{{name}}" >
                         {{buttonName}}
                     </button>
@@ -168,6 +168,7 @@ const tableComponemt = (() => {
                 const colName = col.attr('colname')
                 item[colName] = col.val();
             }
+            item.id = row.attr('rowId')
             console.log(item)
             itemList.push(item)
         }
@@ -181,7 +182,6 @@ const tableComponemt = (() => {
             const row = $(rows[i]);
             const cols =row.find("[name]");
             const col = $(cols[0]);
-            console.log(col.val())
             itemList.push(col.val())
         }
         return itemList;
@@ -192,11 +192,12 @@ const tableComponemt = (() => {
         const rows = $(selector + "-content").find(".m-data-table__item");
         for (let i = 0; i < rows.length; i++) {
             const item = {};
-            const j = i + 1;
             const key = "#domain" + i;
             const domainName = $("[name='" + key +"-0']").val();
-            const certification =  $("[file-input='" + key +"-1']").val();
-            const privateKey =   $("[file-input='" + key +"-2']").val();
+            // const certification =  $("[file-input='" + key +"-1']").val();
+            const certification =  $("[selected-file='" + key +"-1']").attr('data-filename');
+            // const privateKey =   $("[file-input='" + key +"-2']").val();
+            const privateKey =   $("[selected-file='" + key +"-2']").attr('data-filename');
             const certificationFile =  $("[file-input='" + key +"-1']")[0].files[0];
             const privateKeyFile =   $("[file-input='" + key +"-2']")[0].files[0];
             
@@ -215,9 +216,9 @@ const tableComponemt = (() => {
         const rows = $(selector + "-content").find(".m-data-table__item");
         for (let i = 0; i < rows.length; i++) {
             const item = {};
-            const key = "#domain" + i;
+            const key = "#configMapField" + i;
             const filePath = $("[name='" + key +"-0']").val();
-            const fileLink =  $("[file-input='" + key +"-1']").val();
+            const fileLink =  $("[selected-file='" + key +"-1']").attr('data-filename');
             item.filePath = filePath;
             item.fileLink = fileLink;
             itemList.push(item)
@@ -226,9 +227,6 @@ const tableComponemt = (() => {
     }
     
     function bindUploadEvent(selector, uploadButtonSelector, fileInputSelector, selectedFileNames){
-        console.log(uploadButtonSelector)
-        console.log(fileInputSelector)
-        console.log(selectedFileNames)
         
         $(selector).on('click', uploadButtonSelector, function() {
             console.log(" Trigger file input click")
@@ -244,9 +242,10 @@ const tableComponemt = (() => {
                 for (let i = 0; i < selectedFiles.length; i++) {
                     fileNames.push(selectedFiles[i].name);
                 }
-                $(selectedFileNames).text(`${fileNames.join(', ')}`);
+               
                 // Send the selected files to the server
-                // uploadFiles(selectedFiles);
+                $(selectedFileNames).text(`${fileNames.join(', ')}`);
+                cdPlugin.fileUpload(selectedFiles, selectedFileNames);
             } else {
                 $(selectedFileNames).text('No files selected');
             }

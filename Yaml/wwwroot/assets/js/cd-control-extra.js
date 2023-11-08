@@ -3,6 +3,7 @@
 // 2. 新增cluster时 清空cluster 页面数据
 //  按Cluster页面保存的按钮时 保存Cluster信息到appDataInfo
 $(function () {
+
     new Promise((resolve, reject) => {
         resolve(initI18next());
     }).then(function (result) {
@@ -43,15 +44,23 @@ const cdPlugin = (($) => {
     "use strict"
 
     let clusterInfoList = [];
+    let ifNewCluster = {
+        flag: 1, // 1: new cluster 2: edit cached cluster 3: edit new cluster
+        clusterId: 0,
+    };
 
     function renderClusterPage(clusterId) {
         clusterInfoList.forEach(function (cluster) {
             if (clusterId === cluster.id) {
+                // clear cluster page if there had content
+                clearClusterPage();
                 commonFunctions.showCustomModal("#modal-cluster")
+                $('#clusterId').attr('clusterId', clusterId);
                 $(selectors.clusterName).val(cluster.clusterName)
                 $(selectors.imageName).val(cluster.image)
                 $(selectors.podCount).val(cluster.podNum)
-                $(selectors.cpu).val(cluster.cpu)
+                $('#cpu')[0].__component._choices.setChoiceByValue(cluster.cpu)
+                $('#memory')[0].__component._choices.setChoiceByValue(cluster.memory)
                 $(selectors.memory).val(cluster.memory)
                 $(selectors.manageLevel).val(cluster.manageLabel)
                 $(selectors.prefix).val(cluster.prefix)
@@ -87,14 +96,14 @@ const cdPlugin = (($) => {
                 }
                 if (cluster.configMapFlag) {
                     $(selectors.configCheckbox).prop('checked', true)
-                    renderArea(cluster.keyVaultFlag, '#Config_div')
+                    renderArea(cluster.configMapFlag, '#Config_div')
                     for (let i = 0; i < cluster.configMap.length; i++) {
                         $('#configMap-content').append(
                             `
-                                <div class="m-data-table__item" id="{{columnId}}" colcount="${i + 1}">
+                                <div class="m-data-table__item" rowId="${cluster.configMap[i].id}" id="{{columnId}}" colcount="${i + 1}">
                                      <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <div class="a-text-field a-text-field--type-text">    
-                                          <input type="text" name="#configMap-0" value="${cluster.configMap[i].configKey}" colname="configKey" class="a-text-field__input">
+                                          <input type="text"  name="#configMap-0" value="${cluster.configMap[i].configKey}" colname="configKey" class="a-text-field__input">
                                         </div>
                                     </span>
                                      <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
@@ -116,9 +125,13 @@ const cdPlugin = (($) => {
                 }
                 if (cluster.configMapFileFlag) {
                     $(selectors.configMapFileCheckbox).prop('checked', true)
-                    renderArea(cluster.keyVaultFlag, '#ConfigFile_div')
+                    renderArea(cluster.configMapFileFlag, '#ConfigFile_div')
                     const configMapFiles = cluster.configFile;
                     for (let i = 0; i < configMapFiles.length; i++) {
+                        let fileLink = configMapFiles[i].fileLink
+                        if (fileLink.indexOf('_') > -1) {
+                            fileLink = fileLink.split('_')[1]
+                        }
                         // render page
                         $('#configMapField-table-body').append(`
                             <div class="m-data-table__item" columnid="{{columnId}}">
@@ -131,7 +144,7 @@ const cdPlugin = (($) => {
                                  <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                     <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
                                         <input type="file" file-input="#configMapField${i}-1" style="display: none"> 
-                                        <span class="a-upload-field__description" selected-file="#configMapField${i}-1"> ${configMapFiles[i].fileLink} </span>
+                                        <span class="a-upload-field__description" data-filename="${configMapFiles[i].fileLink}" selected-file="#configMapField${i}-1"> ${fileLink} </span>
                                         <button type="button" class="a-button a-button--primary" file-upload-button="#configMapField${i}-1" colname="fileLink" name="#configMapField${i}-1">
                                             upload
                                         </button>
@@ -157,8 +170,14 @@ const cdPlugin = (($) => {
                         )
                     }
                 }
-                
-                if (cluster.domain != null){
+                if (cluster.domain != null) {
+
+                    let certification = cluster.domain.certification
+                    certification = certification.includes('_') ? certification.split('_')[1] : certification;
+
+                    let privateKey = cluster.domain.privateKey
+                    privateKey = privateKey.includes('_') ? privateKey.split('_')[1] : privateKey;
+
                     $('#domain-content').append(`
                         <div class="m-data-table__item" columnid="{{columnId}}">
                              <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
@@ -169,7 +188,7 @@ const cdPlugin = (($) => {
                              <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                 <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
                                     <input type="file" file-input="#domain0-1" style="display: none"> 
-                                    <span class="a-upload-field__description" selected-file="#domain0-1">${cluster.domain.certification}</span>
+                                    <span class="a-upload-field__description" data-filename="${cluster.domain.certification}" selected-file="#domain0-1">${certification}</span>
                                     <button type="button" class="a-button a-button--primary" file-upload-button="#domain0-1" colname="certification" name="#domain0-1">
                                         upload
                                     </button>
@@ -178,7 +197,7 @@ const cdPlugin = (($) => {
                              <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                 <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
                                     <input type="file" file-input="#domain0-2" style="display: none"> 
-                                    <span class="a-upload-field__description" selected-file="#domain0-2">${cluster.domain.privateKey}</span>
+                                    <span class="a-upload-field__description" data-filename="${cluster.domain.privateKey}" selected-file="#domain0-2">${privateKey}</span>
                                     <button type="button" class="a-button a-button--primary" file-upload-button="#domain0-2" colname="privateKey" name="#domain0-2">
                                         upload
                                     </button>
@@ -192,38 +211,49 @@ const cdPlugin = (($) => {
                                 </span>
                             </span>
                         </div>
-                    
                     `)
 
                     // bind upload event fn
                     tableComponemt.bindUploadEvent(
-                        '#configMapField-content',
-                        "[file-upload-button='#configMapField" + 0 + "-1']",
-                        "[file-input='#configMapField" + 0 + "-1']",
-                        "[selected-file='#configMapField" + 0 + "-1']",
+                        '#domain-content',
+                        "[file-upload-button='#domain" + 0 + "-1']",
+                        "[file-input='#domain" + 0 + "-1']",
+                        "[selected-file='#domain" + 0 + "-1']",
+                    )
+                    tableComponemt.bindUploadEvent(
+                        '#domain-content',
+                        "[file-upload-button='#domain" + 0 + "-2']",
+                        "[file-input='#domain" + 0 + "-2']",
+                        "[selected-file='#domain" + 0 + "-2']",
                     )
                 }
+                ifNewCluster.flag = 2
             }
         })
     }
 
     function renderArea(ifRender, selector) {
+        console.log('Render Checkbox： ', selector, ifRender)
         ifRender ? $(selector).css({"display": "block"}) : $(selector).css({"display": "none"})
     }
 
     function getAppDataDtoFromBackend(appId) {
-
         commonFunctions.axios()
             .get(`/api/App/${appId}`)
             .then(function (response) {
+                const appInfoDto = response.data;
+                cdPlugin.renderPage(appInfoDto)
                 console.log(response)
-                console.log(response.data)
-                cdPlugin.renderPage(response.data)
+                console.log(appInfoDto)
+                $('#appId').attr('appId', appInfoDto.id)
             })
     }
 
     function renderPage(appInfoDto) {
 
+        $("#keyVault-content").html('');
+        $("#setting-table-content").html('');
+        
         clusterInfoList = appInfoDto.clusterInfoList;
 
         // App Info Page
@@ -296,8 +326,6 @@ const cdPlugin = (($) => {
                 `)
             })
         }
-        
-        
     }
 
     function initElementEvent() {
@@ -305,41 +333,31 @@ const cdPlugin = (($) => {
         // new cluster show modal event
         // 新しい クラスター が モーダル イベント
         $('#new-cluster-btn').click(() => {
+            ifNewCluster.flag = 1;
+            ifNewCluster.clusterId += -1;
             clearClusterPage();
             commonFunctions.showCustomModal("#modal-cluster")
+            $('#clusterId').attr('clusterId', ifNewCluster.clusterId)
         })
 
         // save
         $("#confirmButton").click(() => {
             const clusterModalForm = $("#clusterForm");
-            // if(clusterModalForm.valid()){
-            //     const clusterData = getClusterData();
-            //     commonFunctions.closeCustomModal("#modal-cluster")
-            // }
+            if(clusterModalForm.valid()) {
+                console.log('form valid success')
+            }
             const clusterData = getClusterData();
-            console.log(clusterData);
+            commonFunctions.closeCustomModal("#modal-cluster")
+            clusterInfoList = clusterInfoList.filter(function (cluster) {
+                        return cluster.id !== clusterData.id
+                    });
             clusterInfoList.push(clusterData);
-
-            const appInfoData = getAppInfoData()
-            console.log({appInfoDto: appInfoData})
-
-            const files = [];
-            const file = $("[file-input='#domain0-1']")[0].files[0];
-            files.push(appInfoData.clusterInfoList[0].domain.certificationFile)
-            files.push(appInfoData.clusterInfoList[0].domain.privateKeyFile)
-            fileUpload(files)
-
-            commonFunctions.axios().post('/api/App/save',
-                {appInfoDto: appInfoData}
-            ).then(function amlApp(res) {
-                console.log(res)
-            }).catch(function (error) {
-                console.log(error)
-            })
-            // clearClusterPage();
+            console.log(clusterData)
+            renderPage(getAppInfoData())
         })
 
         $("#cancelButton").click(() => {
+            clearClusterPage();
             commonFunctions.closeCustomModal("#modal-cluster")
         })
 
@@ -350,10 +368,36 @@ const cdPlugin = (($) => {
                 {appInfoDto: appInfoData}
             ).then(function amlApp(res) {
                 console.log(res)
+                // refresh page
+                location.reload();
             }).catch(function (error) {
                 console.log(error)
             })
         })
+        $('#download-button').click(function (){
+            const appInfoData = getAppInfoData()
+            commonFunctions.axios()
+                .get(`/api/App/download?appId=${appInfoData.id}`,{responseType: 'blob'})
+                .then(function (response) {
+                    // Create a new Blob object using the response data
+                    const fileBlob = new Blob([response.data], { type: 'application/json' });
+
+                    // Create an object URL for the Blob
+                    const objectUrl = URL.createObjectURL(fileBlob);
+
+                    // Create a temporary anchor tag to trigger download
+                    const tempLink = document.createElement('a');
+                    tempLink.href = objectUrl;
+                    tempLink.setAttribute('download', 'content.json'); // Set the file name for the download
+                    document.body.appendChild(tempLink); // Append anchor to the body
+                    tempLink.click(); // Simulate click on anchor to trigger download
+
+                    // Clean up by revoking the Blob URL and removing the temporary anchor tag
+                    URL.revokeObjectURL(objectUrl);
+                    document.body.removeChild(tempLink);
+            })
+        })
+        
     }
 
     function initValidation(i18next) {
@@ -368,6 +412,7 @@ const cdPlugin = (($) => {
             podCount: {required: true},
             cpu: {required: true},
             memory: {required: true},
+            diskSize: {required: true},
         }
 
         const fieldName = i18next.t('appInfoPage.appName');
@@ -414,6 +459,7 @@ const cdPlugin = (($) => {
         const keyVaultAppData = tableComponemt.getAppKeyVaultData(selectors.keyVaultId)
 
         const appInfoDto = {};
+        appInfoDto.id = Number($('#appId').attr('appId'));
         appInfoDto.appName = $(selectors.appName).val();
         appInfoDto.cr = $(selectors.crServer).val();
         appInfoDto.token = $(selectors.token).val();
@@ -430,6 +476,7 @@ const cdPlugin = (($) => {
     }
 
     function getClusterData() {
+        const clusterId = Number($('#clusterId').attr('clusterId'));
         const diskTableData = tableComponemt.getTableData(selectors.diskConfig)
         const keyVaultClusterData = tableComponemt.getTableData(selectors.clusterKeyVault)
         const configMapTableData = tableComponemt.getTableData(selectors.configMapId)
@@ -443,6 +490,7 @@ const cdPlugin = (($) => {
         console.log(configMapFileTableData);
 
         const clusterInfo = {};
+        clusterInfo.id = clusterId;
         clusterInfo.clusterName = $(selectors.clusterName).val();
         clusterInfo.image = $(selectors.imageName).val();
         clusterInfo.podNum = Number($(selectors.podCount).val());
@@ -470,21 +518,18 @@ const cdPlugin = (($) => {
         return clusterInfo;
     }
 
-    function fileUpload(fileList) {
+    function fileUpload(fileList, selector) {
         const formData = new FormData();
         for (let i = 0; i < fileList.length; i++) {
             formData.append('files', fileList[i]);
-
         }
         // 发送POST请求
-        axios.post('/api/App/uploadFiles', formData, {
-            // headers: {
-            //     'Content-Type': 'multipart/form-data', // 设置Content-Type为multipart/form-data
-            // },
-        })
+        commonFunctions.axios().post('/api/App/uploadFiles', formData)
             .then(response => {
                 // 请求成功的处理逻辑
                 console.log(response.data);
+                console.log(selector);
+                $(selector).attr("data-filename", response.data.files[0])
             })
             .catch(error => {
                 // 请求失败的处理逻辑
@@ -501,24 +546,27 @@ const cdPlugin = (($) => {
         $(selectors.manageLevel).val('');
         $(selectors.prefix).val('');
         $(selectors.diskCheckbox).val('');
-        $(selectors.keyVaultClusterPageCheckbox).val('');
-        $(selectors.configCheckbox).val('');
-        $(selectors.configMapFileCheckbox).val('')
-        // remove table data
-        // $(selectors.domainContent).find().forEach()
-        const configMapFieldContent = $('#configMapField-content')
-            .find('.m-data-table__container-item')[0];
-        $(configMapFieldContent).html('')
-    }
+        $(selectors.keyVault).val('');
+        $(selectors.configCheckbox).prop('checked', false);
+        $(selectors.configMapFileCheckbox).prop('checked', false);
 
-    function getDomainTableData() {
-        $('#configMapField-content').find()
+        const configMapFieldContent = $('#configMapField-content').find('.m-data-table__container-item')[0];
+
+        $(selectors.diskSize).val('')
+        $(selectors.diskCheckbox).prop('checked', false)
+
+        // clear table content
+        $(configMapFieldContent).html('')
+        $('#domain-content').html('')
+        $('#configMap-content').html('')
+        $('#clusterKeyVault-content').html('')
     }
 
     return {
         bindValidation: initValidation,
         getAppDataDtoFromBackend: getAppDataDtoFromBackend,
         renderPage: renderPage,
+        fileUpload: fileUpload,
         renderClusterPage: renderClusterPage,
         renderErrorI18: renderErrorI18,
         bindEvents: initElementEvent,

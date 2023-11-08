@@ -67,6 +67,5 @@ public class MappingProfile : Profile
         CreateMap<YamlClusterConfigMapInfo, ConfigMapDto>();
         CreateMap<YamlClusterConfigFileInfo, ConfigFileDto>();
         CreateMap<YamlKeyVaultInfo, KeyVaultDto>();
-
     }
 }

@@ -29,70 +29,82 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
 
     public async Task<YamlAppInfoDto> Handle(GetAppQuery query, CancellationToken cancellationToken)
     {
-        // app info
-        var appInfo = await _context.AppInfoContext.Where(e => e.Id==query.AppId).FirstOrDefaultAsync(cancellationToken);
-        
-        if (appInfo == null)
+  
+        try
         {
-            throw new NotFoundException($"App [{query.AppId}] info not found");
-        }
-        var yamlAppInfoDto = _mapper.Map<YamlAppInfoDto>(appInfo);
-        
-        // Set app key vault 
-        var keyVault = await _context.KeyVaultInfo
-            .AsNoTracking()
-            .Where(e => e.AppId == appInfo.Id)
-            .Select(e => e.ConfigKey)
-            .ToListAsync(cancellationToken);
-        
-        yamlAppInfoDto.KeyVault = new AppKeyVault(
-            tenantId: appInfo.ManagedId, 
-            keyVaultName: appInfo.KeyVaultName,
-            managedId: appInfo.ManagedId, 
-            keyVault: keyVault
-        );
-       
-        // Get correspond cluster from DB
-        List<YamlClusterInfo> yamlClusterInfoList =
-            await _context.ClusterContext
+            // app info
+            var appInfo = await _context.AppInfoContext.Where(e => e.Id == query.AppId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (appInfo == null)
+            {
+                throw new NotFoundException($"App [{query.AppId}] info not found");
+            }
+
+            var yamlAppInfoDto = _mapper.Map<YamlAppInfoDto>(appInfo);
+
+            // Set app key vault 
+            var keyVault = await _context.KeyVaultInfo
                 .AsNoTracking()
                 .Where(e => e.AppId == appInfo.Id)
+                .Select(e => e.ConfigKey)
                 .ToListAsync(cancellationToken);
 
-        // Load Cluster info
-        List<YamlClusterInfoDto> yamlClusterInfoDtoList = new List<YamlClusterInfoDto>();
-        foreach (var yamlClusterInfo in yamlClusterInfoList)
-        {
-            var yamlClusterInfoDto = _mapper.Map<YamlClusterInfoDto>(yamlClusterInfo);
-            
-            yamlClusterInfoDto.Domain = await _context.Domain
-                .AsNoTracking()
-                .Where(e => e.ClusterId == yamlClusterInfo.Id)
-                .ProjectTo<DomainDto>(_mapper.ConfigurationProvider)
-                .SingleAsync(cancellationToken);
+            yamlAppInfoDto.KeyVault = new AppKeyVault(
+                tenantId: appInfo.ManagedId,
+                keyVaultName: appInfo.KeyVaultName,
+                managedId: appInfo.ManagedId,
+                keyVault: keyVault
+            );
 
-            yamlClusterInfoDto.ConfigMap = await _context.ConfigMap
-                .AsNoTracking()
-                .Where(e => e.ClusterId == yamlClusterInfo.Id)
-                .ProjectTo<ConfigMapDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
+            // Get correspond cluster from DB
+            List<YamlClusterInfo> yamlClusterInfoList =
+                await _context.ClusterContext
+                    .AsNoTracking()
+                    .Where(e => e.AppId == appInfo.Id)
+                    .ToListAsync(cancellationToken);
 
-            yamlClusterInfoDto.ConfigFile = await _context.ConfigFile
-                .AsNoTracking()
-                .Where(e => e.ClusterId == yamlClusterInfo.Id)
-                .ProjectTo<ConfigFileDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
+            // Load Cluster info
+            List<YamlClusterInfoDto> yamlClusterInfoDtoList = new List<YamlClusterInfoDto>();
+            foreach (var yamlClusterInfo in yamlClusterInfoList)
+            {
+                var yamlClusterInfoDto = _mapper.Map<YamlClusterInfoDto>(yamlClusterInfo);
 
-            yamlClusterInfoDto.KeyVault = await _context.KeyVaultInfo
-                .AsNoTracking()
-                .Where(e => e.ClusterId == yamlClusterInfo.Id)
-                .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
-         
-            yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
-            _logger.LogInformation("Get App:[{}] and AppId:[{}] info from DB", appInfo.AppName, appInfo.Id);
+                yamlClusterInfoDto.Domain = await _context.Domain
+                    .AsNoTracking()
+                    .Where(e => e.ClusterId == yamlClusterInfo.Id)
+                    .ProjectTo<DomainDto>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                yamlClusterInfoDto.ConfigMap = await _context.ConfigMap
+                    .AsNoTracking()
+                    .Where(e => e.ClusterId == yamlClusterInfo.Id)
+                    .ProjectTo<ConfigMapDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+                yamlClusterInfoDto.ConfigFile = await _context.ConfigFile
+                    .AsNoTracking()
+                    .Where(e => e.ClusterId == yamlClusterInfo.Id)
+                    .ProjectTo<ConfigFileDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+                yamlClusterInfoDto.KeyVault = await _context.KeyVaultInfo
+                    .AsNoTracking()
+                    .Where(e => e.ClusterId == yamlClusterInfo.Id)
+                    .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+                yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
+                _logger.LogInformation("Get App:[{}] and AppId:[{}] info from DB", appInfo.AppName, appInfo.Id);
+            }
+
+            yamlAppInfoDto.ClusterInfoList = yamlClusterInfoDtoList;
+            return yamlAppInfoDto;
         }
-        yamlAppInfoDto.ClusterInfoList = yamlClusterInfoDtoList;
-        return yamlAppInfoDto;
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error Details: ");
+            throw;
+        }
     }
 }

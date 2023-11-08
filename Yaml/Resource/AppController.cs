@@ -49,21 +49,16 @@ public class AppController : ApiControllerBase
     public async Task<IActionResult> Deploy()
     {
         var files = Request.Form.Files;
-
         if (files == null || files.Count == 0)
         {
             return BadRequest("没有选择要上传的文件");
         }
-
         var uploadDirectory = "uploads";
-
         if (!Directory.Exists(uploadDirectory))
         {
             Directory.CreateDirectory(uploadDirectory);
         }
-
         var uploadedFiles = new List<string>();
-
         foreach (var file in files)
         {
             if (file.Length > 0)

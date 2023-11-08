@@ -8,6 +8,7 @@ namespace Yaml.Domain.Entity;
 public class YamlAppInfo : CommonFields
 {
     [Required] 
+    [Key]
     public int Id { get; set; } 
 
     [Column("app_name")] 

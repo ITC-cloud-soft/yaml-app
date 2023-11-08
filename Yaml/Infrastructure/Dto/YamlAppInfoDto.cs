@@ -4,7 +4,7 @@ using Yaml.Infrastructure.Mappings;
 namespace Yaml.Infrastructure.Dto;
 public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
 {
-    public Int32 Id;
+    public int Id{ get; set; }
     
     // Namespace '[a-z0-9]([-a-z0-9]*[a-z0-9])?'
     public string? AppName { get; set; }
@@ -13,7 +13,6 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
     public string? MailAddress { get; set; }
     
     public bool NetdataFlag { get; set; }
-    
     public bool KeyVaultFlag { get; set; }
     public AppKeyVault? KeyVault { get; set; }
     
@@ -34,6 +33,7 @@ public class AppKeyVault
         KeyVault = keyVault;
     }
 
+    public int Id { get; set; }
     public string? TenantId { get; set; }
     public string? KeyVaultName { get; set; }
     public string? ManagedId { get; set; }
@@ -64,7 +64,6 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     // ConfigMap
     public bool ConfigMapFlag { set; get; }
     public List<ConfigMapDto>? ConfigMap { set; get; }
-    
     public bool ConfigMapFileFlag { set; get; }
     public List<ConfigFileDto>? ConfigFile { set; get; }
     
@@ -81,23 +80,27 @@ public class DiskInfo
 }
 public class MountPath
 {
+    public int Id { set; get; }
     public string? Name { set; get; }
     public string? Path { set; get; }
 }
 public class ConfigMapDto
 {
+    public int Id { set; get; }
     public string? ConfigKey { set; get; }
     public string? Value { set; get; }
 }
 
 public class ConfigFileDto
 {
+    public int Id { set; get; }
     public string? FilePath { set; get; }
     public string? FileLink { set; get; }
 }
 
 public class DomainDto
 {
+    public int Id { set; get; }
     public string? DomainName { set; get; }
     public string? Certification { set; get; }
     public string? PrivateKey { set; get; }
@@ -105,6 +108,7 @@ public class DomainDto
 
 public class KeyVaultDto
 {
+    public int?  Id { set; get; }
     public int?  AppId{ set; get; }
     public string? ConfigKey { set; get; }
     public string? Value { set; get; }
