@@ -270,11 +270,12 @@ const cdPlugin = (($) => {
             renderArea(appInfoDto.keyVaultFlag, '#keyvalue_div')
             const kvList = appInfoDto.keyVault.keyVault;
             for (let i = 0; i < kvList.length; i++) {
+                const keyVault = kvList[i];
                 $('#keyVault-content').append(`
-                 <div class="m-data-table__item" id="{{columnId}}" colcount="1">
+                 <div class="m-data-table__item" rowId="${keyVault.id}" id="{{columnId}}" colcount="1">
                      <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                         <div class="a-text-field a-text-field--type-text">    
-                          <input type="text" name="#keyVault-${i}" value="${kvList[i]}" colname="keyVault" class="a-text-field__input">
+                          <input type="text" name="#keyVault-${i}" value="${keyVault.configKey}" colname="keyVault" class="a-text-field__input">
                         </div>
                     </span>
                     
@@ -330,8 +331,7 @@ const cdPlugin = (($) => {
 
     function initElementEvent() {
 
-        // new cluster show modal event
-        // 新しい クラスター が モーダル イベント
+        // bind new cluster btn event 
         $('#new-cluster-btn').click(() => {
             ifNewCluster.flag = 1;
             ifNewCluster.clusterId += -1;
@@ -340,7 +340,7 @@ const cdPlugin = (($) => {
             $('#clusterId').attr('clusterId', ifNewCluster.clusterId)
         })
 
-        // save
+        // bin confirm cluster event
         $("#confirmButton").click(() => {
             const clusterModalForm = $("#clusterForm");
             if(clusterModalForm.valid()) {
@@ -356,11 +356,13 @@ const cdPlugin = (($) => {
             renderPage(getAppInfoData())
         })
 
+        // bind cancel button event
         $("#cancelButton").click(() => {
             clearClusterPage();
             commonFunctions.closeCustomModal("#modal-cluster")
         })
 
+        // bind save app info event
         $("#save-button").click(() => {
             const appInfoData = getAppInfoData()
             console.log({appInfoDto: appInfoData})
@@ -368,12 +370,14 @@ const cdPlugin = (($) => {
                 {appInfoDto: appInfoData}
             ).then(function amlApp(res) {
                 console.log(res)
-                // refresh page
+                // TODO release refresh
                 location.reload();
             }).catch(function (error) {
                 console.log(error)
             })
         })
+        
+        // bind download json file event
         $('#download-button').click(function (){
             const appInfoData = getAppInfoData()
             commonFunctions.axios()
@@ -499,7 +503,7 @@ const cdPlugin = (($) => {
         clusterInfo.manageLabel = $(selectors.manageLevel).val();
         clusterInfo.prefix = $(selectors.prefix).val();
         clusterInfo.diskInfoFlag = $(selectors.diskCheckbox).prop("checked");
-        clusterInfo.keyVaultFlag = $(selectors.keyVaultClusterPageCheckbox).prop("checked");
+        clusterInfo.keyVaultFlag = $(selectors.KeyCheckbox).prop("checked");
         clusterInfo.configMapFlag = $(selectors.configCheckbox).prop("checked");
         clusterInfo.configMapFileFlag = $(selectors.configMapFileCheckbox).prop("checked");
         clusterInfo.configFile = configMapFileTableData;
@@ -523,16 +527,11 @@ const cdPlugin = (($) => {
         for (let i = 0; i < fileList.length; i++) {
             formData.append('files', fileList[i]);
         }
-        // 发送POST请求
         commonFunctions.axios().post('/api/App/uploadFiles', formData)
             .then(response => {
-                // 请求成功的处理逻辑
-                console.log(response.data);
-                console.log(selector);
                 $(selector).attr("data-filename", response.data.files[0])
             })
             .catch(error => {
-                // 请求失败的处理逻辑
                 console.log(error);
             });
     }

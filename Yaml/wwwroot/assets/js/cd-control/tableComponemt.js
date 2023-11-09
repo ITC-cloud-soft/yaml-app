@@ -175,10 +175,14 @@ const tableComponemt = (() => {
         const itemList = [];
         const rows = $(selector + content).find("[colcount]");
         for (let i = 0; i < rows.length; i++) {
+            const item = {};
             const row = $(rows[i]);
             const cols =row.find("[name]");
             const col = $(cols[0]);
-            itemList.push(col.val())
+            item.id = row.attr('rowId');
+            item.configKey = col.val();
+            item.appId = Number($('#appId').attr('appId'));
+            itemList.push(item);
         }
         return itemList;
     }

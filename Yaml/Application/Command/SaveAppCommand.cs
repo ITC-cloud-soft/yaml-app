@@ -36,14 +36,16 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             await _context.SaveChangesAsync(cancellationToken);
 
             // save app key vault info
-            foreach (var kv in yamlAppInfoDto.KeyVault.KeyVault ?? Enumerable.Empty<string>())
+            foreach (var kv in yamlAppInfoDto.KeyVault.KeyVault ?? Enumerable.Empty<KeyVaultDto>())
             {
                 var yamlKeyVaultInfo = new YamlKeyVaultInfo()
                 {
-                    ConfigKey = kv, 
-                    AppId = yamlAppInfo.Id
-                };
-                await _context.KeyVaultInfo.AddAsync(yamlKeyVaultInfo, cancellationToken);
+                    ConfigKey = kv.ConfigKey, 
+                    AppId = yamlAppInfo.Id,
+                    Id = kv.Id,
+                    Value = kv.Value
+                }; 
+                _context.KeyVaultInfo.Update(yamlKeyVaultInfo);
             }
 
             // save whole cluster info
@@ -97,7 +99,9 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                    var keyVaultInfoList = yamlClusterInfoDto.KeyVault?.Select(dto => new YamlKeyVaultInfo
                        {
                            ClusterId = cluster.Id,
-                           ConfigKey = dto.ConfigKey
+                           ConfigKey = dto.ConfigKey,
+                           Id = dto.Id,
+                           Value = dto.Value
                        }
                    ).ToList() ?? new List<YamlKeyVaultInfo>();
                    _context.KeyVaultInfo.UpdateRange(keyVaultInfoList);
@@ -109,8 +113,9 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                    Console.WriteLine(yamlClusterInfoDto.Disk.MountPath.Length);
                    // TODO yamlClusterInfoDto.Disk
                }
-               
             }
+            
+            // commit transaction
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             _logger.LogInformation("Save app Info [{}] to DB", yamlAppInfoDto.AppName);

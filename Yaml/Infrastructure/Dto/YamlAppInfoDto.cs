@@ -6,7 +6,6 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
 {
     public int Id{ get; set; }
     
-    // Namespace '[a-z0-9]([-a-z0-9]*[a-z0-9])?'
     public string? AppName { get; set; }
     public string? Cr { get; set; }
     public string? Token { get; set; }
@@ -25,7 +24,7 @@ public class AppKeyVault
     {
     }
     
-    public AppKeyVault( string? tenantId, string? keyVaultName, string? managedId, List<string> keyVault)
+    public AppKeyVault( string? tenantId, string? keyVaultName, string? managedId, List<KeyVaultDto> keyVault)
     {
         TenantId = tenantId;
         KeyVaultName = keyVaultName;
@@ -37,7 +36,7 @@ public class AppKeyVault
     public string? TenantId { get; set; }
     public string? KeyVaultName { get; set; }
     public string? ManagedId { get; set; }
-    public List<string>? KeyVault { get; set; }
+    public List<KeyVaultDto>? KeyVault { get; set; }
 }
 
 
@@ -106,10 +105,14 @@ public class DomainDto
     public string? PrivateKey { set; get; }
 }
 
+// Response to YamlKeyVaultInfo
 public class KeyVaultDto
 {
-    public int?  Id { set; get; }
+    public int  Id { set; get; }
     public int?  AppId{ set; get; }
     public string? ConfigKey { set; get; }
     public string? Value { set; get; }
+    public string? ClusterId { set; get; }
+
 }
+
