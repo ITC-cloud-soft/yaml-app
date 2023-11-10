@@ -45,7 +45,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                     Id = kv.Id,
                     Value = kv.Value
                 }; 
-                _context.KeyVaultInfo.Update(yamlKeyVaultInfo);
+                _context.KeyVaultInfoContext.Update(yamlKeyVaultInfo);
             }
 
             // save whole cluster info
@@ -66,7 +66,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                {
                    var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(yamlClusterInfoDto.Domain);
                    clusterDomain.ClusterId = cluster.Id;
-                   _context.Domain.Update(clusterDomain);
+                   _context.DomainContext.Update(clusterDomain);
                }
                
                // save ConfigMap
@@ -104,14 +104,13 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                            Value = dto.Value
                        }
                    ).ToList() ?? new List<YamlKeyVaultInfo>();
-                   _context.KeyVaultInfo.UpdateRange(keyVaultInfoList);
+                   _context.KeyVaultInfoContext.UpdateRange(keyVaultInfoList);
                }
                
                // Disk info
                if (yamlClusterInfoDto.DiskInfoFlag)
                {
-                   Console.WriteLine(yamlClusterInfoDto.Disk.MountPath.Length);
-                   // TODO yamlClusterInfoDto.Disk
+                   // TODO save yamlClusterInfoDto.Disk
                }
             }
             

@@ -44,7 +44,7 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
             var yamlAppInfoDto = _mapper.Map<YamlAppInfoDto>(appInfo);
 
             // Set app key vault 
-            var yamlKeyVaultInfo = await _context.KeyVaultInfo
+            var yamlKeyVaultInfo = await _context.KeyVaultInfoContext
                 .AsNoTracking()
                 .Where(e => e.AppId == appInfo.Id)
                 .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
@@ -70,7 +70,7 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
             {
                 var yamlClusterInfoDto = _mapper.Map<YamlClusterInfoDto>(yamlClusterInfo);
 
-                yamlClusterInfoDto.Domain = await _context.Domain
+                yamlClusterInfoDto.Domain = await _context.DomainContext
                     .AsNoTracking()
                     .Where(e => e.ClusterId == yamlClusterInfo.Id)
                     .ProjectTo<DomainDto>(_mapper.ConfigurationProvider)
@@ -88,12 +88,12 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
                     .ProjectTo<ConfigFileDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                yamlClusterInfoDto.KeyVault = await _context.KeyVaultInfo
+                yamlClusterInfoDto.KeyVault = await _context.KeyVaultInfoContext
                     .AsNoTracking()
                     .Where(e => e.ClusterId == yamlClusterInfo.Id)
                     .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
-
+                
                 yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
                 _logger.LogInformation("Get App:[{}] and AppId:[{}] info from DB", appInfo.AppName, appInfo.Id);
             }

@@ -66,7 +66,7 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     public bool ConfigMapFileFlag { set; get; }
     public List<ConfigFileDto>? ConfigFile { set; get; }
     
-    // Domain
+    // DomainContext
     public DomainDto? Domain { set; get; }
 }
 

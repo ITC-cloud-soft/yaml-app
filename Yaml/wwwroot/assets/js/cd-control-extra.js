@@ -368,9 +368,8 @@ const cdPlugin = (($) => {
             console.log({appInfoDto: appInfoData})
             commonFunctions.axios().post('/api/App/save',
                 {appInfoDto: appInfoData}
-            ).then(function amlApp(res) {
+            ).then(function (res) {
                 console.log(res)
-                // TODO release refresh
                 location.reload();
             }).catch(function (error) {
                 console.log(error)
@@ -549,12 +548,12 @@ const cdPlugin = (($) => {
         $(selectors.configCheckbox).prop('checked', false);
         $(selectors.configMapFileCheckbox).prop('checked', false);
 
-        const configMapFieldContent = $('#configMapField-content').find('.m-data-table__container-item')[0];
 
         $(selectors.diskSize).val('')
         $(selectors.diskCheckbox).prop('checked', false)
 
         // clear table content
+        const configMapFieldContent = $('#configMapField-content').find('.m-data-table__container-item')[0];
         $(configMapFieldContent).html('')
         $('#domain-content').html('')
         $('#configMap-content').html('')
@@ -567,7 +566,7 @@ const cdPlugin = (($) => {
         renderPage: renderPage,
         fileUpload: fileUpload,
         renderClusterPage: renderClusterPage,
-        renderErrorI18: renderErrorI18,
+         renderErrorI18: renderErrorI18,
         bindEvents: initElementEvent,
     };
 })(jQuery)

@@ -7,6 +7,7 @@ namespace Yaml.Domain.Entity;
 [Table("TBL_YAML_User")]
 public class YamlUser : CommonFields
 {
+    [Key]
     [Required] 
     public int Id { get; set; } 
     
