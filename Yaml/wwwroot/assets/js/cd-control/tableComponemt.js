@@ -4,17 +4,17 @@ const tableComponemt = (() => {
         
     };
     
-    function init(columnSize, selector, buttonNames, colNames) {
+    function init(columnSize, selector, buttonNames, colNames, type) {
         $(selector+"-add").click(function () {
             if(buttonNames && buttonNames.length > 0){
-                addRowWithButton(columnSize, selector, buttonNames, colNames)
+                addRowWithButton(columnSize, selector, buttonNames, colNames, type)
             }else{
-                addRow(columnSize, selector, colNames)
+                addRow(columnSize, selector, colNames, type)
             }
         })
     }
 
-    function addRow(columnSize, selector, colNames) {
+    function addRow(columnSize, selector, colNames, type) {
         
         let tabContent = 
             `
@@ -38,7 +38,7 @@ const tableComponemt = (() => {
                 <span class="m-data-table__truncate-content">
                     <button class="a-button a-button--text">
                        <button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
-                       <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this)"><i class="a-icon a-icon--close-hover"></i></button> 
+                       <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, ${type}"><i class="a-icon a-icon--close-hover"></i></button> 
                     </button>
                 </span>
             </span>
@@ -72,7 +72,7 @@ const tableComponemt = (() => {
           $(selector+"-content").append(tabContent);
     }
     
-    function addRowWithButton(columnSize, selector, buttonNames, colNames){
+    function addRowWithButton(columnSize, selector, buttonNames, colNames, type){
 
         let tabContent =
             `
@@ -107,7 +107,7 @@ const tableComponemt = (() => {
             `
             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                 <span class="m-data-table__truncate-content">
-                   <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this)">
+                   <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, ${type})">
                      <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
                    </button> 
                 </span>
@@ -147,9 +147,12 @@ const tableComponemt = (() => {
             $(selector+"-content").append(tabContent);
     }
     
-    function removeRow(selector){
+    function removeRow(selector, type){
         const element = $(selector)
-        element.parent().parent().parent().remove()
+        const row = element.parent().parent().parent();
+        const rowId = row.attr('rowId');
+        cdPlugin.deleteItem(rowId, type)
+        row.remove()
     }
     
     function getTableData(selector){

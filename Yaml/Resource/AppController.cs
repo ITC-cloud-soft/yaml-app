@@ -75,4 +75,12 @@ public class AppController : ApiControllerBase
         }
         return Ok(new { message = "文件上传成功", files = uploadedFiles });
     }
+
+
+    [HttpDelete("deleteItem")]
+    public async Task<IActionResult> Delete([FromQuery] DeleteCommand command)
+    {
+        return Ok(await Mediator.Send(command));
+    }
+    
 }

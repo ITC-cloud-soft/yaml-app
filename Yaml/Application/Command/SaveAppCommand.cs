@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
+using Yaml.Infrastructure.Exception;
 
 namespace Yaml.Application.Command;
 
@@ -64,9 +65,24 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 // save domain 
                if (yamlClusterInfoDto.Domain != null )
                {
-                   var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(yamlClusterInfoDto.Domain);
-                   clusterDomain.ClusterId = cluster.Id;
-                   _context.DomainContext.Update(clusterDomain);
+                 
+                    // Check if the domain already exists           
+                   var domainInfo = _context.DomainContext
+                       .FirstOrDefault(e => e.ClusterId == cluster.Id);
+                   if (domainInfo == null)
+                   {
+                       // If it doesn't exist, map and add a new domain 
+                       var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(yamlClusterInfoDto.Domain);
+                       clusterDomain.ClusterId = cluster.Id;
+                       _context.DomainContext.Add(clusterDomain);
+                   }
+                   else
+                   {
+                       // If it exists, update its properties directly
+                       domainInfo.DomainName = yamlClusterInfoDto.Domain.DomainName;
+                       domainInfo.Certification = yamlClusterInfoDto.Domain.Certification;
+                       domainInfo.PrivateKey = yamlClusterInfoDto.Domain.PrivateKey;
+                   }
                }
                
                // save ConfigMap
@@ -124,7 +140,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
         {
             await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(e, "Error saving app Info to DB");
-            return "error";
+            throw new ServiceException("Error saving app Info to DB", e);
         }
     }
 }

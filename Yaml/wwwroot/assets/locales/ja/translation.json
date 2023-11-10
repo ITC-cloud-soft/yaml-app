@@ -35,8 +35,8 @@
     "memory": "メモリ",
     "operation": "操作",
     "save": "保存",
-    "download": "ダウンロード",
-    "upload": "アップロード",
+    "download": "yamlエクスポート",
+    "upload": "インポート",
     "deploy": "デプロイ",
     "number": "※数字",
     "manageLevel": "managedレベル",
@@ -60,7 +60,8 @@
     "confirm": "確定",
     "cancel": "取消",
     "clusterEdition": "クラスター編集",
-    "prefix": "Prefix"
+    "prefix": "Prefix",
+    "export": "エクスポート"
   }
 }
 

@@ -30,12 +30,12 @@ $(function () {
     });
 
     // init table content
-    tableComponemt.initComponent(2, selectors.keyVaultId, [], ["keyVault"]);
-    tableComponemt.initComponent(2, selectors.clusterKeyVault, [], ["configKey"]);
-    tableComponemt.initComponent(3, selectors.configMapId, [], ["configKey", "value"]);
-    tableComponemt.initComponent(3, selectors.diskConfig, [], ["name", "path"]);
-    tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""]);
-    tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"]);
+    tableComponemt.initComponent(2, selectors.keyVaultId, [], ["keyVault"], "AppKeyVault");
+    tableComponemt.initComponent(2, selectors.clusterKeyVault, [], ["configKey"], "ClusterKeyVault");
+    tableComponemt.initComponent(3, selectors.configMapId, [], ["configKey", "value"], "ConfigMap");
+    tableComponemt.initComponent(3, selectors.diskConfig, [], ["name", "path"], "ConfigFile");
+    tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""], "Domain");
+    tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "DiskInfo");
     cdPlugin.getAppDataDtoFromBackend('1')
 })
 
@@ -86,7 +86,7 @@ const cdPlugin = (($) => {
                                         <span class="m-data-table__truncate-content">
                                             <button class="a-button a-button--text">
                                                </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
-                                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this)"><i class="a-icon a-icon--close-hover"></i></button> 
+                                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this,'ClusterKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
                                         </span>
                                     </span>
                                 </div>
@@ -115,7 +115,7 @@ const cdPlugin = (($) => {
                                         <span class="m-data-table__truncate-content">
                                             <button class="a-button a-button--text">
                                                </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
-                                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this)"><i class="a-icon a-icon--close-hover"></i></button> 
+                                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'ConfigMap')"><i class="a-icon a-icon--close-hover"></i></button> 
                                         </span>
                                     </span>
                                 </div>
@@ -153,7 +153,7 @@ const cdPlugin = (($) => {
                                 
                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                     <span class="m-data-table__truncate-content">
-                                       <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this)">
+                                       <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, 'ConfigFile')">
                                          <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
                                        </button> 
                                     </span>
@@ -205,7 +205,7 @@ const cdPlugin = (($) => {
                             </span>
                             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                 <span class="m-data-table__truncate-content">
-                                   <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this)">
+                                   <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, 'Domain')">
                                      <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
                                    </button> 
                                 </span>
@@ -283,7 +283,7 @@ const cdPlugin = (($) => {
                         <span class="m-data-table__truncate-content">
                             <button class="a-button a-button--text">
                                </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
-                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this)"><i class="a-icon a-icon--close-hover"></i></button> 
+                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'AppKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
                         </span>
                     </span>
                 </div>
@@ -370,7 +370,7 @@ const cdPlugin = (($) => {
                 {appInfoDto: appInfoData}
             ).then(function (res) {
                 console.log(res)
-                location.reload();
+                // location.reload();
             }).catch(function (error) {
                 console.log(error)
             })
@@ -547,8 +547,6 @@ const cdPlugin = (($) => {
         $(selectors.keyVault).val('');
         $(selectors.configCheckbox).prop('checked', false);
         $(selectors.configMapFileCheckbox).prop('checked', false);
-
-
         $(selectors.diskSize).val('')
         $(selectors.diskCheckbox).prop('checked', false)
 
@@ -559,8 +557,16 @@ const cdPlugin = (($) => {
         $('#configMap-content').html('')
         $('#clusterKeyVault-content').html('')
     }
+    
+    function deleteItem(id, type){
+        commonFunctions.axios().delete(`/api/App/deleteItem?id=${id}&type=${type}`)
+            .then(function (response){
+                console.log(response)
+            });
+    }
 
     return {
+        deleteItem : deleteItem,
         bindValidation: initValidation,
         getAppDataDtoFromBackend: getAppDataDtoFromBackend,
         renderPage: renderPage,

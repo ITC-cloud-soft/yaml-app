@@ -57,6 +57,7 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "clusterEdition": "Edit Cluster",
-    "prefix": "Prefix"
+    "prefix": "Prefix",
+    "export": "export"
   }
 }

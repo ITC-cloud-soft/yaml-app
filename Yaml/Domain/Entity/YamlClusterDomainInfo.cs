@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Yaml.Infrastructure.Presistence.dao;
 namespace Yaml.Domain.Entity;
@@ -23,4 +24,14 @@ public class YamlClusterDomainInfo : CommonFields
     
     [Column("cluster_id")]
     public int ClusterId{ set; get; }
+
+    // public YamlClusterDomainInfo(int id)
+    // {
+    //     Id = id;
+    // }
+    //
+    // public YamlClusterDomainInfo()
+    // {
+    //    
+    // }
 }

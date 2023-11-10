@@ -57,6 +57,7 @@
     "confirm": "确认",
     "cancel": "取消",
     "clusterEdition": "编辑集群",
-    "prefix": "前缀"
+    "prefix": "前缀",
+    "export": "导出"
   }
 }
