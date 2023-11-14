@@ -7,6 +7,7 @@
     "pwdEmpty": "密码不能为空"
   },
   "appInfoPage": {
+    "all":"全部",
     "controller": "Controller",
     "clusterStorage": "集群存储",
     "manual": "手册",
@@ -32,7 +33,7 @@
     "memory": "内存",
     "operation": "操作",
     "save": "保存",
-    "download": "下载",
+    "download": "Yaml 下载",
     "upload": "上传",
     "deploy": "发布",
     "number": "数字",
@@ -47,7 +48,7 @@
     "keyVaultSet": "Key Vault Set",
     "filePath": "文件路径",
     "fileLink": "文件链接",
-    "domain": "域",
+    "domain": "域名",
     "domainName": "域名",
     "newDomain": "新增域名",
     "privateKey": "Private Key",
@@ -58,6 +59,7 @@
     "cancel": "取消",
     "clusterEdition": "编辑集群",
     "prefix": "前缀",
-    "export": "导出"
+    "export": "导出",
+    "notNull": "不能为空"
   }
 }

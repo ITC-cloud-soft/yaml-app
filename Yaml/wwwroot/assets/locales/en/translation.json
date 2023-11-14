@@ -7,6 +7,7 @@
     "pwdEmpty": "Password cannot be empty."
   },
   "appInfoPage": {
+    "all": "All",
     "controller": "Controller",
     "clusterStorage": "ClusterStorage",
     "manual": "Manual",
@@ -58,6 +59,7 @@
     "cancel": "Cancel",
     "clusterEdition": "Edit Cluster",
     "prefix": "Prefix",
-    "export": "export"
+    "export": "Export",
+    "notNull": "can not be null"
   }
 }

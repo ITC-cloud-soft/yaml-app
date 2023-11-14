@@ -3,6 +3,7 @@ using MediatR;
 using RazorLight;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
+using Yaml.Infrastructure.Exception;
 
 namespace Yaml.Application.Command;
 
@@ -35,14 +36,22 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
 
     public async Task<string> Handle(DeployAppCommand command, CancellationToken cancellationToken)
     {
-        var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
-        // await _kubeApi.CreateSecret(command.AppInfoDto, cancellationToken);
-        await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
-        
-        await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
-        await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
-        await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
-        await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
-        return v1Namespace.Metadata.Name;
+        try
+        {
+            var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateSecret(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
+
+            await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
+            return v1Namespace.Metadata.Name;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new ServiceException("Deploy APP Error : ", e);
+        }
     }
 }

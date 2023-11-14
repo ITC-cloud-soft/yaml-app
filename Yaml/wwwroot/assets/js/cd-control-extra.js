@@ -25,6 +25,7 @@ $(function () {
         i18next.changeLanguage(chosenLng, () => {
             render();
             cdPlugin.renderErrorI18();
+            cdPlugin.bindValidation(i18next)
             commonFunctions.userLanguage = chosenLng;
         });
     });
@@ -253,7 +254,7 @@ const cdPlugin = (($) => {
 
         $("#keyVault-content").html('');
         $("#setting-table-content").html('');
-        
+
         clusterInfoList = appInfoDto.clusterInfoList;
 
         // App Info Page
@@ -343,17 +344,17 @@ const cdPlugin = (($) => {
         // bin confirm cluster event
         $("#confirmButton").click(() => {
             const clusterModalForm = $("#clusterForm");
-            if(clusterModalForm.valid()) {
-                console.log('form valid success')
+            if (clusterModalForm.valid()) {
+                console.log('valid form')
+                const clusterData = getClusterData();
+                commonFunctions.closeCustomModal("#modal-cluster")
+                clusterInfoList = clusterInfoList.filter(function (cluster) {
+                    return cluster.id !== clusterData.id
+                });
+                clusterInfoList.push(clusterData);
+                console.log(clusterData)
+                renderPage(getAppInfoData())
             }
-            const clusterData = getClusterData();
-            commonFunctions.closeCustomModal("#modal-cluster")
-            clusterInfoList = clusterInfoList.filter(function (cluster) {
-                        return cluster.id !== clusterData.id
-                    });
-            clusterInfoList.push(clusterData);
-            console.log(clusterData)
-            renderPage(getAppInfoData())
         })
 
         // bind cancel button event
@@ -364,26 +365,29 @@ const cdPlugin = (($) => {
 
         // bind save app info event
         $("#save-button").click(() => {
-            const appInfoData = getAppInfoData()
-            console.log({appInfoDto: appInfoData})
-            commonFunctions.axios().post('/api/App/save',
-                {appInfoDto: appInfoData}
-            ).then(function (res) {
-                console.log(res)
-                // location.reload();
-            }).catch(function (error) {
-                console.log(error)
-            })
+            const appForm = $("#appForm");
+            if (appForm.valid()) {
+                const appInfoData = getAppInfoData()
+                console.log({appInfoDto: appInfoData})
+                commonFunctions.axios().post('/api/App/save',
+                    {appInfoDto: appInfoData}
+                ).then(function (res) {
+                    console.log(res)
+                    // location.reload();
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            }
         })
-        
+
         // bind download json file event
-        $('#download-button').click(function (){
+        $('#download-button').click(function () {
             const appInfoData = getAppInfoData()
             commonFunctions.axios()
-                .get(`/api/App/download?appId=${appInfoData.id}`,{responseType: 'blob'})
+                .get(`/api/App/download?appId=${appInfoData.id}`, {responseType: 'blob'})
                 .then(function (response) {
                     // Create a new Blob object using the response data
-                    const fileBlob = new Blob([response.data], { type: 'application/json' });
+                    const fileBlob = new Blob([response.data], {type: 'application/json'});
 
                     // Create an object URL for the Blob
                     const objectUrl = URL.createObjectURL(fileBlob);
@@ -398,13 +402,20 @@ const cdPlugin = (($) => {
                     // Clean up by revoking the Blob URL and removing the temporary anchor tag
                     URL.revokeObjectURL(objectUrl);
                     document.body.removeChild(tempLink);
-            })
+                })
         })
-        
     }
 
     function initValidation(i18next) {
+        // custom validation rules
+        $.validator.addMethod("appKeyVaultNotNull", function(value, element) {
+            // 自定义验证逻辑
+            // 返回 true 表示验证通过，返回 false 表示验证失败
+            return  ('#KeyCheckbox').is(":checked") && $("#clusterKeyVault-content").find('.m-data-table__item')
+        }, "Custom error message.");
 
+        
+        // normal validation
         const rules = {
             appName: {required: true},
             crServer: {required: true},
@@ -416,15 +427,50 @@ const cdPlugin = (($) => {
             cpu: {required: true},
             memory: {required: true},
             diskSize: {required: true},
+            tenantId: {
+                required: {
+                    depends: function (element) {
+                        return $(selectors.keyConnect).is(":checked");
+                    }
+                }
+            },
+            keyVault: {
+                required: {
+                    depends: function (element) {
+                        return $(selectors.keyConnect).is(":checked");
+                    }
+                }
+            },
+            manageId: {
+                required: {
+                    depends: function (element) {
+                        return $(selectors.keyConnect).is(":checked");
+                    }
+                }
+            },
+            // keyVaultCustom:{appKeyVaultNotNull: true},
+            KeyCheckbox:{
+                appKeyVaultNotNull: true
+            }
         }
 
-        const fieldName = i18next.t('appInfoPage.appName');
-        const appName = i18next.t('common.notNull', {fieldName});
+
         const messages = {
-            appName: appName,
-            pwd: {
-                required: i18next.t('login-page.pwdEmpty')
-            }
+            appName: `${i18next.t('appInfoPage.appName')} ${i18next.t('appInfoPage.notNull')}`,
+            crServer: `${i18next.t('appInfoPage.crServer')} ${i18next.t('appInfoPage.notNull')}`,
+            token: `${i18next.t('appInfoPage.token')} ${i18next.t('appInfoPage.notNull')}`,
+            mail: `${i18next.t('appInfoPage.mail')} ${i18next.t('appInfoPage.notNull')}`,
+            clusterName: `${i18next.t('appInfoPage.clusterName')} ${i18next.t('appInfoPage.notNull')}`,
+            imageName: `${i18next.t('appInfoPage.image')} ${i18next.t('appInfoPage.notNull')}`,
+            podCount: `${i18next.t('appInfoPage.podNum')} ${i18next.t('appInfoPage.notNull')}`,
+            cpu: ` cpu ${i18next.t('appInfoPage.notNull')}`,
+            memory: `${i18next.t('appInfoPage.memory')} ${i18next.t('appInfoPage.notNull')}`,
+            diskSize: `${i18next.t('appInfoPage.diskSize')} ${i18next.t('appInfoPage.notNull')}`,
+            tenantId: `TenantId ${i18next.t('appInfoPage.notNull')}`,
+            keyVault: `KeyVault ${i18next.t('appInfoPage.notNull')}`,
+            manageId: `ManageId ${i18next.t('appInfoPage.notNull')}`,
+            KeyCheckbox: "Please enter an even number.",
+            pwd: `${i18next.t('login-page.pwdEmpty')}`
         }
 
         const appForm = $("#appForm");
@@ -449,9 +495,17 @@ const cdPlugin = (($) => {
             rules,
             messages,
             errorPlacement: function (error, element) {
-                error.insertAfter(element.parent());
+                console.log(element.attr('id'))
+                if(element.attr('id') === "KeyCheckbox"){
+                    error.insertAfter(element.parent());
+                }else{
+                    error.insertAfter(element.parent().parent().parent().parent());
+                }
             }
         })
+
+        clusterModalForm.validate().settings.messages = messages;
+        appForm.validate().settings.messages = messages;
     }
 
     function renderErrorI18() {
@@ -557,22 +611,22 @@ const cdPlugin = (($) => {
         $('#configMap-content').html('')
         $('#clusterKeyVault-content').html('')
     }
-    
-    function deleteItem(id, type){
+
+    function deleteItem(id, type) {
         commonFunctions.axios().delete(`/api/App/deleteItem?id=${id}&type=${type}`)
-            .then(function (response){
+            .then(function (response) {
                 console.log(response)
             });
     }
 
     return {
-        deleteItem : deleteItem,
+        deleteItem: deleteItem,
         bindValidation: initValidation,
         getAppDataDtoFromBackend: getAppDataDtoFromBackend,
         renderPage: renderPage,
         fileUpload: fileUpload,
         renderClusterPage: renderClusterPage,
-         renderErrorI18: renderErrorI18,
+        renderErrorI18: renderErrorI18,
         bindEvents: initElementEvent,
     };
 })(jQuery)

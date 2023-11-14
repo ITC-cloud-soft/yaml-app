@@ -85,7 +85,6 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     }
                     break;
             }
-            
             await _context.SaveChangesAsync(cancellationToken);
             return "Success";
         }

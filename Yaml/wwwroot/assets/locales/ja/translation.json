@@ -10,6 +10,7 @@
     "pwdEmpty": "パスワードは空白できません"
   },
   "appInfoPage": {
+    "all": "全般",
     "controller": "CDコントロール",
     "clusterStorage": "クラウドストア",
     "manual": "マニュアル",
@@ -35,7 +36,7 @@
     "memory": "メモリ",
     "operation": "操作",
     "save": "保存",
-    "download": "yamlエクスポート",
+    "download": "yamlダウンロード",
     "upload": "インポート",
     "deploy": "デプロイ",
     "number": "※数字",
@@ -61,7 +62,8 @@
     "cancel": "取消",
     "clusterEdition": "クラスター編集",
     "prefix": "Prefix",
-    "export": "エクスポート"
+    "export": "エクスポート",
+    "notNull": "は空白にできません"
   }
 }
 
