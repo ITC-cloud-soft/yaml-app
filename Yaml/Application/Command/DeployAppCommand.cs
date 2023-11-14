@@ -41,7 +41,6 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
             var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
             // await _kubeApi.CreateSecret(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
-
             await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);

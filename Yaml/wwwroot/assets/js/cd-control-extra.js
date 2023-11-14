@@ -34,9 +34,9 @@ $(function () {
     tableComponemt.initComponent(2, selectors.keyVaultId, [], ["keyVault"], "AppKeyVault");
     tableComponemt.initComponent(2, selectors.clusterKeyVault, [], ["configKey"], "ClusterKeyVault");
     tableComponemt.initComponent(3, selectors.configMapId, [], ["configKey", "value"], "ConfigMap");
-    tableComponemt.initComponent(3, selectors.diskConfig, [], ["name", "path"], "ConfigFile");
+    tableComponemt.initComponent(3, selectors.diskConfig, [], ["name", "path"], "DiskInfo");
     tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""], "Domain");
-    tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "DiskInfo");
+    tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
     cdPlugin.getAppDataDtoFromBackend('1')
 })
 
@@ -76,7 +76,7 @@ const cdPlugin = (($) => {
                         console.log(cluster.keyVault.length)
                         $('#clusterKeyVault-content').append(
                             `
-                                <div class="m-data-table__item" id="{{columnId}}" colcount="${i + 1}">
+                                <div class="m-data-table__item"  rowId="${cluster.keyVault[i].id}" id="{{columnId}}" colcount="${i + 1}">
                                      <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <div class="a-text-field a-text-field--type-text">    
                                           <input type="text" name="#clusterKeyVault-${i}" value="${cluster.keyVault[i].configKey}" colname="configKey" class="a-text-field__input">
@@ -134,33 +134,35 @@ const cdPlugin = (($) => {
                             fileLink = fileLink.split('_')[1]
                         }
                         // render page
-                        $('#configMapField-table-body').append(`
-                            <div class="m-data-table__item" rowId="${configMapFiles[i].id}" columnid="{{columnId}}">
-                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                    <div class="a-text-field a-text-field--type-text">    
-                                          <input type="text" name="#configMapField${i}-0" value="${configMapFiles[i].filePath}" colname="filePath" class="a-text-field__input">
-                                    </div>
-                                </span>
-                                
-                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                    <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
-                                        <input type="file" file-input="#configMapField${i}-1" style="display: none"> 
-                                        <span class="a-upload-field__description" data-filename="${configMapFiles[i].fileLink}" selected-file="#configMapField${i}-1"> ${fileLink} </span>
-                                        <button type="button" class="a-button a-button--primary" file-upload-button="#configMapField${i}-1" colname="fileLink" name="#configMapField${i}-1">
-                                            upload
-                                        </button>
-                                    </div>
-                                </span>
-                                
-                                <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                    <span class="m-data-table__truncate-content">
-                                       <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, 'ConfigFile')">
-                                         <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
-                                       </button> 
+                        $('#configMapField-table-body').append(
+                            `
+                                <div class="m-data-table__item" rowId="${configMapFiles[i].id}" columnid="{{columnId}}">
+                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                        <div class="a-text-field a-text-field--type-text">    
+                                              <input type="text" name="#configMapField${i}-0" value="${configMapFiles[i].filePath}" colname="filePath" class="a-text-field__input">
+                                        </div>
                                     </span>
-                                </span>
-                            </div>
-                        `)
+                                    
+                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                        <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
+                                            <input type="file" file-input="#configMapField${i}-1" style="display: none"> 
+                                            <span class="a-upload-field__description" data-filename="${configMapFiles[i].fileLink}" selected-file="#configMapField${i}-1"> ${fileLink} </span>
+                                            <button type="button" class="a-button a-button--primary" file-upload-button="#configMapField${i}-1" colname="fileLink" name="#configMapField${i}-1">
+                                                upload
+                                            </button>
+                                        </div>
+                                    </span>
+                                    
+                                    <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                        <span class="m-data-table__truncate-content">
+                                           <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, 'ConfigFile')">
+                                             <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
+                                           </button> 
+                                        </span>
+                                    </span>
+                                </div>
+                            `
+                        )
 
                         // bind upload event fn
                         tableComponemt.bindUploadEvent(
@@ -345,7 +347,6 @@ const cdPlugin = (($) => {
         $("#confirmButton").click(() => {
             const clusterModalForm = $("#clusterForm");
             if (clusterModalForm.valid()) {
-                console.log('valid form')
                 const clusterData = getClusterData();
                 commonFunctions.closeCustomModal("#modal-cluster")
                 clusterInfoList = clusterInfoList.filter(function (cluster) {
@@ -407,13 +408,36 @@ const cdPlugin = (($) => {
     }
 
     function initValidation(i18next) {
-        // custom validation rules
-        $.validator.addMethod("appKeyVaultNotNull", function(value, element) {
-            // 自定义验证逻辑
-            // 返回 true 表示验证通过，返回 false 表示验证失败
-            return  ('#KeyCheckbox').is(":checked") && $("#clusterKeyVault-content").find('.m-data-table__item')
-        }, "Custom error message.");
+        /**
+         カスタム検証ルール
+         */
+        // app key vault checkbox validation
+        validate(
+            "appKeyVaultValidation", 
+            "#checkbox-single",
+            "#keyVault-content"
+        )
 
+        // cluster page key vault checkbox validation
+        validate(
+            "clusterKeyVaultTableValidation",
+            "#KeyCheckbox",
+            "#clusterKeyVault-content"
+        )
+
+        // cluster config map vault checkbox validation
+        validate(
+            "ConfigMapValidation",
+            "#ConfigCheckbox",
+            "#configMap-content"
+        )
+
+        // cluster config file vault checkbox validation
+        validate(
+            "ConfigFileValidation",
+            "#ConfigFileChk",
+            "#configMapField-content"
+        )
         
         // normal validation
         const rules = {
@@ -448,12 +472,11 @@ const cdPlugin = (($) => {
                     }
                 }
             },
-            // keyVaultCustom:{appKeyVaultNotNull: true},
-            KeyCheckbox:{
-                appKeyVaultNotNull: true
-            }
+            keyConnect:{appKeyVaultValidation: true},
+            KeyCheckbox:{clusterKeyVaultTableValidation: true},
+            ConfigCheckbox:{ConfigMapValidation: true},
+            ConfigMapFileCheckbox: {ConfigFileValidation: true}
         }
-
 
         const messages = {
             appName: `${i18next.t('appInfoPage.appName')} ${i18next.t('appInfoPage.notNull')}`,
@@ -469,7 +492,10 @@ const cdPlugin = (($) => {
             tenantId: `TenantId ${i18next.t('appInfoPage.notNull')}`,
             keyVault: `KeyVault ${i18next.t('appInfoPage.notNull')}`,
             manageId: `ManageId ${i18next.t('appInfoPage.notNull')}`,
-            KeyCheckbox: "Please enter an even number.",
+            keyConnect: `KeyVault 接続チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
+            KeyCheckbox: `KeyVault 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
+            ConfigCheckbox: `ConfigMap 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
+            ConfigMapFileCheckbox: `ConfigFile 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
             pwd: `${i18next.t('login-page.pwdEmpty')}`
         }
 
@@ -482,7 +508,12 @@ const cdPlugin = (($) => {
             rules,
             messages,
             errorPlacement: function (error, element) {
-                error.insertAfter(element.parent());
+                console.log(element)
+                if(element.attr('id') === "checkbox-single"){
+                    error.insertAfter($("#keyvalue_div"));
+                }else{
+                    error.insertAfter(element.parent());
+                }
             }
         })
 
@@ -495,8 +526,13 @@ const cdPlugin = (($) => {
             rules,
             messages,
             errorPlacement: function (error, element) {
+                console.log(element)
                 console.log(element.attr('id'))
-                if(element.attr('id') === "KeyCheckbox"){
+                if(element.attr('id') === "KeyCheckbox" 
+                    || element.attr('id') === "keyConnect"
+                    || element.attr('id') === "ConfigCheckbox"
+                    || element.attr('id') === "ConfigFileChk"
+                ){
                     error.insertAfter(element.parent());
                 }else{
                     error.insertAfter(element.parent().parent().parent().parent());
@@ -506,6 +542,24 @@ const cdPlugin = (($) => {
 
         clusterModalForm.validate().settings.messages = messages;
         appForm.validate().settings.messages = messages;
+        
+    }
+
+    /**
+     * カスタム検証ルール
+     * @param metohdName
+     * @param checkboxId
+     * @param tableId
+     * @param errorMessage
+     */
+    function validate(metohdName, checkboxId, tableId, errorMessage){
+        $.validator.addMethod(metohdName, function(value, element) {
+            // true を返すと検証が成功したことを意味し、false を返すと検証に失敗したことを意味します。
+            if($(checkboxId).is(":checked")){
+                return $(tableId).find('.m-data-table__item').length > 0;
+            }
+            return true;
+        }, errorMessage);
     }
 
     function renderErrorI18() {
@@ -613,12 +667,16 @@ const cdPlugin = (($) => {
     }
 
     function deleteItem(id, type) {
+        if (typeof id === "undefined") {
+            console.log("id not exist")
+            return
+        }
         commonFunctions.axios().delete(`/api/App/deleteItem?id=${id}&type=${type}`)
             .then(function (response) {
                 console.log(response)
             });
     }
-
+    
     return {
         deleteItem: deleteItem,
         bindValidation: initValidation,
