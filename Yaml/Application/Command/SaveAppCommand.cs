@@ -124,9 +124,15 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                }
                
                // Disk info
-               if (yamlClusterInfoDto.DiskInfoFlag)
+               if (yamlClusterInfoDto.DiskInfoFlag && yamlClusterInfoDto.DiskInfoList != null)
                {
-                   // TODO save yamlClusterInfoDto.Disk
+                  var diskInfoList = yamlClusterInfoDto.DiskInfoList.Select(dto =>
+                   {
+                       var yamlClusterDiskInfo = _mapper.Map<YamlClusterDiskInfo>(dto);
+                       yamlClusterDiskInfo.ClusterId = cluster.Id;
+                       return yamlClusterDiskInfo;
+                   }).ToList();
+                   _context.DiskInfoContext.UpdateRange(diskInfoList);
                }
             }
             

@@ -49,7 +49,7 @@ spec:
           ports: 
            - containerPort: 80
           volumeMounts:
-          @foreach (var path in @Model.Disk?.MountPath ?? Enumerable.Empty<MountPath>())
+          @foreach (var path in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
           {
             string mountPath = $"           - mountPath: {path.Path}\n" +
                                $"             name: {Model.ClusterName}-pvc \n";

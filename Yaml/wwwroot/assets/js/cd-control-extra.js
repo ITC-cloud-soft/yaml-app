@@ -1,7 +1,8 @@
 // 1. 编辑Cluster时 弹出的Cluster info 窗口显示寄存当前cluster的信息
 //  按Cluster页面保存的按钮时 保存Cluster信息到appDataInfo
-// 2. 新增cluster时 清空cluster 页面数据
-//  按Cluster页面保存的按钮时 保存Cluster信息到appDataInfo
+
+// 2.クラスターを新規追加する際に、クラスターページのデータをクリアする
+// クラスターページの保存ボタンを押すと、クラスター情報をappDataInfoに保存する
 $(function () {
 
     new Promise((resolve, reject) => {
@@ -49,11 +50,14 @@ const cdPlugin = (($) => {
         flag: 1, // 1: new cluster 2: edit cached cluster 3: edit new cluster
         clusterId: 0,
     };
+    
+    let appFormValidator = {};
+    let clusterFormValidator = {};
 
     function renderClusterPage(clusterId) {
         clusterInfoList.forEach(function (cluster) {
             if (clusterId === cluster.id) {
-                // clear cluster page if there had content
+                // clear cluster page if there is content
                 clearClusterPage();
                 commonFunctions.showCustomModal("#modal-cluster")
                 $('#clusterId').attr('clusterId', clusterId);
@@ -68,12 +72,37 @@ const cdPlugin = (($) => {
 
                 if (cluster.diskInfoFlag) {
                     $(selectors.diskCheckbox).prop('checked', true)
+                    renderArea(cluster.diskInfoFlag, '#disk_div')
+                    $('#diskSize')[0].__component._choices.setChoiceByValue(cluster.diskSize)
+                    $('#diskType')[0].__component._choices.setChoiceByValue(cluster.diskClass)
+                    for (let i = 0; i < cluster.diskInfoList.length; i++) {
+                        $("#diskConfig-content").append(`
+                            <div class="m-data-table__item" rowId="${cluster.diskInfoList[i].id}" id="{{columnId}}" colcount="${i + 1}">
+                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                    <div class="a-text-field a-text-field--type-text">    
+                                      <input type="text"  name="#diskInfo-0" value="${cluster.diskInfoList[i].name}" colname="Name" class="a-text-field__input">
+                                    </div>
+                                </span>
+                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                    <div class="a-text-field a-text-field--type-text">    
+                                      <input type="text" name="#diskInfo-1" value="${cluster.diskInfoList[i].path}" colname="Path" class="a-text-field__input">
+                                    </div>
+                                </span>
+                                <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                    <span class="m-data-table__truncate-content">
+                                        <button class="a-button a-button--text">
+                                           </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
+                                           <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'DiskInfo')"><i class="a-icon a-icon--close-hover"></i></button> 
+                                    </span>
+                                </span>
+                            </div>
+                        `)
+                    }
                 }
                 if (cluster.keyVaultFlag) {
                     $(selectors.KeyCheckbox).prop('checked', true)
                     renderArea(cluster.keyVaultFlag, '#KeyVault_div')
                     for (let i = 0; i < cluster.keyVault.length; i++) {
-                        console.log(cluster.keyVault.length)
                         $('#clusterKeyVault-content').append(
                             `
                                 <div class="m-data-table__item"  rowId="${cluster.keyVault[i].id}" id="{{columnId}}" colcount="${i + 1}">
@@ -134,7 +163,7 @@ const cdPlugin = (($) => {
                             fileLink = fileLink.split('_')[1]
                         }
                         // render page
-                        $('#configMapField-table-body').append(
+                        $('#configMapField-content').append(
                             `
                                 <div class="m-data-table__item" rowId="${configMapFiles[i].id}" columnid="{{columnId}}">
                                      <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
@@ -236,7 +265,6 @@ const cdPlugin = (($) => {
     }
 
     function renderArea(ifRender, selector) {
-        console.log('Render Checkbox： ', selector, ifRender)
         ifRender ? $(selector).css({"display": "block"}) : $(selector).css({"display": "none"})
     }
 
@@ -246,13 +274,12 @@ const cdPlugin = (($) => {
             .then(function (response) {
                 const appInfoDto = response.data;
                 cdPlugin.renderPage(appInfoDto)
-                console.log(response)
                 console.log(appInfoDto)
                 $('#appId').attr('appId', appInfoDto.id)
             })
     }
 
-    function renderPage(appInfoDto) {
+    function renderAppPage(appInfoDto) {
 
         $("#keyVault-content").html('');
         $("#setting-table-content").html('');
@@ -335,7 +362,7 @@ const cdPlugin = (($) => {
     function initElementEvent() {
 
         // bind new cluster btn event 
-        $('#new-cluster-btn').click(() => {
+        $('#new-cluster-btn').off('click').click(() => {
             ifNewCluster.flag = 1;
             ifNewCluster.clusterId += -1;
             clearClusterPage();
@@ -343,10 +370,22 @@ const cdPlugin = (($) => {
             $('#clusterId').attr('clusterId', ifNewCluster.clusterId)
         })
 
-        // bin confirm cluster event
-        $("#confirmButton").click(() => {
+        // bind confirm cluster event
+        $("#confirmButton").off('click').click(() => {
+            console.log( getClusterData())
             const clusterModalForm = $("#clusterForm");
-            if (clusterModalForm.valid()) {
+            const keyVaultValid = tableComponemt.validateTableContent("#clusterKeyVault-content");
+            const configMapValid = tableComponemt.validateTableContent("#configMap-content")
+            const configFileValid = tableComponemt.validateTableContent("#configMapField-content")
+            const domainValid = tableComponemt.validateTableContent("#domain-content")
+            const diskInfoValid = tableComponemt.validateTableContent("#diskConfig-content")
+            if (clusterModalForm.valid()
+                && keyVaultValid
+                && configMapValid
+                && configFileValid
+                && domainValid
+                && diskInfoValid
+            ) {
                 const clusterData = getClusterData();
                 commonFunctions.closeCustomModal("#modal-cluster")
                 clusterInfoList = clusterInfoList.filter(function (cluster) {
@@ -354,27 +393,30 @@ const cdPlugin = (($) => {
                 });
                 clusterInfoList.push(clusterData);
                 console.log(clusterData)
-                renderPage(getAppInfoData())
+                console.log(getAppInfoData())
+                renderAppPage(getAppInfoData())
             }
         })
 
         // bind cancel button event
-        $("#cancelButton").click(() => {
+        $("#cancelButton").off('click').click(() => {
             clearClusterPage();
             commonFunctions.closeCustomModal("#modal-cluster")
         })
 
         // bind save app info event
-        $("#save-button").click(() => {
+        $("#save-button").off('click').click(() => {
             const appForm = $("#appForm");
-            if (appForm.valid()) {
+            if (appForm.valid()
+                && tableComponemt.validateTableContent("#configMapField-content")
+            ) {
                 const appInfoData = getAppInfoData()
                 console.log({appInfoDto: appInfoData})
                 commonFunctions.axios().post('/api/App/save',
                     {appInfoDto: appInfoData}
                 ).then(function (res) {
                     console.log(res)
-                    // location.reload();
+                    location.reload();
                 }).catch(function (error) {
                     console.log(error)
                 })
@@ -382,7 +424,7 @@ const cdPlugin = (($) => {
         })
 
         // bind download json file event
-        $('#download-button').click(function () {
+        $('#download-button').off('click').click(function () {
             const appInfoData = getAppInfoData()
             commonFunctions.axios()
                 .get(`/api/App/download?appId=${appInfoData.id}`, {responseType: 'blob'})
@@ -409,13 +451,20 @@ const cdPlugin = (($) => {
 
     function initValidation(i18next) {
         /**
-         カスタム検証ルール
+         * カスタム検証ルール
          */
         // app key vault checkbox validation
         validate(
-            "appKeyVaultValidation", 
+            "appKeyVaultValidation",
             "#checkbox-single",
             "#keyVault-content"
+        )
+
+        // cluster disk info checkbox validation
+        validate(
+            "DiskInfoValidation",
+            "#diskCheckbox",
+            "#diskConfig-content"
         )
 
         // cluster page key vault checkbox validation
@@ -438,7 +487,7 @@ const cdPlugin = (($) => {
             "#ConfigFileChk",
             "#configMapField-content"
         )
-        
+
         // normal validation
         const rules = {
             appName: {required: true},
@@ -472,10 +521,11 @@ const cdPlugin = (($) => {
                     }
                 }
             },
-            keyConnect:{appKeyVaultValidation: true},
-            KeyCheckbox:{clusterKeyVaultTableValidation: true},
-            ConfigCheckbox:{ConfigMapValidation: true},
-            ConfigMapFileCheckbox: {ConfigFileValidation: true}
+            keyConnect: {appKeyVaultValidation: true},
+            KeyCheckbox: {clusterKeyVaultTableValidation: true},
+            ConfigCheckbox: {ConfigMapValidation: true},
+            ConfigMapFileCheckbox: {ConfigFileValidation: true},
+            diskCheckbox: {DiskInfoValidation: true}
         }
 
         const messages = {
@@ -492,15 +542,16 @@ const cdPlugin = (($) => {
             tenantId: `TenantId ${i18next.t('appInfoPage.notNull')}`,
             keyVault: `KeyVault ${i18next.t('appInfoPage.notNull')}`,
             manageId: `ManageId ${i18next.t('appInfoPage.notNull')}`,
-            keyConnect: `KeyVault 接続チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
+            keyConnect: `接続チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
             KeyCheckbox: `KeyVault 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
             ConfigCheckbox: `ConfigMap 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
             ConfigMapFileCheckbox: `ConfigFile 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
+            diskCheckbox: `diskCheckbox 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
             pwd: `${i18next.t('login-page.pwdEmpty')}`
         }
 
         const appForm = $("#appForm");
-        appForm.validate({
+        appFormValidator = appForm.validate({
             focusCleanup: true,
             onkeyup: false,
             ignore: "",
@@ -508,17 +559,16 @@ const cdPlugin = (($) => {
             rules,
             messages,
             errorPlacement: function (error, element) {
-                console.log(element)
-                if(element.attr('id') === "checkbox-single"){
+                if (element.attr('id') === "checkbox-single") {
                     error.insertAfter($("#keyvalue_div"));
-                }else{
+                } else {
                     error.insertAfter(element.parent());
                 }
             }
         })
 
         const clusterModalForm = $("#clusterForm");
-        clusterModalForm.validate({
+        clusterFormValidator = clusterModalForm.validate({
             focusCleanup: true,
             onkeyup: false,
             ignore: "",
@@ -526,15 +576,14 @@ const cdPlugin = (($) => {
             rules,
             messages,
             errorPlacement: function (error, element) {
-                console.log(element)
-                console.log(element.attr('id'))
-                if(element.attr('id') === "KeyCheckbox" 
+                if (element.attr('id') === "KeyCheckbox"
                     || element.attr('id') === "keyConnect"
                     || element.attr('id') === "ConfigCheckbox"
                     || element.attr('id') === "ConfigFileChk"
-                ){
+                    || element.attr('id') === "diskCheckbox"
+                ) {
                     error.insertAfter(element.parent());
-                }else{
+                } else {
                     error.insertAfter(element.parent().parent().parent().parent());
                 }
             }
@@ -542,7 +591,6 @@ const cdPlugin = (($) => {
 
         clusterModalForm.validate().settings.messages = messages;
         appForm.validate().settings.messages = messages;
-        
     }
 
     /**
@@ -552,10 +600,10 @@ const cdPlugin = (($) => {
      * @param tableId
      * @param errorMessage
      */
-    function validate(metohdName, checkboxId, tableId, errorMessage){
-        $.validator.addMethod(metohdName, function(value, element) {
+    function validate(metohdName, checkboxId, tableId, errorMessage) {
+        $.validator.addMethod(metohdName, function (value, element) {
             // true を返すと検証が成功したことを意味し、false を返すと検証に失敗したことを意味します。
-            if($(checkboxId).is(":checked")){
+            if ($(checkboxId).is(":checked")) {
                 return $(tableId).find('.m-data-table__item').length > 0;
             }
             return true;
@@ -593,13 +641,8 @@ const cdPlugin = (($) => {
         const configMapTableData = tableComponemt.getTableData(selectors.configMapId)
         const configMapFileTableData = tableComponemt.getConfigMapFileData(selectors.configMapField)
         const domainData = tableComponemt.getDomainTableData(selectors.domain)
-
-        console.log(diskTableData);
-        console.log(keyVaultClusterData);
-        console.log(configMapTableData);
-        console.log(domainData);
-        console.log(configMapFileTableData);
-
+        const diskInfoList = tableComponemt.getTableData(selectors.diskInfo)
+        
         const clusterInfo = {};
         clusterInfo.id = clusterId;
         clusterInfo.clusterName = $(selectors.clusterName).val();
@@ -616,16 +659,16 @@ const cdPlugin = (($) => {
         clusterInfo.configFile = configMapFileTableData;
         clusterInfo.configMap = configMapTableData;
         clusterInfo.keyVault = keyVaultClusterData;
+        clusterInfo.diskInfoList = diskInfoList;
         if (domainData && domainData.length > 0) {
             clusterInfo.domain = domainData[0];
         } else {
             clusterInfo.domain = {}
         }
 
-        clusterInfo.disk = {};
-        clusterInfo.disk.size = $(selectors.diskSize).val();
-        clusterInfo.disk.type = $(selectors.diskType).val();
-        clusterInfo.disk.mountPath = diskTableData;
+        clusterInfo.diskSize = $(selectors.diskSize).val();
+        clusterInfo.diskClass = $(selectors.diskType).val();
+        clusterInfo.diskInfoList = diskTableData;
         return clusterInfo;
     }
 
@@ -652,18 +695,22 @@ const cdPlugin = (($) => {
         $(selectors.manageLevel).val('');
         $(selectors.prefix).val('');
         $(selectors.diskCheckbox).val('');
-        $(selectors.keyVault).val('');
         $(selectors.configCheckbox).prop('checked', false);
         $(selectors.configMapFileCheckbox).prop('checked', false);
         $(selectors.diskSize).val('')
         $(selectors.diskCheckbox).prop('checked', false)
 
-        // clear table content
+        // clear table content and unbind button's event
         const configMapFieldContent = $('#configMapField-content').find('.m-data-table__container-item')[0];
         $(configMapFieldContent).html('')
         $('#domain-content').html('')
         $('#configMap-content').html('')
         $('#clusterKeyVault-content').html('')
+        $('#diskConfig-content').html('')
+        
+        // resetForm
+        appFormValidator.resetForm();
+        clusterFormValidator.resetForm();
     }
 
     function deleteItem(id, type) {
@@ -676,12 +723,12 @@ const cdPlugin = (($) => {
                 console.log(response)
             });
     }
-    
+
     return {
         deleteItem: deleteItem,
         bindValidation: initValidation,
         getAppDataDtoFromBackend: getAppDataDtoFromBackend,
-        renderPage: renderPage,
+        renderPage: renderAppPage,
         fileUpload: fileUpload,
         renderClusterPage: renderClusterPage,
         renderErrorI18: renderErrorI18,

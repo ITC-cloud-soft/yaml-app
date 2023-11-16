@@ -60,6 +60,9 @@
     "clusterEdition": "编辑集群",
     "prefix": "前缀",
     "export": "导出",
-    "notNull": "不能为空"
+    "notNull": "不能为空",
+    "notNull1": "不能为空",
+    "tableContentNotNull": "如果选中了复选框，表格内容不能留空"
+    
   }
 }

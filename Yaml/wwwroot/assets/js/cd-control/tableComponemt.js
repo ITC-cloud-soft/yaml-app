@@ -3,7 +3,8 @@ const tableComponemt = (() => {
     const count = {};
 
     function init(columnSize, selector, buttonNames, colNames, type) {
-        $(selector + "-add").click(function () {
+        $(selector + "-add").off('click')
+        $(selector + "-add").off('click').click(function () {
             if (buttonNames && buttonNames.length > 0) {
                 addRowWithButton(columnSize, selector, buttonNames, colNames, type)
             } else {
@@ -82,7 +83,7 @@ const tableComponemt = (() => {
         let colItem =
             `
              <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                <div class="a-text-field a-text-field--type-text" style="max-width: 100px"> 
+                <div class="a-text-field a-text-field--type-text" style="max-width: 100px; padding: 7px"> 
                     <input type="file" file-input="{{name}}"  style="display: none" /> 
                     <span class="a-upload-field__description" data-filename ='' selected-file="{{name}}"></span>
                     <button type="button" class="a-button a-button--primary" file-upload-button="{{name}}" colname="{{colname}}"  name="{{name}}" >
@@ -166,7 +167,6 @@ const tableComponemt = (() => {
                 item[colName] = col.val();
             }
             item.id = row.attr('rowId')
-            console.log(item)
             itemList.push(item)
         }
         return itemList;
@@ -183,9 +183,6 @@ const tableComponemt = (() => {
             item.id = row.attr('rowId');
             item.configKey = col.val();
             item.appId = Number($('#appId').attr('appId'));
-            
-            // validate if input is null
-            validateTableField(col)
             itemList.push(item);
         }
         return itemList;
@@ -232,13 +229,12 @@ const tableComponemt = (() => {
 
     function bindUploadEvent(selector, uploadButtonSelector, fileInputSelector, selectedFileNames) {
 
-        $(selector).on('click', uploadButtonSelector, function () {
-            console.log(" Trigger file input click")
+        $(selector).off('click', uploadButtonSelector).on('click', uploadButtonSelector, function () {
             $(fileInputSelector).click(); // Trigger file input click
         });
 
         // Handle file selection and upload
-        $(selector).on('change', fileInputSelector, function () {
+        $(selector).off('click', fileInputSelector).on('change', fileInputSelector, function () {
             const selectedFiles = $(this).prop('files');
             if (selectedFiles.length > 0) {
                 // Display the names of selected files
@@ -256,27 +252,54 @@ const tableComponemt = (() => {
         });
     }
 
-    /**
-     * ValidateTableField
-     * @param col
-     */
-    function validateTableField(col){
-        const nextElement = col.next();
-        if (!col.val()) {
-            if(nextElement.prop('tagName') !== "LABEL"){
-                col.css({"border-color":"red", "margin": "10px"})
-                col.after(`<label>ManageId は空白にできません</label>`)
-            }
-        }
-        else{
-            if (col.next().prop('tagName') === 'LABEL') {
-                nextElement.remove()
-                col.css({"border-color":"", "margin-top": ""});
-            }
-        }
+    function validateTableContent(selector) {
+        console.log('行の検証' ,selector);
+        
+        let flag = true;
+        // 行の検証
+        $(selector).each(function () {
+            // 列の検証 input type
+            $(this).find('input[type="text"]').each(function () {
+                const col = $(this);
+                const nextElement = col.next()
+                if (!$(this).val()) {
+                    if (nextElement.prop('tagName') !== "LABEL") {
+                        col.css({"border-color": "red", "margin": "10px"})
+                        col.after(`<label style="color:indianred">ManageId は空白にできません</label>`)
+                    }
+                    flag = false;
+                } else {
+                    if (col.next().prop('tagName') === 'LABEL') {
+                        nextElement.remove()
+                        col.css({"border-color": "", "margin-top": ""});
+                    }
+                }
+            });
+            // 列の検証 file upload
+            $(this).find('input[type="file"]').each(function () {
+                const col = $(this);
+                const uploadButton = col.next().next()
+                const space = col.next();
+                // if (!$(this).val()) {
+                if (!space.text()) {
+                    if (uploadButton.next().prop('tagName') !== "LABEL") {
+                        col.css({"border-color": "red", "margin": "10px"})
+                        uploadButton.after(`<label style="color:indianred">ManageId は空白にできません</label>`)
+                    }
+                    flag = false;
+                } else {
+                    if (uploadButton.next().prop('tagName') === 'LABEL') {
+                        uploadButton.next().remove()
+                        col.css({"border-color": "", "margin-top": ""});
+                    }
+                }
+            })
+        })
+        return flag;
     }
 
     return {
+        validateTableContent: validateTableContent,
         initComponent: init,
         bindUploadEvent: bindUploadEvent,
         getTableData: getTableData,

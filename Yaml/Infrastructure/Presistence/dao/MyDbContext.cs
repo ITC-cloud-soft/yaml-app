@@ -24,7 +24,7 @@ public class MyDbContext : DbContext
  	public DbSet<YamlAppInfo> AppInfoContext { get; set; }
  	public DbSet<YamlClusterInfo> ClusterContext { get; set; }
     
- 	// public DbSet<DiskInfo> DiskInfoContext{ get; set; }
+ 	public DbSet<YamlClusterDiskInfo> DiskInfoContext{ get; set; }
  	public DbSet<YamlKeyVaultInfo> KeyVaultInfoContext { get; set; }
  	public DbSet<YamlClusterDomainInfo> DomainContext { get; set; }
  	public DbSet<YamlClusterConfigFileInfo> ConfigFile { get; set; }

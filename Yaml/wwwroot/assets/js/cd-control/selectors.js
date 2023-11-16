@@ -23,6 +23,7 @@ const selectors = {
     configCheckbox : "[name='ConfigCheckbox']",
     configMapFileCheckbox : "#ConfigFileChk",
     configMapId : "#configMap",
+    diskInfo : "#diskInfo",
     
     confirmButton : "#confirmButton",
     cancelButton : "#cancelButton",

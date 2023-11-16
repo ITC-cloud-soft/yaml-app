@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Yaml.Application;
 using Yaml.Application.Command;
+using Yaml.Application.Query;
 
 namespace Yaml.Resource;
 

@@ -59,6 +59,7 @@ public class MappingProfile : Profile
         CreateMap<DomainDto, YamlClusterDomainInfo>();
         CreateMap<ConfigMapDto, YamlClusterConfigMapInfo>();
         CreateMap<ConfigFileDto, YamlClusterConfigFileInfo>();
+        CreateMap<DiskInfoDto, YamlClusterDiskInfo>();
 
         // Entity => DOT
         CreateMap<YamlAppInfo, YamlAppInfoDto>();
@@ -67,5 +68,6 @@ public class MappingProfile : Profile
         CreateMap<YamlClusterConfigMapInfo, ConfigMapDto>();
         CreateMap<YamlClusterConfigFileInfo, ConfigFileDto>();
         CreateMap<YamlKeyVaultInfo, KeyVaultDto>();
+        CreateMap<YamlClusterDiskInfo, DiskInfoDto>();
     }
 }

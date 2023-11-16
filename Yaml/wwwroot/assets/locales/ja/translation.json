@@ -63,7 +63,9 @@
     "clusterEdition": "クラスター編集",
     "prefix": "Prefix",
     "export": "エクスポート",
-    "notNull": "は空白にできません"
+    "notNull": "は空白にできません",
+    "notNull1": "空白にできません",
+    "tableContentNotNull": "接続チェックボックスが選択されている場合、テーブルは空白にできません"
   }
 }
 

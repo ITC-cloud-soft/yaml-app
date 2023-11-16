@@ -84,6 +84,19 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                         return "Entity not found";
                     }
                     break;
+                
+                case DeleteType.DiskInfo:
+                    var yamlClusterDiskInfo = await _context.DiskInfoContext.FindAsync(command.Id);
+                    if (yamlClusterDiskInfo != null)
+                    {
+                        _context.DiskInfoContext.Remove(yamlClusterDiskInfo);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("No DiskInfo found with ID {Id}", command.Id);
+                        return $"Entity [{command.Id}] not found ";
+                    } 
+                    break;
             }
             await _context.SaveChangesAsync(cancellationToken);
             return "Success";

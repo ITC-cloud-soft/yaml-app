@@ -6,7 +6,7 @@ using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
 
-namespace Yaml.Application;
+namespace Yaml.Application.Query;
 
 public class GetAppQuery : IRequest<YamlAppInfoDto>
 {
@@ -93,7 +93,13 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
                     .Where(e => e.ClusterId == yamlClusterInfo.Id)
                     .ProjectTo<KeyVaultDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
-                
+
+                yamlClusterInfoDto.DiskInfoList = await _context.DiskInfoContext
+                    .AsNoTracking()
+                    .Where(e => e.ClusterId == yamlClusterInfo.Id)
+                    .ProjectTo<DiskInfoDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
                 yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
                 _logger.LogInformation("Get App:[{}] and AppId:[{}] info from DB", appInfo.AppName, appInfo.Id);
             }
