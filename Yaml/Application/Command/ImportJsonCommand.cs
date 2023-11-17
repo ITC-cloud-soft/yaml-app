@@ -2,6 +2,7 @@ using System.Text.Json;
 using MediatR;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
+using Yaml.Resource;
 
 namespace Yaml.Application.Command;
 
@@ -10,13 +11,14 @@ public class ImportJsonCommand : IRequest<string>
     public IFormFile File { get; set; }
 }
 
-public class ImportJsonCommandHandler : IRequestHandler<ImportJsonCommand, string>
+public class ImportJsonCommandHandler : IRequestHandler<ImportJsonCommand, string> 
 {
     private readonly ILogger _logger;
-
-    public ImportJsonCommandHandler(ILogger<ImportJsonCommandHandler> logger)
+    private readonly ISender? _mediator;
+    public ImportJsonCommandHandler(ILogger<ImportJsonCommandHandler> logger, ISender mediator)
     {
         _logger = logger;
+        _mediator = mediator;
     }
 
     public async Task<string> Handle(ImportJsonCommand request, CancellationToken cancellationToken)
@@ -26,10 +28,9 @@ public class ImportJsonCommandHandler : IRequestHandler<ImportJsonCommand, strin
         var reader = new StreamReader(jsonFileStream);
         try
         {
-            var fileContent = await reader.ReadToEndAsync();
+            var fileContent = await reader.ReadToEndAsync(cancellationToken);
             var yamlAppInfoDto = JsonSerializer.Deserialize<YamlAppInfoDto>(fileContent);
-            Console.WriteLine(yamlAppInfoDto.AppName);
-            _logger.LogTrace("yaml file deserialize error");
+            await _mediator.Send(new SaveYamlAppCommand { appInfoDto = yamlAppInfoDto });
             return fileContent;
         }
         catch (Exception e)
@@ -39,7 +40,7 @@ public class ImportJsonCommandHandler : IRequestHandler<ImportJsonCommand, strin
         }
         finally
         {
-            jsonFileStream.Dispose();
+            await jsonFileStream.DisposeAsync();
             reader.Dispose();
         }
     }

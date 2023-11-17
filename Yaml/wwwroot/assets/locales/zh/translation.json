@@ -62,7 +62,27 @@
     "export": "导出",
     "notNull": "不能为空",
     "notNull1": "不能为空",
-    "tableContentNotNull": "如果选中了复选框，表格内容不能留空"
-    
+    "tableContentNotNull": "如果选中了复选框，表格内容不能留空",
+    "appNameHelpText": "请取一个易于理解的应用程序名称，也可用作命名空间名。",
+    "containerRegistryText": "使用予定的Container Registry进行设置",
+    "crServerText": "请输入CR服务器的URL。",
+    "keyVaultConnectionText": "如果使用KeyVault，请描述设置的内容。",
+    "projectNameText": "请逐一添加在KeyVault中实际设置的键。",
+    "NetdataText": "NetData是一个监视K8S系统的工具，选择后将安装在K8S系统上。",
+    "clusterNameText": "",
+    "imageText": "",
+    "podNumText": "设置启动在集群中的POD数量，默认为3。",
+    "cpuHelpText": "设置分配给集群的CPU数量。",
+    "memoryHelpText": "设置分配给集群的内存。",
+    "manageLevelText": "这是一个用于在Azure云中授权的设置项，如果需要给集群授予相应的权限，请进行设置。",
+    "prefixText": "集群域名后的前缀，例如 https://www.sample.com/pre/ 中的 'pre' 部分即为前缀。",
+    "diskSetText": "如果在集群中使用磁盘，请添加磁盘设置。",
+    "diskSizeText": "如果在集群中使用磁盘，请添加磁盘大小设置。",
+    "diskClassText": "如果在集群中使用磁盘，请添加磁盘类别设置。",
+    "keyVaultSetText": "如果要在集群中使用KeyVault中设置的键，请在此处添加。",
+    "useProjectText": "",
+    "configMapSetText": "如果您想在镜像中添加常量，请以Key-Value的形式添加。",
+    "domainText": "请添加与集群关联的域名，可以添加多个。",
+    "jsonUploadErrorText": "Json File 格式错误 请检查后再上传"
   }
 }

@@ -62,7 +62,27 @@
     "export": "export",
     "notNull": "can not be null",
     "notNull1": "Can not be null",
-    "tableContentNotNull": "If the checkbox is selected, the table cannot be blank."
+    "tableContentNotNull": "If the checkbox is selected, the table cannot be blank.",
+    "appNameHelpText": "Please choose an easy-to-understand application name, which can also be used as a namespace name.",
+    "containerRegistryText": "Setting up the Container Registry that is planned to be used.",
+    "crServerText": "Please enter the URL of the CR server.",
+    "keyVaultConnectionText": "If using KeyVault, please describe the configured content.",
+    "projectNameText": "Please add each key that is actually set in KeyVault one by one.",
+    "NetdataText": "NetData is a tool for monitoring the K8S system. If selected, it will be installed on the K8S system.",
+    "clusterNameText": "",
+    "imageText": "",
+    "podNumText": "Set the number of PODs to launch in the cluster, default is 3.",
+    "cpuHelpText": "Set the number of CPUs to allocate to the cluster.",
+    "memoryHelpText": "Set the memory to allocate to the cluster.",
+    "manageLevelText": "This is a configuration item for granting permissions in Azure Cloud. Set it if you want to grant appropriate permissions to the cluster.",
+    "prefixText": "The prefix behind the cluster's domain name, e.g., the 'pre' in https://www.sample.com/pre/.",
+    "diskSetText": "If using disks in the cluster, please add disk settings.",
+    "diskSizeText": "",
+    "diskClassText": "",
+    "keyVaultSetText": "If you want to use keys set in KeyVault in the cluster, please add them here.",
+    "useProjectText": "",
+    "configMapSetText": "If you want to add constants for use in the image, please add them in the form of Key-Value.",
+    "domainText": "Please add domains associated with the cluster; multiple domains can be added.",
   }
 }
 

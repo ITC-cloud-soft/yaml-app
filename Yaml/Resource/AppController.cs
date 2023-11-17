@@ -48,7 +48,7 @@ public class AppController : ApiControllerBase
     [HttpPost("uploadFiles")]
     public async Task<IActionResult> Deploy()
     {
-        return Ok(Mediator.Send(new UploadFileCommand{Files =  Request.Form.Files}));
+        return Ok(await Mediator.Send(new UploadFileCommand{Files =  Request.Form.Files}));
     }
 
 
@@ -62,7 +62,7 @@ public class AppController : ApiControllerBase
     public async Task<IActionResult> ImportJSon()
     {
         
-        return Ok(Mediator.Send(new ImportJsonCommand{File = Request.Form.Files[0]}));
+        return Ok(await Mediator.Send(new ImportJsonCommand{File = Request.Form.Files[0]}));
     }
     
 }

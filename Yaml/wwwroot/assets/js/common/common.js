@@ -4,6 +4,18 @@
 var userLanguage = "jp";
 
 (function (){
+    
+    function showToast(time, content, type){
+         const selector = '.a-toast';
+         
+        $(".a-toast__message").text(content);
+        $(selector).css({"background": type});
+
+        $(selector).fadeIn();
+        setTimeout(function() {
+            $(selector).fadeOut();
+        }, time);
+    }
     function showModal(header, content){
         let modal = $("#custom-modal")[0].__component;
         $(".modal-header-a").text(header);
@@ -13,6 +25,7 @@ var userLanguage = "jp";
             return modal.opened = !1
         }
     }
+    
     function showCustomModal(selector){
         let modal = $(selector)[0].__component;
         modal.opened = !0;
@@ -71,6 +84,7 @@ var userLanguage = "jp";
     
     window.commonFunctions = {
         showModal: showModal,
+        showToast: showToast,
         setLoading: setLoading,
         showCustomModal: showCustomModal,
         closeCustomModal: closeCustomModal,

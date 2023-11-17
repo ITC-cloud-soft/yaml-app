@@ -4,9 +4,7 @@
 // 2.クラスターを新規追加する際に、クラスターページのデータをクリアする
 // クラスターページの保存ボタンを押すと、クラスター情報をappDataInfoに保存する
 $(function () {
-    const popover = new bootstrap.Popover('.popover-dismiss', {
-        trigger: 'focus'
-    })
+
     new Promise((resolve, reject) => {
         resolve(initI18next());
     }).then(function (result) {
@@ -18,6 +16,7 @@ $(function () {
     $('#appForm').submit(function (event) {
         event.preventDefault();
     });
+
     $('#clusterForm').submit(function (event) {
         event.preventDefault();
     });
@@ -27,8 +26,8 @@ $(function () {
         const chosenLng = $(this).find("option:selected").attr('value');
         i18next.changeLanguage(chosenLng, () => {
             render();
-            cdPlugin.renderErrorI18();
-            cdPlugin.bindValidation(i18next)
+            cdPlugin.bindEvents();
+            cdPlugin.bindValidation(i18next);
             commonFunctions.userLanguage = chosenLng;
         });
     });
@@ -43,7 +42,6 @@ $(function () {
     cdPlugin.getAppDataDtoFromBackend('1')
 })
 
-
 const cdPlugin = (($) => {
     "use strict"
 
@@ -52,9 +50,134 @@ const cdPlugin = (($) => {
         flag: 1, // 1: new cluster 2: edit cached cluster 3: edit new cluster
         clusterId: 0,
     };
-    
+
     let appFormValidator = {};
     let clusterFormValidator = {};
+
+    function initElementEvent() {
+
+        // bind new cluster btn event 
+        $('#new-cluster-btn').off('click').click(() => {
+            ifNewCluster.flag = 1;
+            ifNewCluster.clusterId += -1;
+            clearClusterPage();
+            commonFunctions.showCustomModal("#modal-cluster")
+            $('#clusterId').attr('clusterId', ifNewCluster.clusterId)
+        })
+
+        // bind confirm cluster event
+        $("#confirmButton").off('click').click(() => {
+            console.log(getClusterData())
+            const clusterModalForm = $("#clusterForm");
+            const keyVaultValid = tableComponemt.validateTableContent("#clusterKeyVault-content");
+            const configMapValid = tableComponemt.validateTableContent("#configMap-content")
+            const configFileValid = tableComponemt.validateTableContent("#configMapField-content")
+            const domainValid = tableComponemt.validateTableContent("#domain-content")
+            const diskInfoValid = tableComponemt.validateTableContent("#diskConfig-content")
+
+            if (clusterModalForm.valid() && keyVaultValid && configMapValid && configFileValid && domainValid && diskInfoValid) {
+                const clusterData = getClusterData();
+                commonFunctions.closeCustomModal("#modal-cluster")
+                clusterInfoList = clusterInfoList.filter(function (cluster) {
+                    return cluster.id !== clusterData.id
+                });
+                clusterInfoList.push(clusterData);
+                console.log(clusterData)
+                console.log(getAppInfoData())
+                renderAppPage(getAppInfoData())
+            }
+        })
+
+        // bind cancel button event
+        $("#cancelButton").off('click').click(() => {
+            clearClusterPage();
+            commonFunctions.closeCustomModal("#modal-cluster")
+        })
+
+        // bind save app info event
+        $("#save-button").off('click').click(() => {
+            const appForm = $("#appForm");
+            if (appForm.valid() && tableComponemt.validateTableContent("#keyVault-content")) {
+                const appInfoData = getAppInfoData()
+                console.log({appInfoDto: appInfoData})
+                commonFunctions.axios().post('/api/App/save',
+                    {appInfoDto: appInfoData}
+                ).then(function (res) {
+                    console.log(res)
+                    location.reload();
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            }
+        })
+
+        // bind download json file event
+        $('#download-button').off('click').click(function () {
+            const appInfoData = getAppInfoData()
+            commonFunctions.axios()
+                .get(`/api/App/download?appId=${appInfoData.id}`, {responseType: 'blob'})
+                .then(function (response) {
+                    // Create a new Blob object using the response data
+                    const fileBlob = new Blob([response.data], {type: 'application/json'});
+
+                    // Create an object URL for the Blob
+                    const objectUrl = URL.createObjectURL(fileBlob);
+
+                    // Create a temporary anchor tag to trigger download
+                    const tempLink = document.createElement('a');
+                    tempLink.href = objectUrl;
+                    tempLink.setAttribute('download', 'content.json'); // Set the file name for the download
+                    document.body.appendChild(tempLink); // Append anchor to the body
+                    tempLink.click(); // Simulate click on anchor to trigger download
+
+                    // Clean up by revoking the Blob URL and removing the temporary anchor tag
+                    URL.revokeObjectURL(objectUrl);
+                    document.body.removeChild(tempLink);
+                })
+        })
+
+        const fileInputSelector = '#jsonFileInput';
+        $("#upload-button").off('click').click(function () {
+            const fileInputSelector = '#jsonFileInput';
+            $(fileInputSelector).click(); // Trigger file input click
+        })
+
+        $(fileInputSelector).off('onchange').change(function () {
+            // files is a Dom property, use prop instead of attr
+            const fileList = $(fileInputSelector).prop('files')
+            if (fileList.length > 1) {
+                alert('only one file is allowed')
+                return
+            }
+            const file = fileList[0]
+            const formData = new FormData();
+            formData.append('files', file);
+
+            // upload file
+            commonFunctions.axios().post('/api/App/importJson', formData)
+                .then(response => {
+                    $(fileInputSelector).attr('files', '')
+                    commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadSuccessText'), 'Green')
+                })
+                .catch(error => {
+                    commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadErrorText'), 'indianred')
+                    console.log(error);
+                })
+                .finally(() => {
+                    $(fileInputSelector).val('');
+                })
+        })
+
+
+        // bind help button event
+        $('.a-help-button').off('click').click(function () {
+            const helpText = $(this).attr('name');
+            const tagName = $(this).prop('tagName');
+            console.log(i18next.t(helpText))
+            commonFunctions.showModal('', i18next.t(helpText))
+        })
+    }
+
 
     function renderClusterPage(clusterId) {
         clusterInfoList.forEach(function (cluster) {
@@ -360,115 +483,6 @@ const cdPlugin = (($) => {
         }
     }
 
-    function initElementEvent() {
-
-        // bind new cluster btn event 
-        $('#new-cluster-btn').off('click').click(() => {
-            ifNewCluster.flag = 1;
-            ifNewCluster.clusterId += -1;
-            clearClusterPage();
-            commonFunctions.showCustomModal("#modal-cluster")
-            $('#clusterId').attr('clusterId', ifNewCluster.clusterId)
-        })
-
-        // bind confirm cluster event
-        $("#confirmButton").off('click').click(() => {
-            console.log( getClusterData())
-            // TODO render transscript
-            const clusterModalForm = $("#clusterForm");
-            const keyVaultValid = tableComponemt.validateTableContent("#clusterKeyVault-content");
-            const configMapValid = tableComponemt.validateTableContent("#configMap-content")
-            const configFileValid = tableComponemt.validateTableContent("#configMapField-content")
-            const domainValid = tableComponemt.validateTableContent("#domain-content")
-            const diskInfoValid = tableComponemt.validateTableContent("#diskConfig-content")
-            
-            if (clusterModalForm.valid() && keyVaultValid && configMapValid && configFileValid && domainValid && diskInfoValid) {
-                const clusterData = getClusterData();
-                commonFunctions.closeCustomModal("#modal-cluster")
-                clusterInfoList = clusterInfoList.filter(function (cluster) {
-                    return cluster.id !== clusterData.id
-                });
-                clusterInfoList.push(clusterData);
-                console.log(clusterData)
-                console.log(getAppInfoData())
-                renderAppPage(getAppInfoData())
-            }
-        })
-
-        // bind cancel button event
-        $("#cancelButton").off('click').click(() => {
-            clearClusterPage();
-            commonFunctions.closeCustomModal("#modal-cluster")
-        })
-
-        // bind save app info event
-        $("#save-button").off('click').click(() => {
-            const appForm = $("#appForm");
-            if (appForm.valid() && tableComponemt.validateTableContent("#keyVault-content")) {
-                const appInfoData = getAppInfoData()
-                console.log({appInfoDto: appInfoData})
-                commonFunctions.axios().post('/api/App/save',
-                    {appInfoDto: appInfoData}
-                ).then(function (res) {
-                    console.log(res)
-                    location.reload();
-                }).catch(function (error) {
-                    console.log(error)
-                })
-            }
-        })
-
-        // bind download json file event
-        $('#download-button').off('click').click(function () {
-            const appInfoData = getAppInfoData()
-            commonFunctions.axios()
-                .get(`/api/App/download?appId=${appInfoData.id}`, {responseType: 'blob'})
-                .then(function (response) {
-                    // Create a new Blob object using the response data
-                    const fileBlob = new Blob([response.data], {type: 'application/json'});
-
-                    // Create an object URL for the Blob
-                    const objectUrl = URL.createObjectURL(fileBlob);
-
-                    // Create a temporary anchor tag to trigger download
-                    const tempLink = document.createElement('a');
-                    tempLink.href = objectUrl;
-                    tempLink.setAttribute('download', 'content.json'); // Set the file name for the download
-                    document.body.appendChild(tempLink); // Append anchor to the body
-                    tempLink.click(); // Simulate click on anchor to trigger download
-
-                    // Clean up by revoking the Blob URL and removing the temporary anchor tag
-                    URL.revokeObjectURL(objectUrl);
-                    document.body.removeChild(tempLink);
-                })
-        })
-
-        const fileInputSelector = '#jsonFileInput';
-        $("#upload-button").off('click').click(function (){
-            const fileInputSelector = '#jsonFileInput';
-            $(fileInputSelector).click(); // Trigger file input click
-        })
-        
-        $(fileInputSelector).off('onchange').change(function (){
-            const fileList = $(fileInputSelector).prop('files')
-            if(fileList.length > 1){
-                alert('only one file is allowed')
-                return
-            }
-            const file = fileList[0]
-            const formData = new FormData();
-            formData.append('files', file)
-            commonFunctions.axios().post('/api/App/importJson', formData)
-                .then(response => {
-                    $('#jsonFileSpan').text(response.data);
-                    console.log(response);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        })
-    }
-
     function initValidation(i18next) {
         /**
          * カスタム検証ルール
@@ -563,10 +577,10 @@ const cdPlugin = (($) => {
             keyVault: `KeyVault ${i18next.t('appInfoPage.notNull')}`,
             manageId: `ManageId ${i18next.t('appInfoPage.notNull')}`,
             keyConnect: `${i18next.t('appInfoPage.tableContentNotNull')}`,
-            KeyCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
-            ConfigCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
-            ConfigMapFileCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
-            diskCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            KeyCheckbox: `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            ConfigCheckbox: `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            ConfigMapFileCheckbox: `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            diskCheckbox: `${i18next.t('appInfoPage.tableContentNotNull')}`,
             pwd: `${i18next.t('login-page.pwdEmpty')}`
         }
 
@@ -662,7 +676,7 @@ const cdPlugin = (($) => {
         const configMapFileTableData = tableComponemt.getConfigMapFileData(selectors.configMapField)
         const domainData = tableComponemt.getDomainTableData(selectors.domain)
         const diskInfoList = tableComponemt.getTableData(selectors.diskInfo)
-        
+
         const clusterInfo = {};
         clusterInfo.id = clusterId;
         clusterInfo.clusterName = $(selectors.clusterName).val();
@@ -728,7 +742,7 @@ const cdPlugin = (($) => {
         $('#configMap-content').html('')
         $('#clusterKeyVault-content').html('')
         $('#diskConfig-content').html('')
-        
+
         // resetForm
         appFormValidator.resetForm();
         clusterFormValidator.resetForm();
@@ -753,7 +767,6 @@ const cdPlugin = (($) => {
         renderPage: renderAppPage,
         fileUpload: fileUpload,
         renderClusterPage: renderClusterPage,
-        renderErrorI18: renderErrorI18,
         bindEvents: initElementEvent,
     };
 })(jQuery)
