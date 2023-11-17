@@ -4,7 +4,9 @@
 // 2.クラスターを新規追加する際に、クラスターページのデータをクリアする
 // クラスターページの保存ボタンを押すと、クラスター情報をappDataInfoに保存する
 $(function () {
-
+    const popover = new bootstrap.Popover('.popover-dismiss', {
+        trigger: 'focus'
+    })
     new Promise((resolve, reject) => {
         resolve(initI18next());
     }).then(function (result) {
@@ -203,7 +205,6 @@ const cdPlugin = (($) => {
                     }
                 }
                 if (cluster.domain != null) {
-
                     let certification = cluster.domain.certification
                     certification = certification.includes('_') ? certification.split('_')[1] : certification;
 
@@ -373,19 +374,15 @@ const cdPlugin = (($) => {
         // bind confirm cluster event
         $("#confirmButton").off('click').click(() => {
             console.log( getClusterData())
+            // TODO render transscript
             const clusterModalForm = $("#clusterForm");
             const keyVaultValid = tableComponemt.validateTableContent("#clusterKeyVault-content");
             const configMapValid = tableComponemt.validateTableContent("#configMap-content")
             const configFileValid = tableComponemt.validateTableContent("#configMapField-content")
             const domainValid = tableComponemt.validateTableContent("#domain-content")
             const diskInfoValid = tableComponemt.validateTableContent("#diskConfig-content")
-            if (clusterModalForm.valid()
-                && keyVaultValid
-                && configMapValid
-                && configFileValid
-                && domainValid
-                && diskInfoValid
-            ) {
+            
+            if (clusterModalForm.valid() && keyVaultValid && configMapValid && configFileValid && domainValid && diskInfoValid) {
                 const clusterData = getClusterData();
                 commonFunctions.closeCustomModal("#modal-cluster")
                 clusterInfoList = clusterInfoList.filter(function (cluster) {
@@ -407,9 +404,7 @@ const cdPlugin = (($) => {
         // bind save app info event
         $("#save-button").off('click').click(() => {
             const appForm = $("#appForm");
-            if (appForm.valid()
-                && tableComponemt.validateTableContent("#configMapField-content")
-            ) {
+            if (appForm.valid() && tableComponemt.validateTableContent("#keyVault-content")) {
                 const appInfoData = getAppInfoData()
                 console.log({appInfoDto: appInfoData})
                 commonFunctions.axios().post('/api/App/save',
@@ -446,6 +441,31 @@ const cdPlugin = (($) => {
                     URL.revokeObjectURL(objectUrl);
                     document.body.removeChild(tempLink);
                 })
+        })
+
+        const fileInputSelector = '#jsonFileInput';
+        $("#upload-button").off('click').click(function (){
+            const fileInputSelector = '#jsonFileInput';
+            $(fileInputSelector).click(); // Trigger file input click
+        })
+        
+        $(fileInputSelector).off('onchange').change(function (){
+            const fileList = $(fileInputSelector).prop('files')
+            if(fileList.length > 1){
+                alert('only one file is allowed')
+                return
+            }
+            const file = fileList[0]
+            const formData = new FormData();
+            formData.append('files', file)
+            commonFunctions.axios().post('/api/App/importJson', formData)
+                .then(response => {
+                    $('#jsonFileSpan').text(response.data);
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         })
     }
 
@@ -542,11 +562,11 @@ const cdPlugin = (($) => {
             tenantId: `TenantId ${i18next.t('appInfoPage.notNull')}`,
             keyVault: `KeyVault ${i18next.t('appInfoPage.notNull')}`,
             manageId: `ManageId ${i18next.t('appInfoPage.notNull')}`,
-            keyConnect: `接続チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
-            KeyCheckbox: `KeyVault 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
-            ConfigCheckbox: `ConfigMap 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
-            ConfigMapFileCheckbox: `ConfigFile 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
-            diskCheckbox: `diskCheckbox 设置チェックボックスが選択されている場合、テーブル ${i18next.t('appInfoPage.notNull')}`,
+            keyConnect: `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            KeyCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            ConfigCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            ConfigMapFileCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
+            diskCheckbox:  `${i18next.t('appInfoPage.tableContentNotNull')}`,
             pwd: `${i18next.t('login-page.pwdEmpty')}`
         }
 
@@ -673,6 +693,7 @@ const cdPlugin = (($) => {
     }
 
     function fileUpload(fileList, selector) {
+        const selectedFiles = $(this).prop('files');
         const formData = new FormData();
         for (let i = 0; i < fileList.length; i++) {
             formData.append('files', fileList[i]);
@@ -720,6 +741,7 @@ const cdPlugin = (($) => {
         }
         commonFunctions.axios().delete(`/api/App/deleteItem?id=${id}&type=${type}`)
             .then(function (response) {
+                // TODO delete success bubble
                 console.log(response)
             });
     }

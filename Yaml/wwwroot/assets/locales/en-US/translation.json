@@ -60,7 +60,9 @@
     "clusterEdition": "Edit Cluster",
     "prefix": "Prefix",
     "export": "export",
-    "notNull": "can not be null"
+    "notNull": "can not be null",
+    "notNull1": "Can not be null",
+    "tableContentNotNull": "If the checkbox is selected, the table cannot be blank."
   }
 }
 

@@ -265,7 +265,7 @@ const tableComponemt = (() => {
                 if (!$(this).val()) {
                     if (nextElement.prop('tagName') !== "LABEL") {
                         col.css({"border-color": "red", "margin": "10px"})
-                        col.after(`<label style="color:indianred">ManageId は空白にできません</label>`)
+                        col.after(`<label style="color:indianred">${i18next.t('appInfoPage.notNull1')}</label>`)
                     }
                     flag = false;
                 } else {
@@ -284,7 +284,7 @@ const tableComponemt = (() => {
                 if (!space.text()) {
                     if (uploadButton.next().prop('tagName') !== "LABEL") {
                         col.css({"border-color": "red", "margin": "10px"})
-                        uploadButton.after(`<label style="color:indianred">ManageId は空白にできません</label>`)
+                        uploadButton.after(`<label style="color:indianred">${i18next.t('appInfoPage.notNull1')}</label>`)
                     }
                     flag = false;
                 } else {
