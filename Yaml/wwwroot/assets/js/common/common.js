@@ -18,7 +18,7 @@ var userLanguage = "jp";
     }
     function showModal(header, content){
         let modal = $("#custom-modal")[0].__component;
-        $(".modal-header-a").text(header);
+        $(".modal-header-a").html(header);
         $(".modal-content-a").text(content);
         modal.opened = !0;
         modal.onCloseRequested = function () {

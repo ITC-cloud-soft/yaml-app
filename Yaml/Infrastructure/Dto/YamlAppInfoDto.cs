@@ -6,6 +6,7 @@ namespace Yaml.Infrastructure.Dto;
 public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
 {
     public int Id { get; set; }
+    public int UserId { get; set; }
 
     public string? AppName { get; set; }
     public string? Cr { get; set; }
@@ -110,5 +111,5 @@ public class KeyVaultDto
     public int? AppId { set; get; }
     public string? ConfigKey { set; get; }
     public string? Value { set; get; }
-    public string? ClusterId { set; get; }
+    public int? ClusterId { set; get; }
 }

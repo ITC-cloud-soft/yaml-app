@@ -35,5 +35,9 @@ public class YamlAppInfo : CommonFields
     [Column("managed_id")]
     public string? ManagedId { get; set; }
 
-    [Column("netdata_flag")] public bool NetdataFlag { get; set; } = false;
+    [Column("netdata_flag")] 
+    public bool NetdataFlag { get; set; } = false;
+    
+    [Column("user_id")]
+    public int UserId { get; set; }
 }

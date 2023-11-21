@@ -45,8 +45,13 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                     AppId = yamlAppInfo.Id,
                     Id = kv.Id,
                     Value = kv.Value
-                }; 
+                };
+                if (yamlKeyVaultInfo.Id < 0)
+                {
+                    yamlKeyVaultInfo.Id = 0;
+                }
                 _context.KeyVaultInfoContext.Update(yamlKeyVaultInfo);
+                await _context.SaveChangesAsync(cancellationToken);
             }
 
             // save whole cluster info

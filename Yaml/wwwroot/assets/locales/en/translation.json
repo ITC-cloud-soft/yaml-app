@@ -84,6 +84,7 @@
     "configMapSetText": "If you want to add constants for use in the image, please add them in the form of Key-Value.",
     "domainText": "Please add domains associated with the cluster; multiple domains can be added.",
     "jsonUploadErrorText": "Json File format error. Please check and upload again.",
-    "jsonUploadSuccessText": "Json File uploaded successfully."
+    "jsonUploadSuccessText": "Json File uploaded successfully.",
+    "is": " is ?"
   }
 }

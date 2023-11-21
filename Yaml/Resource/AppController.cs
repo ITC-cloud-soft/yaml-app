@@ -2,20 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Yaml.Application.Command;
 using Yaml.Application.Query;
+using Yaml.Infrastructure.Dto;
 
 namespace Yaml.Resource;
 
 public class AppController : ApiControllerBase
 {
-
-    [HttpPost("save")]
-    public async Task<ActionResult<string>> Save([FromBody] SaveYamlAppCommand saveYamlAppCommand)
-    {
-        return await Mediator.Send(saveYamlAppCommand);
-    }
-
     [HttpGet("download")]
-    public async Task<IActionResult> DownloadAppFile([FromQuery]GetAppQuery getAppQuery)
+    public async Task<IActionResult> DownloadAppFile([FromQuery] GetAppQuery getAppQuery)
     {
         var yamlAppInfoDto = await Mediator.Send(getAppQuery);
         
@@ -31,9 +25,9 @@ public class AppController : ApiControllerBase
         return fileContentResult;
     }
     
-    [HttpGet("{AppId}")]
+    [HttpGet("get")]
     [Produces("application/json")] 
-    public async Task<IActionResult> GetAppInfo([FromRoute]GetAppQuery getAppQuery)
+    public async Task<IActionResult> GetAppInfo([FromQuery] GetAppQuery getAppQuery)
     {
         return Ok(await Mediator.Send(getAppQuery));
     }
@@ -51,7 +45,6 @@ public class AppController : ApiControllerBase
         return Ok(await Mediator.Send(new UploadFileCommand{Files =  Request.Form.Files}));
     }
 
-
     [HttpDelete("deleteItem")]
     public async Task<IActionResult> Delete([FromQuery] DeleteCommand command)
     {
@@ -61,8 +54,12 @@ public class AppController : ApiControllerBase
     [HttpPost("importJson")]
     public async Task<IActionResult> ImportJSon()
     {
-        
         return Ok(await Mediator.Send(new ImportJsonCommand{File = Request.Form.Files[0]}));
     }
     
+    [HttpPost("save")]
+    public async Task<ActionResult<string>> Save([FromBody] SaveYamlAppCommand saveYamlAppCommand)
+    {
+        return Ok(await Mediator.Send(saveYamlAppCommand));
+    }
 }

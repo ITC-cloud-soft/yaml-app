@@ -87,7 +87,8 @@
     "configMapSetText": "イメージに利用する常数を追加したい場合は、Key-Valueの形で追加してください。",
     "domainText": "クラスターに紐づけるドメインを追加してください、複数追加可能です。",
     "jsonUploadErrorText": "Jsonファイルの形式が間違っています。確認してから再度アップロードしてください。",
-    "jsonUploadSuccessText": "Jsonファイルが正常にアップロードされました。"
+    "jsonUploadSuccessText": "Jsonファイルが正常にアップロードされました。",
+    "is": " とは ?"
   }
 }
 

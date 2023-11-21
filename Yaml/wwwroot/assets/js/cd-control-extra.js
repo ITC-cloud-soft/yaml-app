@@ -5,9 +5,9 @@
 // クラスターページの保存ボタンを押すと、クラスター情報をappDataInfoに保存する
 $(function () {
 
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
         resolve(initI18next());
-    }).then(function (result) {
+    }).then(function () {
         cdPlugin.bindEvents();
         cdPlugin.bindValidation(i18next);
     })
@@ -22,7 +22,7 @@ $(function () {
     });
 
     // bind switch language event
-    $('#languageSwitcher').change((a, b, c) => {
+    $('#languageSwitcher').change(() => {
         const chosenLng = $(this).find("option:selected").attr('value');
         i18next.changeLanguage(chosenLng, () => {
             render();
@@ -158,7 +158,7 @@ const cdPlugin = (($) => {
                 .then(response => {
                     $(fileInputSelector).attr('files', '')
                     commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadSuccessText'), 'Green')
-                })
+                }) 
                 .catch(error => {
                     commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadErrorText'), 'indianred')
                     console.log(error);
@@ -172,9 +172,11 @@ const cdPlugin = (($) => {
         // bind help button event
         $('.a-help-button').off('click').click(function () {
             const helpText = $(this).attr('name');
-            const tagName = $(this).prop('tagName');
-            console.log(i18next.t(helpText))
-            commonFunctions.showModal('', i18next.t(helpText))
+            const parent = $(this).parent()
+            let text = parent.find('[data-i18n]').text();
+            text =  text ? text : parent.parent().text();
+            const header = `<i class="a-icon a-icon--help"></i></br>${text} ${i18next.t('appInfoPage.is')}`
+            commonFunctions.showModal(header, i18next.t(helpText))
         })
     }
 
@@ -394,13 +396,15 @@ const cdPlugin = (($) => {
 
     function getAppDataDtoFromBackend(appId) {
         commonFunctions.axios()
-            .get(`/api/App/${appId}`)
+            .get(`/api/App/get?AppId=${appId}`)
             .then(function (response) {
                 const appInfoDto = response.data;
                 cdPlugin.renderPage(appInfoDto)
                 console.log(appInfoDto)
                 $('#appId').attr('appId', appInfoDto.id)
-            })
+            }).catch(function (ex){
+                console.error(ex)
+        })
     }
 
     function renderAppPage(appInfoDto) {

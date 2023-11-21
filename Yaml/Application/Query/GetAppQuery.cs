@@ -11,6 +11,8 @@ namespace Yaml.Application.Query;
 public class GetAppQuery : IRequest<YamlAppInfoDto>
 {
     public int AppId { get; set; }
+    
+    public int UserId { get; set; }
 }
 
 public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfoDto>
@@ -33,10 +35,20 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
         try
         {
             // app info
-            var appInfo = await _context.AppInfoContext.Where(e => e.Id == query.AppId)
-                .FirstOrDefaultAsync(cancellationToken);
+            var queryCondition = _context.AppInfoContext.AsQueryable();
 
-            if (appInfo == null)
+            var appInfo = new YamlAppInfo();
+            if (query.UserId != 0)
+            {
+                appInfo = await queryCondition.FirstOrDefaultAsync(e => e.UserId == query.UserId, cancellationToken);
+            }
+
+            if (query.AppId != 0)
+            {
+                appInfo = await queryCondition.FirstOrDefaultAsync(e => e.Id == query.AppId, cancellationToken);
+            }
+            
+            if (appInfo == null || appInfo.Id == 0)
             {
                 throw new NotFoundException($"App [{query.AppId}] info not found");
             }

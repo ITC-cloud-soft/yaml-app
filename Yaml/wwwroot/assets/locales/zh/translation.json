@@ -83,6 +83,7 @@
     "useProjectText": "",
     "configMapSetText": "如果您想在镜像中添加常量，请以Key-Value的形式添加。",
     "domainText": "请添加与集群关联的域名，可以添加多个。",
-    "jsonUploadErrorText": "Json File 格式错误 请检查后再上传"
+    "jsonUploadErrorText": "Json File 格式错误 请检查后再上传",
+    "is": " 是 ?"
   }
 }

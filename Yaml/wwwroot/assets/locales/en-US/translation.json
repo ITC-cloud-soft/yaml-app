@@ -83,6 +83,7 @@
     "useProjectText": "",
     "configMapSetText": "If you want to add constants for use in the image, please add them in the form of Key-Value.",
     "domainText": "Please add domains associated with the cluster; multiple domains can be added.",
+    "is": " is ?"
   }
 }
 
