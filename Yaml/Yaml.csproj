@@ -28,7 +28,6 @@
         <PackageReference Include="YamlDotNet" Version="13.5.2" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Domain\" />
       <Folder Include="Infrastructure\Presistence\" />
       <Folder Include="uploads\" />
       <Folder Include="wwwroot\assets\locales\en\" />

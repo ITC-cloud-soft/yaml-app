@@ -114,26 +114,12 @@ const cdPlugin = (($) => {
         // bind download json file event
         $('#download-button').off('click').click(function () {
             const appInfoData = getAppInfoData()
-            commonFunctions.axios()
-                .get(`/api/App/download?appId=${appInfoData.id}`, {responseType: 'blob'})
-                .then(function (response) {
-                    // Create a new Blob object using the response data
-                    const fileBlob = new Blob([response.data], {type: 'application/json'});
+            download(`/api/App/download/json?appId=${appInfoData.id}`, 'content.json')
+        })
 
-                    // Create an object URL for the Blob
-                    const objectUrl = URL.createObjectURL(fileBlob);
-
-                    // Create a temporary anchor tag to trigger download
-                    const tempLink = document.createElement('a');
-                    tempLink.href = objectUrl;
-                    tempLink.setAttribute('download', 'content.json'); // Set the file name for the download
-                    document.body.appendChild(tempLink); // Append anchor to the body
-                    tempLink.click(); // Simulate click on anchor to trigger download
-
-                    // Clean up by revoking the Blob URL and removing the temporary anchor tag
-                    URL.revokeObjectURL(objectUrl);
-                    document.body.removeChild(tempLink);
-                })
+        $('#yaml-button').off('click').click(function () {
+            const appInfoData = getAppInfoData()
+            download(`/api/App/download/yaml?appId=${appInfoData.id}`, `${appInfoData.appName}.json`)
         })
 
         const fileInputSelector = '#jsonFileInput';
@@ -154,11 +140,11 @@ const cdPlugin = (($) => {
             formData.append('files', file);
 
             // upload file
-            commonFunctions.axios().post('/api/App/importJson', formData)
+            commonFunctions.axios().post('/api/App/import/json', formData)
                 .then(response => {
                     $(fileInputSelector).attr('files', '')
                     commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadSuccessText'), 'Green')
-                }) 
+                })
                 .catch(error => {
                     commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadErrorText'), 'indianred')
                     console.log(error);
@@ -168,15 +154,40 @@ const cdPlugin = (($) => {
                 })
         })
 
-
         // bind help button event
         $('.a-help-button').off('click').click(function () {
             const helpText = $(this).attr('name');
             const parent = $(this).parent()
             let text = parent.find('[data-i18n]').text();
-            text =  text ? text : parent.parent().text();
+            text = text ? text : parent.parent().text();
             const header = `<i class="a-icon a-icon--help"></i></br>${text} ${i18next.t('appInfoPage.is')}`
             commonFunctions.showModal(header, i18next.t(helpText))
+        })
+    }
+    
+    function download(url, filename){
+        commonFunctions.axios()
+            .get(url, {responseType: 'blob'})
+            .then(function (response) {
+                // Create a new Blob object using the response data
+                const fileBlob = new Blob([response.data], {type: 'application/json'});
+
+                // Create an object URL for the Blob
+                const objectUrl = URL.createObjectURL(fileBlob);
+
+                // Create a temporary anchor tag to trigger download
+                const tempLink = document.createElement('a');
+                tempLink.href = objectUrl;
+                tempLink.setAttribute('download',  filename); // Set the file name for the download
+                document.body.appendChild(tempLink); // Append anchor to the body
+                tempLink.click(); // Simulate click on anchor to trigger download
+
+                // Clean up by revoking the Blob URL and removing the temporary anchor tag
+                URL.revokeObjectURL(objectUrl);
+                document.body.removeChild(tempLink);
+
+            }).catch(function (e) {
+            console.error(e)
         })
     }
 
@@ -396,14 +407,14 @@ const cdPlugin = (($) => {
 
     function getAppDataDtoFromBackend(appId) {
         commonFunctions.axios()
-            .get(`/api/App/get?AppId=${appId}`)
+            .get(`/api/App/info?AppId=${appId}`)
             .then(function (response) {
                 const appInfoDto = response.data;
                 cdPlugin.renderPage(appInfoDto)
                 console.log(appInfoDto)
                 $('#appId').attr('appId', appInfoDto.id)
-            }).catch(function (ex){
-                console.error(ex)
+            }).catch(function (ex) {
+            console.error(ex)
         })
     }
 
@@ -716,7 +727,7 @@ const cdPlugin = (($) => {
         for (let i = 0; i < fileList.length; i++) {
             formData.append('files', fileList[i]);
         }
-        commonFunctions.axios().post('/api/App/uploadFiles', formData)
+        commonFunctions.axios().post('/api/App/upload', formData)
             .then(response => {
                 $(selector).attr("data-filename", response.data.files[0])
             })
@@ -757,7 +768,7 @@ const cdPlugin = (($) => {
             console.log("id not exist")
             return
         }
-        commonFunctions.axios().delete(`/api/App/deleteItem?id=${id}&type=${type}`)
+        commonFunctions.axios().delete(`/api/App/delete?id=${id}&type=${type}`)
             .then(function (response) {
                 // TODO delete success bubble
                 console.log(response)

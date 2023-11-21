@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IKubeApi, KubeApi>();
+builder.Services.AddScoped<IKuberYamlGenerator, KuberYamlGenerator>();
 builder.Services.AddSingleton<Kubernetes>(_ =>
 {
     var config = new KubernetesClientConfiguration
