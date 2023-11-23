@@ -10,7 +10,7 @@ public interface IKubeApi
     /// <param name="namespaceName">ネームスペースの名前</param>
     /// <param name="cancellationToken">操作をキャンセルするためのトークン</param>
     /// <returns>作成されたネームスペースの情報</returns>
-    public Task<V1Namespace> CreateNamespace(YamlAppInfoDto dtoe, CancellationToken cancellationToken);
+    public Task<V1Namespace> CreateNamespace(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
     /// <summary>
     /// YamlAppInfoDtoを使用して新しいサービスを作成します。

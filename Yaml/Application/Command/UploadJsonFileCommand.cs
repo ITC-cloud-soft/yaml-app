@@ -6,12 +6,12 @@ using Yaml.Resource;
 
 namespace Yaml.Application.Command;
 
-public class ImportJsonCommand : IRequest<string>
+public class UploadJsonFileCommand : IRequest<string>
 {
     public IFormFile File { get; set; }
 }
 
-public class ImportJsonCommandHandler : IRequestHandler<ImportJsonCommand, string> 
+public class ImportJsonCommandHandler : IRequestHandler<UploadJsonFileCommand, string> 
 {
     private readonly ILogger _logger;
     private readonly ISender? _mediator;
@@ -21,7 +21,7 @@ public class ImportJsonCommandHandler : IRequestHandler<ImportJsonCommand, strin
         _mediator = mediator;
     }
 
-    public async Task<string> Handle(ImportJsonCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(UploadJsonFileCommand request, CancellationToken cancellationToken)
     {
         var jsonFile = request.File;
         var jsonFileStream = jsonFile.OpenReadStream();

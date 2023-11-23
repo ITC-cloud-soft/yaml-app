@@ -17,9 +17,10 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
     private readonly ILogger _logger;
     private readonly ISender _mediator;
     private readonly IKuberYamlGenerator _kuberYamlGenerator;
+    private const string NextLine = "\n---\n";
 
     public DownloadYamlFileCommandHandler(
-        ILogger<DownloadYamlFileCommandHandler> logger, 
+        ILogger<DownloadYamlFileCommandHandler> logger,
         ISender mediator,
         IKuberYamlGenerator kuberYamlGenerator)
     {
@@ -27,28 +28,47 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
         _mediator = mediator;
         _kuberYamlGenerator = kuberYamlGenerator;
     }
-    
+
     public async Task<FileContentResult> Handle(DownloadYamlFileCommand request, CancellationToken cancellationToken)
     {
-        
         try
         {
             var yamlAppInfoDto = await _mediator.Send(new GetAppQuery { AppId = request.appId });
-            var tasks =  yamlAppInfoDto.ClusterInfoList?.Select(cluster =>
+            
+            var tasks = yamlAppInfoDto.ClusterInfoList?.Select(async cluster =>
             {
-                var generateConfigMap =    _kuberYamlGenerator.GenerateConfigMap(cluster);
-                return generateConfigMap;
-            });
-            var whenAll = await Task.WhenAll(tasks);
-            var res = String.Join("---\n", whenAll);
+                var service = await _kuberYamlGenerator.GenerateService(cluster);
+                var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
+                var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
+                var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
+                var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
+                var persistentVolume = await _kuberYamlGenerator.GeneratePersistentVolume(cluster);
+                var secret = await _kuberYamlGenerator.GenerateSecret(yamlAppInfoDto);
 
-            var fileBytes = Encoding.UTF8.GetBytes(res);
-            var file = new FileContentResult(fileBytes, "application/json") { FileDownloadName = $"{yamlAppInfoDto.AppName}.yaml" };
-            return file;
+                return $"{service}" +
+                       $"{NextLine}" +
+                       $"{deployment}" +
+                       $"{NextLine}" +
+                       $"{configMap}" +
+                       $"{NextLine}" +
+                       $"{ingress}" +
+                       $"{NextLine}" +
+                       $"{persistentVolumeClaim}" +
+                       $"{NextLine}" +
+                       $"{persistentVolume}"+
+                       $"{NextLine}" +
+                       $"{secret}";
+            });
+            
+            var whenAll = await Task.WhenAll(tasks);
+            var fileContent = String.Join(NextLine, whenAll);
+            var fileBytes = Encoding.UTF8.GetBytes(fileContent);
+            return new FileContentResult(fileBytes, "application/json") 
+                { FileDownloadName = $"{yamlAppInfoDto.AppName}.yaml" };
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error generate yaml file error", e);
             throw;
         }
     }

@@ -37,7 +37,7 @@
     "upload": "上传",
     "deploy": "发布",
     "number": "数字",
-    "manageLevel": "ManageLevel",
+    "manageLevel": "ManageLevel (aadpodidbinding)",
     "diskSet": "磁盘配置",
     "diskSize": "磁盘大小",
     "diskClass": "磁盘类",

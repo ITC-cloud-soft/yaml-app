@@ -60,7 +60,7 @@ public class AppController : ApiControllerBase
     [HttpPost("import/json")]
     public async Task<IActionResult> ImportJSon()
     {
-        return Ok(await Mediator.Send(new ImportJsonCommand{File = Request.Form.Files[0]}));
+        return Ok(await Mediator.Send(new UploadJsonFileCommand{File = Request.Form.Files[0]}));
     }
     
     [HttpPost("save")]

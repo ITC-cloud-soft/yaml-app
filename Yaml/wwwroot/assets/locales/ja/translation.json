@@ -40,7 +40,7 @@
     "upload": "インポート",
     "deploy": "デプロイ",
     "number": "※数字",
-    "manageLevel": "managedレベル",
+    "manageLevel": "managedレベル（aadpodidbinding）",
     "diskSet": "Disk設置",
     "diskSize": "ディスク サイズ",
     "diskClass": "ディスク クラス",

@@ -37,7 +37,7 @@
     "upload": "Upload",
     "deploy": "Deploy",
     "number": "Number",
-    "manageLevel": "ManageLevel",
+    "manageLevel": "ManageLevel (aadpodidbinding)",
     "diskSet": "DiskSet",
     "diskSize": "DiskSize",
     "diskClass": "DiskClass",

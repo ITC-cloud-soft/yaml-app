@@ -1,4 +1,7 @@
+using System.Net;
 using k8s;
+using k8s.Autorest;
+using k8s.Exceptions;
 using k8s.Models;
 using RazorLight;
 using Yaml.Domain.K8s.Interface;
@@ -9,13 +12,15 @@ namespace Yaml.Domain.K8s;
 
 public class KubeApi : IKubeApi
 {
+    private readonly IKuberYamlGenerator _yamlGenerator;
     private readonly IRazorLightEngine _engine;
     private readonly Kubernetes _client;
     private readonly ILogger _logger;
     private readonly string _currentDirectory = Directory.GetCurrentDirectory();
 
-    public KubeApi(IRazorLightEngine engine, Kubernetes client, ILogger<KubeApi> logger)
+    public KubeApi(IKuberYamlGenerator yamlGenerator, IRazorLightEngine engine, Kubernetes client, ILogger<KubeApi> logger)
     {
+        _yamlGenerator = yamlGenerator;
         _engine = engine;
         _client = client;
         _logger = logger;
@@ -26,29 +31,28 @@ public class KubeApi : IKubeApi
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
         try
         {
-            // check namespace if exists
-            var namespaces = await _client.ListNamespaceAsync(cancellationToken: cancellationToken);
-            var namespaceNs = namespaces.Items.SingleOrDefault(ns => ns.Metadata.Name == namespaceName);
-            
-            if (namespaceNs != null)
+            try
             {
-                return namespaceNs;
+                var existedNamespace = await _client.ReadNamespaceAsync(namespaceName, cancellationToken: cancellationToken);
+                return existedNamespace;
             }
-            
+            catch (HttpOperationException ex) when(ex.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                // Namespace not found - normal flow for creating a new namespace
+            }
+            _logger.LogInformation("Creating new namespace: {NamespaceName}", namespaceName);
             var newNamespace = new V1Namespace {Metadata = new V1ObjectMeta { Name = namespaceName }};
             return await _client.CreateNamespaceAsync(newNamespace, cancellationToken: cancellationToken);
         }
         catch (Exception e)
         {
-            _logger.LogError("Error creating namespace '{NamespaceName}': {ExceptionMessage}", namespaceName,
-                e.Message);
+            _logger.LogError(e, "Error creating namespace '{NamespaceName}'", namespaceName);
             throw new ServiceException($"Create namespace error {namespaceName}", e);
         }
     }
 
     public async Task<V1Service[]> CreateService(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        var path = Path.Combine(_currentDirectory, KubeConstants.ServiceTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
         try
         {
@@ -63,7 +67,7 @@ public class KubeApi : IKubeApi
                         return service;
                     }
 
-                    var content = await _engine.CompileRenderAsync(path, cluster);
+                    var content = await _yamlGenerator.GenerateService(cluster);
                     var v1Service = KubernetesYaml.Deserialize<V1Service>(content);
                     return await _client.CreateNamespacedServiceAsync(v1Service, namespaceName, cancellationToken: cancellationToken);
                 });
@@ -208,7 +212,7 @@ public class KubeApi : IKubeApi
 
     public async Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        var path = Path.Combine(_currentDirectory, KubeConstants.IngressFile);
+        var path = Path.Combine(_currentDirectory, KubeConstants.IngressFileTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
         try
         {

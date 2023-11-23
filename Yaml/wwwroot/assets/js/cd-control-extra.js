@@ -55,7 +55,19 @@ const cdPlugin = (($) => {
     let clusterFormValidator = {};
 
     function initElementEvent() {
+        
 
+        // bind new cluster btn event 
+        $('#deploy-button').off('click').click(() => {
+           const infoData = getAppInfoData();
+           commonFunctions.axios().post('/api/App/deploy', {'AppInfoDto': infoData})
+               .then(function (res){
+                   console.log(res)
+               }).catch(function (error){
+               commonFunctions.showToast(3000, error, '#cc3300')
+           })
+        })
+        
         // bind new cluster btn event 
         $('#new-cluster-btn').off('click').click(() => {
             ifNewCluster.flag = 1;
@@ -680,6 +692,10 @@ const cdPlugin = (($) => {
         appInfoDto.keyVault.keyVaultName = $(selectors.keyVault).val();
         appInfoDto.netdataFlag = $(selectors.Netdata).prop("checked");
         appInfoDto.clusterInfoList = clusterInfoList;
+        
+        clusterInfoList.forEach(cluster =>{
+            cluster.appName = appInfoDto.appName;
+        })
         return appInfoDto;
     }
 

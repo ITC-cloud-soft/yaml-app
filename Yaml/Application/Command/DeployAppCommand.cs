@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using MediatR;
 using RazorLight;
@@ -9,13 +10,12 @@ namespace Yaml.Application.Command;
 
 public class DeployAppCommand : IRequest<string>
 {
+    [Required]
     public YamlAppInfoDto? AppInfoDto { get; set; }
 }
 
 public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
 {
-    private readonly MyDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ILogger _logger;
     private readonly  IRazorLightEngine _engine;
     private readonly  IKubeApi _kubeApi;
@@ -27,8 +27,6 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
         IRazorLightEngine razorLightEngine,
         IKubeApi kubeApi)
     {
-        _context = context;
-        _mapper = mapper;
         _logger = logger;
         _engine = razorLightEngine;
         _kubeApi = kubeApi;
@@ -40,11 +38,11 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
         {
             var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
             // await _kubeApi.CreateSecret(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
             return v1Namespace.Metadata.Name;
         }
         catch (Exception e)
