@@ -240,4 +240,11 @@ public class KubeApi : IKubeApi
             throw new ServiceException($"Create Ingress error {dto.AppName}", ex);
         }
     }
+
+    public Task<string> DeployCertification(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+        
+        
+        throw new NotImplementedException();
+    }
 }

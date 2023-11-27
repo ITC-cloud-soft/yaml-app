@@ -113,7 +113,7 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
                     .ToListAsync(cancellationToken);
 
                 yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
-                _logger.LogInformation("Get App:[{}] and AppId:[{}] info from DB", appInfo.AppName, appInfo.Id);
+                _logger.LogInformation("Get app name:[{}], app id:[{}] info from database", appInfo.AppName, appInfo.Id);
             }
 
             yamlAppInfoDto.ClusterInfoList = yamlClusterInfoDtoList;

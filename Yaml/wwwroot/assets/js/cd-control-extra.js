@@ -131,7 +131,7 @@ const cdPlugin = (($) => {
 
         $('#yaml-button').off('click').click(function () {
             const appInfoData = getAppInfoData()
-            download(`/api/App/download/yaml?appId=${appInfoData.id}`, `${appInfoData.appName}.json`)
+            download(`/api/App/download/yaml?appId=${appInfoData.id}`, `${appInfoData.appName}.yaml`)
         })
 
         const fileInputSelector = '#jsonFileInput';
@@ -190,17 +190,18 @@ const cdPlugin = (($) => {
                 // Create a temporary anchor tag to trigger download
                 const tempLink = document.createElement('a');
                 tempLink.href = objectUrl;
-                tempLink.setAttribute('download',  filename); // Set the file name for the download
-                document.body.appendChild(tempLink); // Append anchor to the body
-                tempLink.click(); // Simulate click on anchor to trigger download
-
+                tempLink.setAttribute('download',  filename); 
+                document.body.appendChild(tempLink); 
+                tempLink.click(); 
+                
                 // Clean up by revoking the Blob URL and removing the temporary anchor tag
                 URL.revokeObjectURL(objectUrl);
                 document.body.removeChild(tempLink);
 
             }).catch(function (e) {
-            console.error(e)
-        })
+                console.error(e);
+            }
+        )
     }
 
 

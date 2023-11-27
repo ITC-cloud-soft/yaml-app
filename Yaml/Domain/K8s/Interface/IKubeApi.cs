@@ -53,5 +53,8 @@ public interface IKubeApi
     public Task<V1PersistentVolumeClaim[]> CreatePersistentVolumeClaim(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
     public Task<V1Secret> CreateSecret(YamlAppInfoDto dto, CancellationToken cancellationToken);
+    
     public Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken);
+
+    public Task<string> DeployCertification(YamlAppInfoDto dto, CancellationToken cancellationToken);
 }
