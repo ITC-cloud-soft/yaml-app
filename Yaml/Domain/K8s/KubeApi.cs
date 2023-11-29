@@ -1,9 +1,11 @@
 using System.Net;
+using System.Text;
 using k8s;
 using k8s.Autorest;
-using k8s.Exceptions;
 using k8s.Models;
+using Microsoft.Azure.Management.Msi.Fluent;
 using RazorLight;
+using Yaml.Domain.AzureApi.Interface;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
@@ -12,14 +14,21 @@ namespace Yaml.Domain.K8s;
 
 public class KubeApi : IKubeApi
 {
+    private readonly IAzureIdentityManager _azureIdentityManager;
     private readonly IKuberYamlGenerator _yamlGenerator;
     private readonly IRazorLightEngine _engine;
     private readonly Kubernetes _client;
     private readonly ILogger _logger;
     private readonly string _currentDirectory = Directory.GetCurrentDirectory();
 
-    public KubeApi(IKuberYamlGenerator yamlGenerator, IRazorLightEngine engine, Kubernetes client, ILogger<KubeApi> logger)
+    public KubeApi(
+        IAzureIdentityManager azureIdentityManager,
+        IKuberYamlGenerator yamlGenerator, 
+        IRazorLightEngine engine, 
+        Kubernetes client,  
+        ILogger<KubeApi> logger)
     {
+        _azureIdentityManager = azureIdentityManager;
         _yamlGenerator = yamlGenerator;
         _engine = engine;
         _client = client;
@@ -180,7 +189,7 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<V1Secret> CreateSecret(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task<V1Secret> CreateKeyVault(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
         var path = Path.Combine(_currentDirectory, KubeConstants.SecretTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
@@ -196,7 +205,6 @@ public class KubeApi : IKubeApi
             }
 
             var content = await _engine.CompileRenderAsync(path, dto);
-            Console.WriteLine(content);
             await File.WriteAllTextAsync(Path.Combine(_currentDirectory, KubeConstants.OutPutFile), content, cancellationToken);
 
             var secret = KubernetesYaml.Deserialize<V1Secret>(content);
@@ -241,10 +249,104 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public Task<string> DeployCertification(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task<V1Secret[]> CreateDomainCertification(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
+
+            var tasks = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            {
+                var secretName = cluster.ClusterName + "-tls-secret";
+                try
+                {
+                    // Optionally skip this step if secrets are not expected to exist beforehand
+                    return await _client.ReadNamespacedSecretAsync(secretName, namespaceName, cancellationToken: cancellationToken);
+                }
+                catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    var certificationLocation = Path.Combine(_currentDirectory, cluster.Domain?.Certification ?? "");
+                    var privateKeyLocation = Path.Combine(_currentDirectory, cluster.Domain?.PrivateKey ?? "");
+
+                    if (!File.Exists(certificationLocation) || !File.Exists(privateKeyLocation))
+                    {
+                        _logger.LogError("Certificate or private key file not found for cluster {ClusterName}", cluster.ClusterName);
+                        throw;
+                    }
+                    var certificationData =
+                        await File.ReadAllTextAsync(certificationLocation, cancellationToken: cancellationToken);
+                    var privateKeyData =
+                        await File.ReadAllTextAsync(privateKeyLocation, cancellationToken: cancellationToken);
+                    var secret = new V1Secret
+                    {
+                        Metadata = new V1ObjectMeta
+                        {
+                            Name = secretName
+                        },
+                        Data = new Dictionary<string, byte[]>
+                        {
+                            ["tls.crt"] = Encoding.UTF8.GetBytes(certificationData),
+                            ["tls.key"] = Encoding.UTF8.GetBytes(privateKeyData),
+                        },
+                        Type = "kubernetes.io/tls"
+                    };
+                    return await _client.CreateNamespacedSecretAsync(
+                        secret,
+                        namespaceName, 
+                        cancellationToken: cancellationToken);
+                }
+            });
+            return await Task.WhenAll(tasks);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error creating secrets for namespace: {AppName}", dto.AppName);
+            throw new ServiceException("Error creating secrets", e);
+        }
+    }
+
+    public async Task CreateAzureIdentityAsync(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var tasks = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            {
+                var azureIdentityName = cluster.ClusterName + "-identity";
+                var identityAsync = await _azureIdentityManager.CreateIdentityAsync(azureIdentityName, "resourceGroupName");
+                return identityAsync;
+            });
+            await Task.WhenAll(tasks);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error Create Azure Identity Async for namespace: {AppName}", dto.AppName);
+            throw new ServiceException("Error Create Azure Identity Async for namespace", e);
+        }
+    }
+
+    public async Task CreateAzureIdentityBindingAsync(string namespaceName, string bindingName, string selector,  IIdentity identity)
     {
         
-        
-        throw new NotImplementedException();
+        var azureIdentityBinding = new Dictionary<string, object>
+        {
+            ["apiVersion"] = "aadpodidentity.k8s.io/v1",
+            ["kind"] = "AzureIdentityBinding",
+            ["metadata"] = new Dictionary<string, object>
+            {
+                ["name"] = bindingName,
+                ["namespace"] = namespaceName
+            },
+            ["spec"] = new Dictionary<string, object>
+            {
+                ["azureIdentity"] = identity.Name,
+                ["selector"] = selector
+            }
+        };
+
+        await _client.CreateNamespacedCustomObjectAsync(azureIdentityBinding,
+            "aadpodidentity.k8s.io", 
+            "v1",
+            namespaceName, 
+            "azureidentitybindings");
     }
 }

@@ -746,7 +746,7 @@ const cdPlugin = (($) => {
         }
         commonFunctions.axios().post('/api/App/upload', formData)
             .then(response => {
-                $(selector).attr("data-filename", response.data.files[0])
+                $(selector).attr("data-filename", response.data[0])
             })
             .catch(error => {
                 console.log(error);

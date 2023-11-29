@@ -5,8 +5,12 @@ metadata:
   name: @Model.ClusterName-ingress
   namespace: @Model.AppName-ns
 spec:
+  tls:
+    - hosts:
+        - @Model.Domain?.DomainName
+      secretName: @Model.ClusterName-tls-secret
   rules:
-    - host: @Model.Domain.DomainName
+    - host: @Model.Domain?.DomainName
       http:
         paths:
           - path: @Model.Prefix

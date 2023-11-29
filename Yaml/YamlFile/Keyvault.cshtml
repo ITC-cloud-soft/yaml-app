@@ -13,7 +13,7 @@ spec:
         {
           string obj = $"        - | \n" +
                        $"          objectType: secret \n" +
-                       $"          objectName: {kv} \n";
+                       $"          objectName: {kv.ConfigKey} \n";
           @obj
         }
     tenantId: @Model.KeyVault?.TenantId
@@ -23,11 +23,11 @@ spec:
   provider: azure
   secretObjects:
   - data:
-    secretName: @Model.AppName-secret
-    type: Opaque    
       @foreach (var kv in Model.KeyVault.KeyVault)
       {
-        string sc = $"      - key: {kv} \n" +
-                    $"        objectName: {kv}";
+        string sc = $"      - key: {kv.ConfigKey} \n" +
+                    $"        objectName: {kv.ConfigKey} \n";
         @sc
       }
+    secretName: @Model.AppName-secret
+    type: Opaque

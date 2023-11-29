@@ -37,6 +37,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
             
             var tasks = yamlAppInfoDto.ClusterInfoList?.Select(async cluster =>
             {
+                cluster.AppName = yamlAppInfoDto.AppName;
                 var service = await _kuberYamlGenerator.GenerateService(cluster);
                 var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);

@@ -1,17 +1,11 @@
 
 
-using System.Globalization;
 using System.Reflection;
 using FluentValidation;
-using MediatR;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using RazorLight;
 using RazorLight.Extensions;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using Yaml.Domain.AzureApi;
+using Yaml.Domain.AzureApi.Interface;
 
 namespace Yaml;
 
@@ -56,6 +50,17 @@ public static class ConfigureServices
         services.AddSwaggerGen(options =>
         {
             options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+        });
+        
+        // Azure Identity Manager
+        services.AddSingleton<IAzureIdentityManager, AzureIdentityManager>(provider =>
+        {
+            string clientId = configuration["Azure:ClientId"] ?? "";
+            string clientSecret = configuration["Azure:ClientSecret"] ?? "";
+            string tenantId = configuration["Azure:TenantId"] ?? "";
+            string subscriptionId = configuration["Azure:SubscriptionId"] ?? "";
+
+            return new AzureIdentityManager(clientId, clientSecret, tenantId, subscriptionId);
         });
         return services;
     }
