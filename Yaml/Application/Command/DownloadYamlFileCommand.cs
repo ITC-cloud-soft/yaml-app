@@ -2,6 +2,7 @@ using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Yaml.Application.Query;
+using Yaml.Domain;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
 
@@ -18,7 +19,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
     private readonly ISender _mediator;
     private readonly IKuberYamlGenerator _kuberYamlGenerator;
     private const string NextLine = "\n---\n";
-
+    private readonly string _currentDirectory = Directory.GetCurrentDirectory();
     public DownloadYamlFileCommandHandler(
         ILogger<DownloadYamlFileCommandHandler> logger,
         ISender mediator,
@@ -40,10 +41,13 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                 cluster.AppName = yamlAppInfoDto.AppName;
                 var service = await _kuberYamlGenerator.GenerateService(cluster);
                 var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
+
+                cluster.ConfigFile[0].FileContent = "parameter1=value1\n" +
+                                                    "parameter2=value2";
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
                 var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
                 var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
-                var persistentVolume = await _kuberYamlGenerator.GeneratePersistentVolume(cluster);
+                // var persistentVolume = await _kuberYamlGenerator.GeneratePersistentVolume(cluster);
                 var secret = await _kuberYamlGenerator.GenerateSecret(yamlAppInfoDto);
 
                 return $"{service}" +
@@ -51,12 +55,12 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                        $"{deployment}" +
                        $"{NextLine}" +
                        $"{configMap}" +
-                       $"{NextLine}" +
+                       $"{NextLine}" + 
                        $"{ingress}" +
                        $"{NextLine}" +
                        $"{persistentVolumeClaim}" +
                        $"{NextLine}" +
-                       $"{persistentVolume}"+
+                       // $"{persistentVolume}"+
                        $"{NextLine}" +
                        $"{secret}";
             });
@@ -64,6 +68,12 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
             var whenAll = await Task.WhenAll(tasks);
             var fileContent = String.Join(NextLine, whenAll);
             var fileBytes = Encoding.UTF8.GetBytes(fileContent);
+            
+            await File.WriteAllTextAsync(
+                Path.Combine(_currentDirectory, KubeConstants.OutPutFile),
+                fileContent,
+                cancellationToken);
+            
             return new FileContentResult(fileBytes, "application/json") 
                 { FileDownloadName = $"{yamlAppInfoDto.AppName}.yaml" };
         }

@@ -95,6 +95,7 @@ public class ConfigFileDto
     public int Id { set; get; }
     public string? FilePath { set; get; }
     public string? FileLink { set; get; }
+    public string? FileContent { set; get; }
 }
 
 public class DomainDto

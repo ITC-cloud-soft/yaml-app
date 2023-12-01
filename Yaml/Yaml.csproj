@@ -35,7 +35,6 @@
       <Folder Include="wwwroot\assets\locales\en\" />
       <Folder Include="wwwroot\assets\locales\ja\" />
       <Folder Include="YamlFile\json\" />
-      <Folder Include="YamlFile\yaml\" />
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Redis\redis-deployment.cshtml" />

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postsql-deployment
+  namespace: pssql-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postsql-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 3
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: postsql-app
+        aadpodidbinding: my-selector1 # cluster page 的 manageLabel
+    spec:
+      containers:
+        - name: springboot
+          image: djpsaascoreacr.azurecr.io/my-springboot-app:latest
+          imagePullPolicy: Always
+          env:
+            - name: Name
+              valueFrom:
+                configMapKeyRef:
+                  name: postsql-configmap
+                  key: name
+            - name: KeyVaultOne
+              valueFrom: 
+                secretKeyRef:
+                  key: KeyVaultOne # Kubernetes Secret 中的键
+                  name: pssql-secret  # Kubernetes Secret 的名称
+            - name: KeyVaultTwo
+              valueFrom:
+                secretKeyRef:
+                  key: kv2 # Kubernetes Secret 中的键
+                  name: pssql-secret  # Kubernetes Secret 的名称
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: 200m

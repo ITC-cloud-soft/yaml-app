@@ -42,7 +42,7 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
             // await _kubeApi.CreateAzureIdentityAsync(command.AppInfoDto, cancellationToken);
             // await _kubeApi.CreateKeyVault(command.AppInfoDto, cancellationToken);
             // await _kubeApi.CreateDomainCertification(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
             // await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
             // await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
             // await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
