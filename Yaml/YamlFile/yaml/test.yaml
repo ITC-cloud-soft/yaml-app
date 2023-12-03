@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: postsql-app
-        aadpodidbinding: my-selector1 # cluster page 的 manageLabel
+        aadpodidbinding: saas-cluster-mnid # cluster page 的 manageLabel
     spec:
       containers:
         - name: springboot
@@ -29,19 +29,30 @@ spec:
                 configMapKeyRef:
                   name: postsql-configmap
                   key: name
-            - name: KeyVaultOne
-              valueFrom: 
-                secretKeyRef:
-                  key: KeyVaultOne # Kubernetes Secret 中的键
-                  name: pssql-secret  # Kubernetes Secret 的名称
-            - name: KeyVaultTwo
-              valueFrom:
-                secretKeyRef:
-                  key: kv2 # Kubernetes Secret 中的键
-                  name: pssql-secret  # Kubernetes Secret 的名称
+          volumeMounts:
+            - name: secrets-store01-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+#            - name: KeyVaultOne
+#              valueFrom: 
+#                secretKeyRef:
+#                  key: KeyVaultOne # Kubernetes Secret 中的键
+#                  name: pssql-secret  # Kubernetes Secret 的名称
+#            - name: KeyVaultTwo
+#              valueFrom:
+#                secretKeyRef:
+#                  key: kv2 # Kubernetes Secret 中的键
+#                  name: pssql-secret  # Kubernetes Secret 的名称
           ports:
             - containerPort: 8080
           resources:
             limits:
               memory: 2Gi
               cpu: 200m
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "pssql-keyvault-spc"
