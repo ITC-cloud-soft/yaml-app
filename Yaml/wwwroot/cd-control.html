@@ -512,8 +512,10 @@
                                                     <div class="m-form-field__content">
                                                         <div id="diskType" class="a-pulldown">
                                                             <select name="diskType" class="a-pulldown__select">
-                                                                <option value="Azure Premium Storage">Azure Premium Storage</option>
-                                                                <option value="Azure Standard Storage">Azure Standard Storage</option>
+                                                                <option value="default"> Azure Standard SSD</option>
+                                                                <option value="managed-csi"> Azure Standard SSD(CSI Driver)</option>
+                                                                <option value="managed-premium"> Azure Premium SSD</option>
+                                                                <option value="managed-csi-premium">Azure Premium SSD(CSI Driver)</option>
                                                             </select>
                                                             <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
                                                         </div>

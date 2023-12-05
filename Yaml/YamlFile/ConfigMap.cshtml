@@ -11,9 +11,9 @@ data:
         string configRecord = item.ConfigKey + ": \"" + item.Value + "\"\n";
         @("  " + configRecord)
     }
-    @foreach(var item in @Model.ConfigFile ?? Enumerable.Empty<ConfigFileDto>())
-    {
-        string configRecord = item.FilePath;
-        @("  " + configRecord + ": | \n") 
-        @("    " + item.FileContent + "\n") 
-    }
+    @* @foreach(var item in @Model.ConfigFile ?? Enumerable.Empty<ConfigFileDto>()) *@
+    @* { *@
+    @*     string configRecord = item.FilePath; *@
+    @*     @("  " + configRecord + ": | \n")  *@
+    @*     @("    " + item.FileContent + "\n")  *@
+    @* } *@

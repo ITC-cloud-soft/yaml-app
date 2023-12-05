@@ -29,26 +29,26 @@ spec:
                 configMapKeyRef:
                   name: postsql-configmap
                   key: name
+            - name: KeyVaultOne
+              valueFrom: 
+                secretKeyRef:
+                  key: KeyVaultOne # Kubernetes Secret 中的键
+                  name: pssql-secret  # Kubernetes Secret 的名称
+            - name: KeyVaultTwo
+              valueFrom:
+                secretKeyRef:
+                  key: KeyVaultTwo  # Kubernetes Secret 中的键
+                  name: pssql-secret  # Kubernetes Secret 的名称
           volumeMounts:
             - name: secrets-store01-inline
               mountPath: "/mnt/secrets-store"
               readOnly: true
-#            - name: KeyVaultOne
-#              valueFrom: 
-#                secretKeyRef:
-#                  key: KeyVaultOne # Kubernetes Secret 中的键
-#                  name: pssql-secret  # Kubernetes Secret 的名称
-#            - name: KeyVaultTwo
-#              valueFrom:
-#                secretKeyRef:
-#                  key: kv2 # Kubernetes Secret 中的键
-#                  name: pssql-secret  # Kubernetes Secret 的名称
           ports:
             - containerPort: 8080
           resources:
             limits:
               memory: 2Gi
-              cpu: 200m
+              cpu: "0.5"
       volumes:
         - name: secrets-store01-inline
           csi:

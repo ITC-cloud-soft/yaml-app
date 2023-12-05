@@ -42,12 +42,11 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                 var service = await _kuberYamlGenerator.GenerateService(cluster);
                 var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
 
-                cluster.ConfigFile[0].FileContent = "parameter1=value1\n" +
-                                                    "parameter2=value2";
+                cluster.ConfigFile[0].FileContent = "parameter1=value1\n";
+                                                    
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
                 var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
                 var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
-                // var persistentVolume = await _kuberYamlGenerator.GeneratePersistentVolume(cluster);
                 var secret = await _kuberYamlGenerator.GenerateSecret(yamlAppInfoDto);
 
                 return $"{service}" +
@@ -59,8 +58,6 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                        $"{ingress}" +
                        $"{NextLine}" +
                        $"{persistentVolumeClaim}" +
-                       $"{NextLine}" +
-                       // $"{persistentVolume}"+
                        $"{NextLine}" +
                        $"{secret}";
             });

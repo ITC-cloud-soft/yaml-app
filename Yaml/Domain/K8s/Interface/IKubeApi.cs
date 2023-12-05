@@ -18,14 +18,9 @@ public interface IKubeApi
 
     public Task<V1PersistentVolumeClaim[]> CreatePersistentVolumeClaim(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
-    public Task<V1Secret> CreateKeyVault(YamlAppInfoDto dto, CancellationToken cancellationToken);
+    public Task<string> CreateKeyVault(YamlAppInfoDto dto, CancellationToken cancellationToken);
     
     public Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
     public Task<V1Secret[]> CreateDomainCertification(YamlAppInfoDto dto, CancellationToken cancellationToken);
-
-    public Task CreateAzureIdentityAsync(YamlAppInfoDto dto, CancellationToken cancellationToken );
-
-    public Task CreateAzureIdentityBindingAsync(string namespaceName, string bindingName, string selector,
-        IIdentity identity);
 }

@@ -3,6 +3,8 @@ namespace Yaml.Domain;
 public static class KubeConstants
 {
     public const string OutPutFile = "YamlFile/App.yaml";
+    public const string TempPath = "YamlFile/yaml/";
+    public const string KeyVaultYamlFileName = "kv.yaml";
     
     public const string ConfigMapTemplate = "YamlFile/ConfigMap.cshtml";
     public const string PersistentVolumeTemplate = "YamlFile/PersistentVolume.cshtml";

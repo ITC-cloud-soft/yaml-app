@@ -16,18 +16,18 @@ spec:
                        $"          objectName: {kv.ConfigKey} \n";
           @obj
         }
-    tenantId: @Model.KeyVault?.TenantId
-    usePodIdentity: "true"
-    useVMManagedIdentity: "false"
-    userAssignedIdentityID: @Model.KeyVault?.ManagedId
+    tenantId: "@Model.KeyVault?.TenantId"
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "@Model.KeyVault?.ManagedId"
   provider: azure
   secretObjects:
-  - data:
-      @foreach (var kv in Model.KeyVault.KeyVault)
-      {
-        string sc = $"      - key: {kv.ConfigKey} \n" +
-                    $"        objectName: {kv.ConfigKey} \n";
-        @sc
-      }
-    secretName: @Model.AppName-secret
-    type: Opaque
+    - secretName: @Model.AppName-secret
+      type: Opaque
+      data:
+        @foreach (var kv in Model.KeyVault.KeyVault)
+        {
+          string sc = $"        - key: {kv.ConfigKey} \n" +
+                      $"          objectName: {kv.ConfigKey} \n";
+          @sc
+        }

@@ -19,7 +19,7 @@ spec:
     metadata:
       labels:
         app: @Model.ClusterName-app
-        addPodIDBinding: @Model.ManageLabel
+        aadpodidbinding: @Model.ManageLabel
     spec:
       containers:
         - name: @Model.ClusterName
@@ -58,7 +58,7 @@ spec:
           resources:
            limits:
              memory: @Model.Memory
-             cpu: @Model.Cpu
+             cpu: "@Model.Cpu"
       volumes:
       - name: @Model.ClusterName-pvc
         persistentVolumeClaim:

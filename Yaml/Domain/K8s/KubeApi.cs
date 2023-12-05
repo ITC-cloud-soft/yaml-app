@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using k8s;
@@ -48,6 +49,7 @@ public class KubeApi : IKubeApi
             catch (HttpOperationException ex) when(ex.Response.StatusCode == HttpStatusCode.NotFound)
             {
                 // Namespace not found - normal flow for creating a new namespace
+                _logger.LogInformation(" Namespace not found - normal flow for creating a new namespace");
             }
             _logger.LogInformation("Creating new namespace: {NamespaceName}", namespaceName);
             var newNamespace = new V1Namespace {Metadata = new V1ObjectMeta { Name = namespaceName }};
@@ -189,33 +191,56 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<V1Secret> CreateKeyVault(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task<string> CreateKeyVault(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        var path = Path.Combine(_currentDirectory, KubeConstants.SecretTemplate);
-        var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
+        var templatePath = Path.Combine(_currentDirectory, KubeConstants.SecretTemplate);
+        var content = await _engine.CompileRenderAsync(templatePath, dto);
+        Guid prefix = Guid.NewGuid();
+
+        var filePath = Path.Combine(_currentDirectory, KubeConstants.TempPath, prefix + "_" + KubeConstants.KeyVaultYamlFileName);
+        Console.WriteLine(filePath);
         try
         {
-            var secretList =
-                await _client.ListNamespacedSecretAsync(namespaceName, cancellationToken: cancellationToken);
-            var secretName = dto.AppName + KubeConstants.SecretSuffix;
-            var secretSig = secretList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == secretName);
-            if (secretSig != null)
+            await File.WriteAllTextAsync(filePath, content, cancellationToken);
+
+            ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                return secretSig;
+                FileName = "kubectl",
+                Arguments = $"apply -f {filePath}",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (Process process = Process.Start(startInfo))
+            {
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    string result = reader.ReadToEnd();
+                    Console.WriteLine(result);
+                }
+
+                using (StreamReader reader = process.StandardError)
+                {
+                    string error = reader.ReadToEnd();
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        throw new ServiceException(error);
+                    }
+                }
             }
-
-            var content = await _engine.CompileRenderAsync(path, dto);
-            await File.WriteAllTextAsync(Path.Combine(_currentDirectory, KubeConstants.OutPutFile), content, cancellationToken);
-
-            var secret = KubernetesYaml.Deserialize<V1Secret>(content);
-            return await _client.CreateNamespacedSecretAsync(secret, namespaceName, cancellationToken: cancellationToken);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError("Create Secret  [{}] Error", dto.AppName);
-            _logger.LogError(ex, "Error details: ");
-            throw new ServiceException($"Create Secret error {dto.AppName}", ex);
+            _logger.LogError(e, "Error creating KeyVault for namespace: {AppName}", dto.AppName);
+            throw new ServiceException("Error creating KeyVault", e);
         }
+        finally
+        {
+             // File.Delete(filePath);
+        }
+        return "success";
     }
 
     public async Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
@@ -244,7 +269,6 @@ public class KubeApi : IKubeApi
         catch (Exception ex)
         {
             _logger.LogError("Create Ingress  [{}] Error", dto.AppName);
-            _logger.LogError(ex, "Error details: ");
             throw new ServiceException($"Create Ingress error {dto.AppName}", ex);
         }
     }
@@ -303,50 +327,5 @@ public class KubeApi : IKubeApi
             _logger.LogError(e, "Error creating secrets for namespace: {AppName}", dto.AppName);
             throw new ServiceException("Error creating secrets", e);
         }
-    }
-
-    public async Task CreateAzureIdentityAsync(YamlAppInfoDto dto, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var tasks = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
-            {
-                var azureIdentityName = cluster.ClusterName + "-identity";
-                var identityAsync = await _azureIdentityManager.CreateIdentityAsync(azureIdentityName, "resourceGroupName");
-                return identityAsync;
-            });
-            await Task.WhenAll(tasks);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error Create Azure Identity Async for namespace: {AppName}", dto.AppName);
-            throw new ServiceException("Error Create Azure Identity Async for namespace", e);
-        }
-    }
-
-    public async Task CreateAzureIdentityBindingAsync(string namespaceName, string bindingName, string selector,  IIdentity identity)
-    {
-        
-        var azureIdentityBinding = new Dictionary<string, object>
-        {
-            ["apiVersion"] = "aadpodidentity.k8s.io/v1",
-            ["kind"] = "AzureIdentityBinding",
-            ["metadata"] = new Dictionary<string, object>
-            {
-                ["name"] = bindingName,
-                ["namespace"] = namespaceName
-            },
-            ["spec"] = new Dictionary<string, object>
-            {
-                ["azureIdentity"] = identity.Name,
-                ["selector"] = selector
-            }
-        };
-
-        await _client.CreateNamespacedCustomObjectAsync(azureIdentityBinding,
-            "aadpodidentity.k8s.io", 
-            "v1",
-            namespaceName, 
-            "azureidentitybindings");
     }
 }
