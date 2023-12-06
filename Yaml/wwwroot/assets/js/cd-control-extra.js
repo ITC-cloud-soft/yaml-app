@@ -59,13 +59,7 @@ const cdPlugin = (($) => {
 
         // bind new cluster btn event 
         $('#deploy-button').off('click').click(() => {
-           const infoData = getAppInfoData();
-           commonFunctions.axios().post('/api/App/deploy', {'AppInfoDto': infoData})
-               .then(function (res){
-                   console.log(res)
-               }).catch(function (error){
-               commonFunctions.showToast(3000, error, '#cc3300')
-           })
+            commonFunctions.showModal('提示', 'デプロイ操作を実行しますか？', deployment)
         })
         
         // bind new cluster btn event 
@@ -79,7 +73,6 @@ const cdPlugin = (($) => {
 
         // bind confirm cluster event
         $("#confirmButton").off('click').click(() => {
-            console.log(getClusterData())
             const clusterModalForm = $("#clusterForm");
             const keyVaultValid = tableComponemt.validateTableContent("#clusterKeyVault-content");
             const configMapValid = tableComponemt.validateTableContent("#configMap-content")
@@ -203,7 +196,16 @@ const cdPlugin = (($) => {
             }
         )
     }
-
+        
+    function deployment(){
+        const infoData = getAppInfoData();
+        commonFunctions.axios().post('/api/App/deploy', {'AppInfoDto': infoData})
+            .then(function (res){
+                console.log(res)
+            }).catch(function (error){
+            commonFunctions.showToast(3000, error, '#cc3300')
+        })
+    }
 
     function renderClusterPage(clusterId) {
         clusterInfoList.forEach(function (cluster) {
@@ -500,7 +502,7 @@ const cdPlugin = (($) => {
                               <button class="a-button a-button--text" onclick="cdPlugin.renderClusterPage(${cluster.id})">
                                   <div class="a-button__label">編集</div>
                               </button>
-                              <button class="a-button a-button--text" onclick="cdPlugin.renderClusterPage(${cluster.id})">
+                              <button class="a-button a-button--text" onclick="cdPlugin.removeRow(${cluster.id}, 'Cluster')">
                                   <div class="a-button__label">削除 </div>
                               </button>
                           </span>

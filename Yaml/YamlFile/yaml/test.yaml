@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: springboot
-          image: djpsaascoreacr.azurecr.io/my-springboot-app:latest
+          image: djpsaascoreacr.azurecr.io/my-springboot-app-all:latest
           imagePullPolicy: Always
           env:
             - name: Name

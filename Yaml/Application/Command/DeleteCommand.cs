@@ -1,4 +1,5 @@
 using MediatR;
+using Yaml.Infrastructure.Exception;
 
 
 namespace Yaml.Application.Command;
@@ -12,7 +13,7 @@ public class DeleteCommand:IRequest<string>
 
 public enum DeleteType
 {
-    Domain, ConfigMap, ConfigFile, AppKeyVault, DiskInfo, ClusterKeyVault
+    Cluster, Domain, ConfigMap, ConfigFile, AppKeyVault, DiskInfo, ClusterKeyVault
 }
 
 public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
@@ -32,6 +33,19 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
         {
             switch (command.Type)
             {
+                case DeleteType.Cluster:
+                    var cluster = await _context.ClusterContext.FindAsync(command.Id);
+                    if (cluster != null)
+                    {
+                        _context.ClusterContext.Remove(cluster);
+                    }
+                    else
+                    {
+                        // Handle the case if the entity doesn't exist
+                        _logger.LogWarning("No cluster found with ID {Id}", command.Id);
+                        return "Entity not found";
+                    }
+                    break;
                 case DeleteType.Domain:
                     var domainInfo = await _context.DomainContext.FindAsync(command.Id);
                     if (domainInfo != null)
@@ -104,7 +118,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while handling DeleteCommand");
-            throw;
+            throw new ServiceException("Error occurred while handling DeleteCommand");
         }
     }
 }
