@@ -43,13 +43,6 @@ public class YamlClusterInfo : CommonFields
     
     [Column("configmap_file_flag")]
     public bool ConfigMapFileFlag { get; set; }
-        
     [Column("diskInfo_flag")]
     public bool DiskInfoFlag { get; set; }
-    
-    [Column("disk_size")]
-    public string? DiskSize { get; set; }
-    
-    [Column("disk_class")]
-    public string? DiskClass { get; set; }
 }

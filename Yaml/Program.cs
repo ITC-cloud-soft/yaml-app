@@ -16,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IKubeApi, KubeApi>();
 builder.Services.AddScoped<IKuberYamlGenerator, KuberYamlGenerator>();
+
 builder.Services.AddSingleton<Kubernetes>(_ =>
 {
     var config = new KubernetesClientConfiguration
@@ -63,7 +64,7 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 app.UseRouting();
-app.UseCors("AllowSpecificOrigin"); // 使用名为 "AllowSpecificOrigin" 的 CORS 策略
+app.UseCors("AllowSpecificOrigin"); // use CORS named "AllowSpecificOrigin"
 app.UseMiddleware<ExceptionHandlingInterceptor>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

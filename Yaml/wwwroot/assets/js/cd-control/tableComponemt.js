@@ -253,8 +253,8 @@ const tableComponemt = (() => {
     }
 
     function validateTableContent(selector) {
-        console.log('行の検証' ,selector);
-        
+        console.log('行の検証', selector);
+
         let flag = true;
         // 行の検証
         $(selector).each(function () {
@@ -298,9 +298,50 @@ const tableComponemt = (() => {
         return flag;
     }
 
+    function initDiskTable() {
+        $('#diskConfig-add').off('click').on('click', function (e) {
+            $("#diskConfig-content").append(`
+                <div class="m-data-table__item" id="{{columnId}}" rowid="0" colcount="1">
+                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                     <div id="diskType" class="a-pulldown">
+                         <select name="diskType-selector" class="a-pulldown__select">
+                             <option value="default"> Azure Standard SSD</option>
+                             <option value="managed-csi"> Azure Standard SSD(CSI Driver)</option>
+                             <option value="managed-premium"> Azure Premium SSD</option>
+                             <option value="managed-csi-premium">Azure Premium SSD(CSI Driver)</option>
+                         </select>
+                         <div class="a-pulldown__icon-container">
+                             <i class="a-icon a-icon--arrow-down"></i>
+                         </div>
+                     </div>
+                 </span>
+                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                     <div class="a-text-field a-text-field--type-text">
+                         <input type="text" name="#diskConfig-1" value="" colname="path" class="a-text-field__input">
+                     </div>
+                 </span>
+                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                     <div class="a-text-field a-text-field--type-text">
+                         <input type="text" name="#diskConfig-2" value="" colname="size" class="a-text-field__input">
+                     </div>
+                 </span>
+                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                     <span class="m-data-table__truncate-content">
+                         <button class="a-button a-button--text">
+                             <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'DiskInfo')">
+                                 <i class="a-icon a-icon--close-hover"></i>
+                             </button>
+                     </span>
+                 </span>
+                </div>
+        `)
+        })
+    }
+
     return {
         validateTableContent: validateTableContent,
         initComponent: init,
+        initDiskTable: initDiskTable,
         bindUploadEvent: bindUploadEvent,
         getTableData: getTableData,
         getAppKeyVaultData: getAppKeyVaultData,

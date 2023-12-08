@@ -1,13 +1,13 @@
-@model Yaml.Infrastructure.Dto.YamlClusterInfoDto
+@model Yaml.Infrastructure.Dto.DiskInfoDto
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: @Model.ClusterName-pvc
+  name: pvc-dick1
   namespace: @Model.AppName-ns
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: @Model.DiskClass
+  storageClassName: @Model.DiskType
   resources:
     requests:
       storage: @Model.DiskSize

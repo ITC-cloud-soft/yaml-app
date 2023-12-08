@@ -40,7 +40,7 @@
     "manageLevel": "ManageLevel (aadpodidbinding)",
     "diskSet": "磁盘配置",
     "diskSize": "磁盘大小",
-    "diskClass": "磁盘类",
+    "diskClass": "PVC 名",
     "mountPath": "MountPath",
     "mountName": "MountName",
     "keyVaultName": "Key Vault Name",

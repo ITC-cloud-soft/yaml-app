@@ -135,6 +135,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 domainInfo.Certification = yamlClusterInfoDto.Domain.Certification;
                 domainInfo.PrivateKey = yamlClusterInfoDto.Domain.PrivateKey;
             }
+            
         }
         return "success";
     }

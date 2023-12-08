@@ -40,7 +40,7 @@
     "manageLevel": "ManageLevel (aadpodidbinding)",
     "diskSet": "DiskSet",
     "diskSize": "DiskSize",
-    "diskClass": "DiskClass",
+    "diskClass": "PVC Name",
     "mountPath": "MountPath",
     "mountName": "MountName",
     "keyVaultName": "Key Vault Name",

@@ -18,4 +18,13 @@ public class YamlClusterDiskInfo : CommonFields
     
     [Column("cluster_id")]
     public int ClusterId { get; set; }
+        
+    [Column("disk_size")]
+    public string? DiskSize { get; set; }
+    
+    [Column("pvc_name")]
+    public string? PvcName { get; set; }
+    
+    [Column("disk_type")]
+    public string? DiskType { get; set; }
 }

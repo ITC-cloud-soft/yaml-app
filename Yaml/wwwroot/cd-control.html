@@ -481,57 +481,23 @@
                                     </div>
                                     <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12" style="align-items:center">
                                         <div id="disk_div" style="display:none">
-                                            <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-6" style="align-items:center">
-                                                <div class="m-form-field">
-                                                    <label class="m-form-field__label">
-                                                        <label data-i18n="appInfoPage.diskSize">ディスク サイズ</label>&nbsp
-                                                     
-                                                        ：
-                                                    </label>
-                                                    <div class="m-form-field__content">
-                                                        <div id="diskSize" class="a-pulldown">
-                                                            <select name="diskSize" class="a-pulldown__select">
-                                                                <option value="1G">1G</option>
-                                                                <option value="10G">10G</option>
-                                                                <option value="20G">20G</option>
-                                                                <option value="50G">50G</option>
-                                                                <option value="100G">100G</option>
-                                                                <option value="500G">500G</option>
-                                                                <option value="1024G">1024G</option>
-                                                                <option value="2048G">2048G</option>
-                                                            </select>
-                                                            <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="m-form-field">
-                                                    <label class="m-form-field__label">
-                                                        <label data-i18n="appInfoPage.diskClass">ディスク クラス</label>
-                                                        ：
-                                                    </label>
-                                                    <div class="m-form-field__content">
-                                                        <div id="diskType" class="a-pulldown">
-                                                            <select name="diskType" class="a-pulldown__select">
-                                                                <option value="default"> Azure Standard SSD</option>
-                                                                <option value="managed-csi"> Azure Standard SSD(CSI Driver)</option>
-                                                                <option value="managed-premium"> Azure Premium SSD</option>
-                                                                <option value="managed-csi-premium">Azure Premium SSD(CSI Driver)</option>
-                                                            </select>
-                                                            <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                             <div class="m-form-field__row m-form-field__row--column-size-12 m-form-field__row--column-size-pc-12" style="align-items:center">
                                                 <div class="m-data-table m-data-table--with-action-buttons undefined">
                                                     <div class="m-data-table__container">
                                                         <div class="m-data-table__header">
+
                                                             <div class="m-data-table__header-content m-data-table__header-content--type-data">
-                                                                <label data-i18n="appInfoPage.mountName">マウント 名</label>
+                                                                <label data-i18n="appInfoPage.diskClass">PVC</label>
                                                             </div>
+                                                            
                                                             <div class="m-data-table__header-content m-data-table__header-content--type-data">
                                                                 <label data-i18n="appInfoPage.mountPath">マウント バス</label>
                                                             </div>
+                                                            <div class="m-data-table__header-content m-data-table__header-content--type-data">
+                                                                <label data-i18n="appInfoPage.Size">マウント サイズ</label>
+                                                            </div>
+                                              
                                                             <div class="m-data-table__header-content m-data-table__header-content--type-data">
                                                                 <button type="button" id="diskConfig-add"  class="a-add-item-button">
                                                                     <i class="a-icon a-icon--add-item"></i>

@@ -36,9 +36,9 @@ $(function () {
     tableComponemt.initComponent(2, selectors.keyVaultId, [], ["keyVault"], "AppKeyVault");
     tableComponemt.initComponent(2, selectors.clusterKeyVault, [], ["configKey"], "ClusterKeyVault");
     tableComponemt.initComponent(3, selectors.configMapId, [], ["configKey", "value"], "ConfigMap");
-    tableComponemt.initComponent(3, selectors.diskConfig, [], ["name", "path"], "DiskInfo");
     tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""], "Domain");
     tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
+    tableComponemt.initDiskTable()
     cdPlugin.getAppDataDtoFromBackend('1')
 })
 
@@ -226,19 +226,32 @@ const cdPlugin = (($) => {
                 if (cluster.diskInfoFlag) {
                     $(selectors.diskCheckbox).prop('checked', true)
                     renderArea(cluster.diskInfoFlag, '#disk_div')
-                    $('#diskSize')[0].__component._choices.setChoiceByValue(cluster.diskSize)
-                    $('#diskType')[0].__component._choices.setChoiceByValue(cluster.diskClass)
+                    console.log('disk', cluster.diskInfoList)
                     for (let i = 0; i < cluster.diskInfoList.length; i++) {
+                        const diskSelectId = 'diskSelect-' + cluster.diskInfoList[i].id
                         $("#diskConfig-content").append(`
                             <div class="m-data-table__item" rowId="${cluster.diskInfoList[i].id}" id="{{columnId}}" colcount="${i + 1}">
                                  <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
-                                    <div class="a-text-field a-text-field--type-text">    
-                                      <input type="text"  name="#diskInfo-0" value="${cluster.diskInfoList[i].name}" colname="Name" class="a-text-field__input">
+                                    <div class="m-form-field__content">    
+                                       <div id="diskType" class="a-pulldown">
+                                            <select name="diskType-selector" id="${diskSelectId}" class="a-pulldown__select">
+                                                <option value="default"> Azure Standard SSD</option>
+                                                <option value="managed-csi"> Azure Standard SSD(CSI Driver)</option>
+                                                <option value="managed-premium"> Azure Premium SSD</option>
+                                                <option value="managed-csi-premium">Azure Premium SSD(CSI Driver)</option>
+                                            </select>
+                                            <div class="a-pulldown__icon-container"><i class="a-icon a-icon--arrow-down"></i></div>
+                                       </div>
                                     </div>
                                 </span>
                                  <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                     <div class="a-text-field a-text-field--type-text">    
-                                      <input type="text" name="#diskInfo-1" value="${cluster.diskInfoList[i].path}" colname="Path" class="a-text-field__input">
+                                      <input type="text" name="#diskInfo-1" value="${cluster.diskInfoList[i].path}" colname="path" class="a-text-field__input">
+                                    </div>
+                                </span>
+                                <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
+                                    <div class="a-text-field a-text-field--type-text">    
+                                      <input type="text" name="#diskInfo-2" value="${cluster.diskInfoList[i].diskSize}" colname="size" class="a-text-field__input">
                                     </div>
                                 </span>
                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
@@ -250,7 +263,8 @@ const cdPlugin = (($) => {
                                 </span>
                             </div>
                         `)
-                    }
+                        $(`#${diskSelectId}`).val(cluster.diskInfoList[i].diskType)
+                    } 
                 }
                 if (cluster.keyVaultFlag) {
                     $(selectors.KeyCheckbox).prop('checked', true)
@@ -524,7 +538,7 @@ const cdPlugin = (($) => {
             "#keyVault-content"
         )
 
-        // cluster disk info checkbox validation
+        // TODO cluster disk info checkbox validation
         validate(
             "DiskInfoValidation",
             "#diskCheckbox",
@@ -704,12 +718,10 @@ const cdPlugin = (($) => {
 
     function getClusterData() {
         const clusterId = Number($('#clusterId').attr('clusterId'));
-        const diskTableData = tableComponemt.getTableData(selectors.diskConfig)
         const keyVaultClusterData = tableComponemt.getTableData(selectors.clusterKeyVault)
         const configMapTableData = tableComponemt.getTableData(selectors.configMapId)
         const configMapFileTableData = tableComponemt.getConfigMapFileData(selectors.configMapField)
         const domainData = tableComponemt.getDomainTableData(selectors.domain)
-        const diskInfoList = tableComponemt.getTableData(selectors.diskInfo)
 
         const clusterInfo = {};
         clusterInfo.id = clusterId;
@@ -727,17 +739,26 @@ const cdPlugin = (($) => {
         clusterInfo.configFile = configMapFileTableData;
         clusterInfo.configMap = configMapTableData;
         clusterInfo.keyVault = keyVaultClusterData;
-        clusterInfo.diskInfoList = diskInfoList;
+        clusterInfo.diskInfoList = getDiskInfo();
         if (domainData && domainData.length > 0) {
             clusterInfo.domain = domainData[0];
         } else {
             clusterInfo.domain = {}
         }
 
-        clusterInfo.diskSize = $(selectors.diskSize).val();
-        clusterInfo.diskClass = $(selectors.diskType).val();
-        clusterInfo.diskInfoList = diskTableData;
         return clusterInfo;
+    }
+    
+    function getDiskInfo(){
+        const diskList = [];
+        // iterate columns
+        $('#diskConfig-content').children().each(function(rowId, column){
+            const diskType = $(this).children().find('[name="diskType-selector"]').val()
+            const path = $(this).children().find('[colname="path"]').val();
+            const size = $(this).children().find('[colname="size"]').val();
+            diskList.push({diskType: diskType, path: path, diskSize: size})
+        })
+        return diskList;
     }
 
     function fileUpload(fileList, selector) {

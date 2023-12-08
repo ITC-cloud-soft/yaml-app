@@ -52,8 +52,6 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     public string? Memory { set; get; }
     public string? ManageLabel { set; get; }
     public string? Prefix { set; get; }
-    public string? DiskClass { set; get; }
-    public string? DiskSize { set; get; }
 
     // KeyVault 
     public bool KeyVaultFlag { set; get; }
@@ -78,9 +76,19 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
 public class DiskInfoDto
 {
     public int Id { set; get; }
+    public int ClusterId { set; get; }
+
+    public string? AppName { set; get; }
+    public string? ClusterName { set; get; }
     public string? Name { set; get; }
     public string? Path { set; get; }
-    public int ClusterId { set; get; }
+    
+    public string? DiskSize { get; set; }
+    
+    public string? PvcName { get; set; }
+    
+    public string? DiskType { get; set; }
+    
 }
 
 public class ConfigMapDto
