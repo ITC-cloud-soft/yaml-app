@@ -39,11 +39,11 @@ public class UserController : ApiControllerBase
         try
         {
             // az loign
-            var clientId = "4aa02e82-5d95-4ad8-a9b3-6cfc3d8dde80";
-            var clientSecret = "n9.8Q~6tpl~Thufq4zR7H4QI62dhk9PL6BOEIavV";
-            var tenantId = "1bf2b880-115d-4e08-a258-aa1dc41dc0d5";
-            var resourceGroupName = "saas-core";
-            var clusterName = "aeontidb";
+            var clientId = "";
+            var clientSecret = "";
+            var tenantId = "";
+            var resourceGroupName = "";
+            var clusterName = "";
             // Azure 认证
             var credentials = SdkContext.AzureCredentialsFactory
                 .FromServicePrincipal(clientId, clientSecret, tenantId, AzureEnvironment.AzureGlobalCloud);
