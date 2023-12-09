@@ -4,7 +4,6 @@ using System.Text;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
-using Microsoft.Azure.Management.Msi.Fluent;
 using RazorLight;
 using Yaml.Domain.AzureApi.Interface;
 using Yaml.Domain.K8s.Interface;

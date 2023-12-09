@@ -46,7 +46,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                                                     
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
                 var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
-                var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
+                // var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
                 var secret = await _kuberYamlGenerator.GenerateSecret(yamlAppInfoDto);
 
                 return $"{service}" +
@@ -57,7 +57,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                        $"{NextLine}" + 
                        $"{ingress}" +
                        $"{NextLine}" +
-                       $"{persistentVolumeClaim}" +
+                       // $"{persistentVolumeClaim}" +
                        $"{NextLine}" +
                        $"{secret}";
             });
@@ -76,6 +76,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             _logger.LogError("Error generate yaml file error", e);
             throw;
         }
