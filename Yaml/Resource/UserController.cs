@@ -91,7 +91,7 @@ public class UserController : ApiControllerBase
         try
         {
             var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(
-                @"/Users/yanzou/Downloads/config", // 配置文件的路径
+                @"/Users/yanzou/Downloads/config",
                 "k8stest"
             );
             

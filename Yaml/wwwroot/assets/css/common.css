@@ -15,3 +15,12 @@ label.error {
     line-height: 19px;
     color: #eb4141
 }
+
+.m-data-table__truncate-content{
+    text-align: center
+}
+
+.a-icon--close-hover{
+    width: 20px;
+    height: 20px;
+}

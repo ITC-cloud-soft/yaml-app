@@ -38,7 +38,7 @@
     <!-- custom js -->
     <script src="assets/js/common/i18next/i18n.js"></script>
     <script src="assets/js/common/common.js"></script>
-    <script src="assets/js/cd-control-extra.js"></script>
+    <script src="assets/js/cd-control/cd-control-extra.js"></script>
     <script src="assets/js/cd-control/selectors.js"></script>
     <script src="assets/js/cd-control/tableComponemt.js"></script>
     <title>ルグイン</title>
@@ -176,6 +176,15 @@
                                     <div class="a-text-field a-text-field--type-text">
                                         <input type="text" name="mail" value="" class="a-text-field__input" />
                                     </div>
+                                </div>
+                            </div>
+                            <div class="m-form-field p-setting-input-form__form-field">
+                                <div class="a-text-field a-text-field--type-text" style="max-width: 100px">
+                                    <input type="file" file-input="#configFile" style="display: none">
+                                    <span class="a-upload-field__description"  selected-file="#configMapField${i}-1"></span>
+                                    <button type="button" class="a-button a-button--primary" name="#configMapField${i}-1">
+                                        upload
+                                    </button>
                                 </div>
                             </div>
                         </div>

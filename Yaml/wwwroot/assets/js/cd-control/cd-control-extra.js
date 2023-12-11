@@ -8,8 +8,8 @@ $(function () {
     new Promise((resolve) => {
         resolve(initI18next());
     }).then(function () {
-        cdPlugin.bindEvents();
-        cdPlugin.bindValidation(i18next);
+        controllerComponet.bindEvents();
+        controllerComponet.bindValidation(i18next);
     })
 
     // 阻止表单的默认提交行为
@@ -26,8 +26,8 @@ $(function () {
         const chosenLng = $(this).find("option:selected").attr('value');
         i18next.changeLanguage(chosenLng, () => {
             render();
-            cdPlugin.bindEvents();
-            cdPlugin.bindValidation(i18next);
+            controllerComponet.bindEvents();
+            controllerComponet.bindValidation(i18next);
             commonFunctions.userLanguage = chosenLng;
         });
     });
@@ -39,10 +39,10 @@ $(function () {
     tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""], "Domain");
     tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
     tableComponemt.initDiskTable()
-    cdPlugin.getAppDataDtoFromBackend('1')
+    controllerComponet.getAppDataDtoFromBackend('1')
 })
 
-const cdPlugin = (($) => {
+const controllerComponet = (($) => {
     "use strict"
 
     let clusterInfoList = [];
@@ -257,7 +257,6 @@ const cdPlugin = (($) => {
                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                     <span class="m-data-table__truncate-content">
                                         <button class="a-button a-button--text">
-                                           </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
                                            <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'DiskInfo')"><i class="a-icon a-icon--close-hover"></i></button> 
                                     </span>
                                 </span>
@@ -282,7 +281,6 @@ const cdPlugin = (($) => {
                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <span class="m-data-table__truncate-content">
                                             <button class="a-button a-button--text">
-                                               </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
                                                <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this,'ClusterKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
                                         </span>
                                     </span>
@@ -311,7 +309,6 @@ const cdPlugin = (($) => {
                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <span class="m-data-table__truncate-content">
                                             <button class="a-button a-button--text">
-                                               </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
                                                <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'ConfigMap')"><i class="a-icon a-icon--close-hover"></i></button> 
                                         </span>
                                     </span>
@@ -439,7 +436,7 @@ const cdPlugin = (($) => {
             .get(`/api/App/info?AppId=${appId}`)
             .then(function (response) {
                 const appInfoDto = response.data;
-                cdPlugin.renderPage(appInfoDto)
+                controllerComponet.renderPage(appInfoDto)
                 console.log(appInfoDto)
                 $('#appId').attr('appId', appInfoDto.id)
             }).catch(function (ex) {
@@ -480,7 +477,6 @@ const cdPlugin = (($) => {
                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                         <span class="m-data-table__truncate-content">
                             <button class="a-button a-button--text">
-                               </button><button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
                                <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'AppKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
                         </span>
                     </span>
@@ -513,10 +509,10 @@ const cdPlugin = (($) => {
                         </span>
                         <span class="m-data-table__content m-data-table__content--type-action m-data-table__content--align-left m-data-table__content--valign-center">
                           <span class="m-data-table__truncate-content">
-                              <button class="a-button a-button--text" onclick="cdPlugin.renderClusterPage(${cluster.id})">
+                              <button class="a-button a-button--text" onclick="controllerComponet.renderClusterPage(${cluster.id})">
                                   <div class="a-button__label">編集</div>
                               </button>
-                              <button class="a-button a-button--text" onclick="cdPlugin.removeRow(${cluster.id}, 'Cluster')">
+                              <button class="a-button a-button--text" onclick="controllerComponet.removeRow(${cluster.id}, 'Cluster')">
                                   <div class="a-button__label">削除 </div>
                               </button>
                           </span>

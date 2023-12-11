@@ -41,7 +41,6 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     }
                     else
                     {
-                        // Handle the case if the entity doesn't exist
                         _logger.LogWarning("No cluster found with ID {Id}", command.Id);
                         return "Entity not found";
                     }
@@ -54,7 +53,6 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     }
                     else
                     {
-                        // Handle the case where the entity doesn't exist
                         _logger.LogWarning("No domain found with ID {Id}", command.Id);
                         return "Entity not found";
                     }
@@ -67,7 +65,6 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     }
                     else
                     {
-                        // Handle the case where the entity doesn't exist
                         _logger.LogWarning("No ConfigFile found with ID {Id}", command.Id);
                         return "Entity not found";
                     }
@@ -80,7 +77,6 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     }
                     else
                     {
-                        // Handle the case where the entity doesn't exist
                         _logger.LogWarning("No configMap found with ID {Id}", command.Id);
                         return "Entity not found";
                     }
@@ -95,7 +91,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     else
                     {
                         _logger.LogWarning("No KeyVault found with ID {Id}", command.Id);
-                        return "Entity not found";
+                        return $"Entity [{command.Id}] not found";
                     }
                     break;
                 

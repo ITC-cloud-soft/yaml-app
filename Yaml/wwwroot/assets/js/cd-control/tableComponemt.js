@@ -36,7 +36,6 @@ const tableComponemt = (() => {
             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                 <span class="m-data-table__truncate-content">
                     <button class="a-button a-button--text">
-                       <button type="button" class="a-add-item-button"><i class="a-icon a-icon--check-purple"></i></button> 
                        <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, '${type}')"><i class="a-icon a-icon--close-hover"></i></button> 
                     </button>
                 </span>
@@ -150,7 +149,7 @@ const tableComponemt = (() => {
         const element = $(selector)
         const row = element.parent().parent().parent();
         const rowId = row.attr('rowId');
-        cdPlugin.deleteItem(rowId, type)
+        controllerComponet.deleteItem(rowId, type)
         row.remove()
     }
 
@@ -245,7 +244,7 @@ const tableComponemt = (() => {
 
                 // Send the selected files to the server
                 $(selectedFileNames).text(`${fileNames.join(', ')}`);
-                cdPlugin.fileUpload(selectedFiles, selectedFileNames);
+                controllerComponet.fileUpload(selectedFiles, selectedFileNames);
             } else {
                 $(selectedFileNames).text('No files selected');
             }
