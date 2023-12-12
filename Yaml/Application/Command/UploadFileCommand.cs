@@ -53,7 +53,7 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, IEnum
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
     }

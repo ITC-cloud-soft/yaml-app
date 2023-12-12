@@ -32,4 +32,5 @@ const selectors = {
     domainContent : "#domain-content",
     configMapField : "#configMapField",
     clusterKeyVault : "#clusterKeyVault",
+    uploadK8sFile: "#uploadk8sFile"
 }

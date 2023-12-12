@@ -14,8 +14,6 @@
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
     <ItemGroup>
-<!--        <PackageReference Include="Azure.Identity" Version="1.10.4" />-->
-<!--        <PackageReference Include="Azure.ResourceManager.KubernetesConfiguration" Version="1.2.0" />-->
         <PackageReference Include="KubernetesClient" Version="12.1.1" />
         <PackageReference Include="MediatR" Version="12.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />

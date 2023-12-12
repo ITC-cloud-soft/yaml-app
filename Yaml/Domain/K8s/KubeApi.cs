@@ -14,7 +14,6 @@ namespace Yaml.Domain.K8s;
 
 public class KubeApi : IKubeApi
 {
-    private readonly IAzureIdentityManager _azureIdentityManager;
     private readonly IKuberYamlGenerator _yamlGenerator;
     private readonly IRazorLightEngine _engine;
     private readonly Kubernetes _client;
@@ -28,7 +27,6 @@ public class KubeApi : IKubeApi
         Kubernetes client,  
         ILogger<KubeApi> logger)
     {
-        _azureIdentityManager = azureIdentityManager;
         _yamlGenerator = yamlGenerator;
         _engine = engine;
         _client = client;

@@ -40,4 +40,7 @@ public class YamlAppInfo : CommonFields
     
     [Column("user_id")]
     public int UserId { get; set; }
+    
+    [Column("Kube_Config")]
+    public string? KubeConfig { get; set; }
 }

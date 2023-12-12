@@ -12,6 +12,7 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
     public string? Cr { get; set; }
     public string? Token { get; set; }
     public string? MailAddress { get; set; }
+    public string? KubeConfig { get; set; }
 
     public bool NetdataFlag { get; set; }
     public bool KeyVaultFlag { get; set; }

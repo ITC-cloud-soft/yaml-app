@@ -8,8 +8,8 @@ $(function () {
     new Promise((resolve) => {
         resolve(initI18next());
     }).then(function () {
-        controllerComponet.bindEvents();
-        controllerComponet.bindValidation(i18next);
+        controllerComponent.bindEvents();
+        controllerComponent.bindValidation(i18next);
     })
 
     // 阻止表单的默认提交行为
@@ -26,23 +26,26 @@ $(function () {
         const chosenLng = $(this).find("option:selected").attr('value');
         i18next.changeLanguage(chosenLng, () => {
             render();
-            controllerComponet.bindEvents();
-            controllerComponet.bindValidation(i18next);
+            controllerComponent.bindEvents();
+            controllerComponent.bindValidation(i18next);
             commonFunctions.userLanguage = chosenLng;
         });
     });
 
     // init table content
-    tableComponemt.initComponent(2, selectors.keyVaultId, [], ["keyVault"], "AppKeyVault");
-    tableComponemt.initComponent(2, selectors.clusterKeyVault, [], ["configKey"], "ClusterKeyVault");
-    tableComponemt.initComponent(3, selectors.configMapId, [], ["configKey", "value"], "ConfigMap");
-    tableComponemt.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""], "Domain");
-    tableComponemt.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
-    tableComponemt.initDiskTable()
-    controllerComponet.getAppDataDtoFromBackend('1')
+    tableComponent.initComponent(2, selectors.keyVaultId, [], ["keyVault"], "AppKeyVault");
+    tableComponent.initComponent(2, selectors.clusterKeyVault, [], ["configKey"], "ClusterKeyVault");
+    tableComponent.initComponent(3, selectors.configMapId, [], ["configKey", "value"], "ConfigMap");
+    tableComponent.initComponent(4, selectors.domain, ["upload", "upload"], ["domainName", "certification", "privateKey", ""], "Domain");
+    tableComponent.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
+    tableComponent.initDiskTable()
+    // TODO from current user
+    controllerComponent.getAppDataDtoFromBackend('1')
+    controllerComponent.bindUploadEvent('#uploadConfig', '#uploadk8s', '#uploadk8sFile')
+    
 })
 
-const controllerComponet = (($) => {
+const controllerComponent = (($) => {
     "use strict"
 
     let clusterInfoList = [];
@@ -74,11 +77,11 @@ const controllerComponet = (($) => {
         // bind confirm cluster event
         $("#confirmButton").off('click').click(() => {
             const clusterModalForm = $("#clusterForm");
-            const keyVaultValid = tableComponemt.validateTableContent("#clusterKeyVault-content");
-            const configMapValid = tableComponemt.validateTableContent("#configMap-content")
-            const configFileValid = tableComponemt.validateTableContent("#configMapField-content")
-            const domainValid = tableComponemt.validateTableContent("#domain-content")
-            const diskInfoValid = tableComponemt.validateTableContent("#diskConfig-content")
+            const keyVaultValid = tableComponent.validateTableContent("#clusterKeyVault-content");
+            const configMapValid = tableComponent.validateTableContent("#configMap-content")
+            const configFileValid = tableComponent.validateTableContent("#configMapField-content")
+            const domainValid = tableComponent.validateTableContent("#domain-content")
+            const diskInfoValid = tableComponent.validateTableContent("#diskConfig-content")
 
             if (clusterModalForm.valid() && keyVaultValid && configMapValid && configFileValid && domainValid && diskInfoValid) {
                 const clusterData = getClusterData();
@@ -102,7 +105,7 @@ const controllerComponet = (($) => {
         // bind save app info event
         $("#save-button").off('click').click(() => {
             const appForm = $("#appForm");
-            if (appForm.valid() && tableComponemt.validateTableContent("#keyVault-content")) {
+            if (appForm.valid() && tableComponent.validateTableContent("#keyVault-content")) {
                 const appInfoData = getAppInfoData()
                 console.log({appInfoDto: appInfoData})
                 commonFunctions.axios().post('/api/App/save',
@@ -168,6 +171,32 @@ const controllerComponet = (($) => {
             const header = `<i class="a-icon a-icon--help"></i></br>${text} ${i18next.t('appInfoPage.is')}`
             commonFunctions.showModal(header, i18next.t(helpText))
         })
+    }
+
+    function bindUploadEvent(uploadButtonSelector, fileInputSelector, selectedFileNames) {
+
+        $(uploadButtonSelector).off('click').on('click', function () {
+            // Trigger file input click
+            $(fileInputSelector).click(); 
+        });
+
+        // Handle file selection and upload
+        $(fileInputSelector).off('click').on('change', function () {
+            const selectedFiles = $(this).prop('files');
+            if (selectedFiles.length > 0) {
+                // Display the names of selected files
+                const fileNames = [];
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    fileNames.push(selectedFiles[i].name);
+                }
+
+                // Send the selected files to the server
+                $(selectedFileNames).text(`${fileNames.join(', ')}`);
+                controllerComponent.fileUpload(selectedFiles, selectedFileNames);
+            } else {
+                $(selectedFileNames).text('No files selected');
+            }
+        });
     }
     
     function download(url, filename){
@@ -257,7 +286,7 @@ const controllerComponet = (($) => {
                                 <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                     <span class="m-data-table__truncate-content">
                                         <button class="a-button a-button--text">
-                                           <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'DiskInfo')"><i class="a-icon a-icon--close-hover"></i></button> 
+                                           <button type="button" class="a-add-item-button" onclick="tableComponent.removeRow(this, 'DiskInfo')"><i class="a-icon a-icon--close-hover"></i></button> 
                                     </span>
                                 </span>
                             </div>
@@ -281,7 +310,7 @@ const controllerComponet = (($) => {
                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <span class="m-data-table__truncate-content">
                                             <button class="a-button a-button--text">
-                                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this,'ClusterKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
+                                               <button type="button" class="a-add-item-button" onclick="tableComponent.removeRow(this,'ClusterKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
                                         </span>
                                     </span>
                                 </div>
@@ -309,7 +338,7 @@ const controllerComponet = (($) => {
                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <span class="m-data-table__truncate-content">
                                             <button class="a-button a-button--text">
-                                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'ConfigMap')"><i class="a-icon a-icon--close-hover"></i></button> 
+                                               <button type="button" class="a-add-item-button" onclick="tableComponent.removeRow(this, 'ConfigMap')"><i class="a-icon a-icon--close-hover"></i></button> 
                                         </span>
                                     </span>
                                 </div>
@@ -348,7 +377,7 @@ const controllerComponet = (($) => {
                                     
                                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                         <span class="m-data-table__truncate-content">
-                                           <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, 'ConfigFile')">
+                                           <button type="button" class="a-button a-button--text" onclick="tableComponent.removeRow(this, 'ConfigFile')">
                                              <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
                                            </button> 
                                         </span>
@@ -358,7 +387,7 @@ const controllerComponet = (($) => {
                         )
 
                         // bind upload event fn
-                        tableComponemt.bindUploadEvent(
+                        tableComponent.bindUploadEvent(
                             '#configMapField-content',
                             "[file-upload-button='#configMapField" + i + "-1']",
                             "[file-input='#configMapField" + i + "-1']",
@@ -400,7 +429,7 @@ const controllerComponet = (($) => {
                             </span>
                             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                 <span class="m-data-table__truncate-content">
-                                   <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, 'Domain')">
+                                   <button type="button" class="a-button a-button--text" onclick="tableComponent.removeRow(this, 'Domain')">
                                      <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
                                    </button> 
                                 </span>
@@ -409,13 +438,13 @@ const controllerComponet = (($) => {
                     `)
 
                     // bind upload event fn
-                    tableComponemt.bindUploadEvent(
+                    tableComponent.bindUploadEvent(
                         '#domain-content',
                         "[file-upload-button='#domain" + 0 + "-1']",
                         "[file-input='#domain" + 0 + "-1']",
                         "[selected-file='#domain" + 0 + "-1']",
                     )
-                    tableComponemt.bindUploadEvent(
+                    tableComponent.bindUploadEvent(
                         '#domain-content',
                         "[file-upload-button='#domain" + 0 + "-2']",
                         "[file-input='#domain" + 0 + "-2']",
@@ -436,7 +465,7 @@ const controllerComponet = (($) => {
             .get(`/api/App/info?AppId=${appId}`)
             .then(function (response) {
                 const appInfoDto = response.data;
-                controllerComponet.renderPage(appInfoDto)
+                controllerComponent.renderPage(appInfoDto)
                 console.log(appInfoDto)
                 $('#appId').attr('appId', appInfoDto.id)
             }).catch(function (ex) {
@@ -456,6 +485,8 @@ const controllerComponet = (($) => {
         $(selectors.crServer).val(appInfoDto.cr)
         $(selectors.token).val(appInfoDto.token)
         $(selectors.mail).val(appInfoDto.mailAddress)
+        $(selectors.uploadK8sFile).attr('data-filename', appInfoDto.kubeConfig)
+        $(selectors.uploadK8sFile).text( appInfoDto.kubeConfig ? appInfoDto.kubeConfig.split('_')[1] : "")
         if (appInfoDto.keyVaultFlag) {
             $(selectors.keyConnect).prop("checked", "checked");
             $(selectors.tenantId).val(appInfoDto.keyVault.tenantId)
@@ -477,7 +508,7 @@ const controllerComponet = (($) => {
                     <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                         <span class="m-data-table__truncate-content">
                             <button class="a-button a-button--text">
-                               <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'AppKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
+                               <button type="button" class="a-add-item-button" onclick="tableComponent.removeRow(this, 'AppKeyVault')"><i class="a-icon a-icon--close-hover"></i></button> 
                         </span>
                     </span>
                 </div>
@@ -509,10 +540,10 @@ const controllerComponet = (($) => {
                         </span>
                         <span class="m-data-table__content m-data-table__content--type-action m-data-table__content--align-left m-data-table__content--valign-center">
                           <span class="m-data-table__truncate-content">
-                              <button class="a-button a-button--text" onclick="controllerComponet.renderClusterPage(${cluster.id})">
+                              <button class="a-button a-button--text" onclick="controllerComponent.renderClusterPage(${cluster.id})">
                                   <div class="a-button__label">編集</div>
                               </button>
-                              <button class="a-button a-button--text" onclick="controllerComponet.removeRow(${cluster.id}, 'Cluster')">
+                              <button class="a-button a-button--text" onclick="controllerComponent.removeRow(${cluster.id}, 'Cluster')">
                                   <div class="a-button__label">削除 </div>
                               </button>
                           </span>
@@ -689,14 +720,15 @@ const controllerComponet = (($) => {
     }
 
     function getAppInfoData() {
-        const keyVaultAppData = tableComponemt.getAppKeyVaultData(selectors.keyVaultId)
-
+        const keyVaultAppData = tableComponent.getAppKeyVaultData(selectors.keyVaultId)
+        
         const appInfoDto = {};
         appInfoDto.id = Number($('#appId').attr('appId'));
         appInfoDto.appName = $(selectors.appName).val();
         appInfoDto.cr = $(selectors.crServer).val();
         appInfoDto.token = $(selectors.token).val();
         appInfoDto.mailAddress = $(selectors.mail).val();
+        appInfoDto.KubeConfig = $(selectors.uploadK8sFile).attr("data-filename")
         appInfoDto.keyVaultFlag = $(selectors.keyConnect).prop("checked");
         appInfoDto.keyVault = {};
         appInfoDto.keyVault.tenantId = $(selectors.tenantId).val();
@@ -714,10 +746,10 @@ const controllerComponet = (($) => {
 
     function getClusterData() {
         const clusterId = Number($('#clusterId').attr('clusterId'));
-        const keyVaultClusterData = tableComponemt.getTableData(selectors.clusterKeyVault)
-        const configMapTableData = tableComponemt.getTableData(selectors.configMapId)
-        const configMapFileTableData = tableComponemt.getConfigMapFileData(selectors.configMapField)
-        const domainData = tableComponemt.getDomainTableData(selectors.domain)
+        const keyVaultClusterData = tableComponent.getTableData(selectors.clusterKeyVault)
+        const configMapTableData = tableComponent.getTableData(selectors.configMapId)
+        const configMapFileTableData = tableComponent.getConfigMapFileData(selectors.configMapField)
+        const domainData = tableComponent.getDomainTableData(selectors.domain)
 
         const clusterInfo = {};
         clusterInfo.id = clusterId;
@@ -785,7 +817,7 @@ const controllerComponet = (($) => {
         $(selectors.configMapFileCheckbox).prop('checked', false);
         $(selectors.diskSize).val('')
         $(selectors.diskCheckbox).prop('checked', false)
-
+        
         // clear table content and unbind button's event
         const configMapFieldContent = $('#configMapField-content').find('.m-data-table__container-item')[0];
         $(configMapFieldContent).html('')
@@ -814,6 +846,7 @@ const controllerComponet = (($) => {
     return {
         deleteItem: deleteItem,
         bindValidation: initValidation,
+        bindUploadEvent: bindUploadEvent,
         getAppDataDtoFromBackend: getAppDataDtoFromBackend,
         renderPage: renderAppPage,
         fileUpload: fileUpload,

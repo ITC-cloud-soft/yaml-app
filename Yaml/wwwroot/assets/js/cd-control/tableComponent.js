@@ -1,4 +1,4 @@
-const tableComponemt = (() => {
+const tableComponent = (() => {
     const content = '-content';
     const count = {};
 
@@ -36,7 +36,7 @@ const tableComponemt = (() => {
             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                 <span class="m-data-table__truncate-content">
                     <button class="a-button a-button--text">
-                       <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, '${type}')"><i class="a-icon a-icon--close-hover"></i></button> 
+                       <button type="button" class="a-add-item-button" onclick="tableComponent.removeRow(this, '${type}')"><i class="a-icon a-icon--close-hover"></i></button> 
                     </button>
                 </span>
             </span>
@@ -105,7 +105,7 @@ const tableComponemt = (() => {
             `
             <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                 <span class="m-data-table__truncate-content">
-                   <button type="button" class="a-button a-button--text" onclick="tableComponemt.removeRow(this, '${type}')">
+                   <button type="button" class="a-button a-button--text" onclick="tableComponent.removeRow(this, '${type}')">
                      <div class="a-button__label"><i class="a-icon a-icon--close-hover"></i></div>
                    </button> 
                 </span>
@@ -149,7 +149,7 @@ const tableComponemt = (() => {
         const element = $(selector)
         const row = element.parent().parent().parent();
         const rowId = row.attr('rowId');
-        controllerComponet.deleteItem(rowId, type)
+        controllerComponent.deleteItem(rowId, type)
         row.remove()
     }
 
@@ -244,7 +244,7 @@ const tableComponemt = (() => {
 
                 // Send the selected files to the server
                 $(selectedFileNames).text(`${fileNames.join(', ')}`);
-                controllerComponet.fileUpload(selectedFiles, selectedFileNames);
+                controllerComponent.fileUpload(selectedFiles, selectedFileNames);
             } else {
                 $(selectedFileNames).text('No files selected');
             }
@@ -327,7 +327,7 @@ const tableComponemt = (() => {
                  <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                      <span class="m-data-table__truncate-content">
                          <button class="a-button a-button--text">
-                             <button type="button" class="a-add-item-button" onclick="tableComponemt.removeRow(this, 'DiskInfo')">
+                             <button type="button" class="a-add-item-button" onclick="tableComponent.removeRow(this, 'DiskInfo')">
                                  <i class="a-icon a-icon--close-hover"></i>
                              </button>
                      </span>
