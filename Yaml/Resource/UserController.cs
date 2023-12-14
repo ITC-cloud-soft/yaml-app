@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 using Yaml.Application.Command;
+using Yaml.Infrastructure.Exception;
 
 namespace Yaml.Resource;
 
@@ -14,17 +16,48 @@ public class UserController : ApiControllerBase
 {
     private readonly IValidator<UserLoginCommand> _validator;
     private readonly IStringLocalizer<UserController> _localizer;
+    private readonly IMemoryCache _memoryCache;
     private readonly IStringLocalizer<SharedResources> _sharedlocalizer;
-
+    private readonly string _currentDirectory = Directory.GetCurrentDirectory();
+    
     public UserController(
         IValidator<UserLoginCommand> validator, 
         IStringLocalizer<UserController> localizer,
-        IStringLocalizer<SharedResources> sharedlocalizer)
+        IStringLocalizer<SharedResources> sharedlocalizer,
+        IMemoryCache memory
+        )
     {
         _validator = validator;
         _localizer = localizer;
+        _memoryCache = memory;
         _sharedlocalizer = sharedlocalizer;
     }
+    private Kubernetes GetKubeClient()
+    {
+        var client = _memoryCache.Get<Kubernetes>(1);
+        if (client != null)
+        {
+            return client;
+        }
+
+
+        try
+        {
+            var configFile = Path.Combine(_currentDirectory, "uploads/fb5a19b1-6fa8-4c8d-9313-82c40a7a7e6e_config");
+            var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(@configFile);
+            client = new Kubernetes(config);
+
+            _memoryCache.Set(1, client);
+        }
+        catch (Exception ex)
+        {
+            throw new ServiceException("Error creating Kubernetes client.", ex);
+        }
+
+        return client ?? throw new ServiceException("Client creation failed unexpectedly.");
+    }
+
+    
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginCommand command)
@@ -91,12 +124,10 @@ public class UserController : ApiControllerBase
         try
         {
             var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(
-                @"/Users/yanzou/Downloads/config",
-                "k8stest"
+                "/Users/yanzou/RiderProjects/YamlController/Yaml/uploads/fb5a19b1-6fa8-4c8d-9313-82c40a7a7e6e_config"
             );
-            
-            Kubernetes client = new Kubernetes(config);
-            var listNamespaceAsync = await client.ListNamespaceAsync();
+       
+            var listNamespaceAsync = await GetKubeClient().ListNamespaceAsync();
             foreach (var names in listNamespaceAsync)
             {
                 Console.WriteLine(names.Metadata.Name);

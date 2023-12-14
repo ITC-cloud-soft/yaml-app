@@ -19,7 +19,7 @@ public static class ConfigureServices
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
         
-        // CROS
+        // 1.CROS
         services.AddCors(options =>
         {
             options.AddPolicy("AllowSpecificOrigin", builder =>
@@ -32,7 +32,7 @@ public static class ConfigureServices
         });
       
         
-        // Inject RazorLight into Container
+        // 2.Inject RazorLight into Container
         services.AddRazorLight(() =>
         {
             var currentDirectory = Directory.GetCurrentDirectory();
@@ -46,13 +46,13 @@ public static class ConfigureServices
             return engine;
         });
         
-        // Swagger
+        // 3.Swagger
         services.AddSwaggerGen(options =>
         {
             options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
         });
         
-        // Azure Identity Manager
+        // 4.Azure Identity Manager
         services.AddSingleton<IAzureIdentityManager, AzureIdentityManager>(provider =>
         {
             string clientId = configuration["Azure:ClientId"] ?? "";
@@ -62,6 +62,9 @@ public static class ConfigureServices
 
             return new AzureIdentityManager(clientId, clientSecret, tenantId, subscriptionId);
         });
+        
+        // 5.Memory Cache
+        services.AddMemoryCache();
         return services;
     }
 }
