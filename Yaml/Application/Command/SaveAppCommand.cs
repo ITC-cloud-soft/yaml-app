@@ -228,10 +228,12 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
     {
         if (yamlClusterInfoDto.DiskInfoFlag && yamlClusterInfoDto.DiskInfoList != null)
         {
+            Random random = new Random();
             var diskInfoList = yamlClusterInfoDto.DiskInfoList.Select(dto =>
             {
                 var yamlClusterDiskInfo = _mapper.Map<YamlClusterDiskInfo>(dto);
                 yamlClusterDiskInfo.ClusterId = cluster.Id;
+                yamlClusterDiskInfo.Name = cluster.ClusterName + "-" + random.Next(0, 1000);
                 return yamlClusterDiskInfo;
             }).ToList();
             var existed = diskInfoList.Where(e => e.Id > 0).ToList();

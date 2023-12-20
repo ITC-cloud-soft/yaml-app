@@ -111,7 +111,14 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
                     .Where(e => e.ClusterId == yamlClusterInfo.Id)
                     .ProjectTo<DiskInfoDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
-
+                
+                // set app name in disk info
+                yamlClusterInfoDto.DiskInfoList = yamlClusterInfoDto.DiskInfoList.Select(diskInfoDto =>
+                {
+                     diskInfoDto.AppName = yamlAppInfoDto.AppName;
+                     return diskInfoDto;
+                }).ToList();
+                
                 yamlClusterInfoDtoList.Add(yamlClusterInfoDto);
                 _logger.LogInformation("Get app name:[{}], app id:[{}] info from database", appInfo.AppName, appInfo.Id);
             }

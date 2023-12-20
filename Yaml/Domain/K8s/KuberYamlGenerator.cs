@@ -43,8 +43,15 @@ public class KuberYamlGenerator : IKuberYamlGenerator
 
     public async Task<string> GeneratePersistentVolumeClaim(YamlClusterInfoDto cluster)
     {
-        var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeClaimTemplate);
-        return await _engine.CompileRenderAsync(path, cluster);
+        var pvc = "";
+        foreach (var diskInfoDto in cluster.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+        {
+            var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeClaimTemplate);
+            pvc += await _engine.CompileRenderAsync(path, diskInfoDto);
+            pvc += "\n---\n";
+        }
+
+        return pvc;
     }
 
     public async Task<string> GenerateSecret(YamlAppInfoDto appInfoDto)

@@ -49,10 +49,10 @@ spec:
           ports: 
            - containerPort: 80
           volumeMounts:
-          @foreach (var path in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+          @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
           {
-            string mountPath = $"           - mountPath: {path.Path}\n" +
-                               $"             name: {Model.ClusterName}-pvc \n";
+            string mountPath = $"           - mountPath: {diskInfo.Path}\n" +
+                               $"             name: {diskInfo.Name}-pvc \n";
             @mountPath
           }
           resources:
@@ -60,9 +60,14 @@ spec:
              memory: @Model.Memory
              cpu: "@Model.Cpu"
       volumes:
-      - name: @Model.ClusterName-pvc
-        persistentVolumeClaim:
-          claimName: @Model.ClusterName-pvc
+      @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+      {
+        string pvc = $"      - name: {diskInfo.Name}-pvc\n" +
+                     $"        persistentVolumeClaim:\n" +
+                     $"          claimName: {diskInfo.Name}-pvc\n";             
+        
+        @pvc
+      }
       - name: secrets-store-inline
         csi:
           driver: secrets-store.csi.k8s.io

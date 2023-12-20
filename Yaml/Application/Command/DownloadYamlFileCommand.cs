@@ -42,7 +42,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                 var service = await _kuberYamlGenerator.GenerateService(cluster);
                 var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
 
-                cluster.ConfigFile[0].FileContent = "parameter1=value1\n";
+                // cluster.ConfigFile[0].FileContent = "parameter1=value1\n";
                                                     
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
                 var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
