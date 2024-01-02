@@ -217,7 +217,11 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
 
             if (newKv.Any())
             {
-               await _context.KeyVaultInfoContext.AddRangeAsync(newKv, cancellationToken);
+                foreach (var yamlKeyVaultInfo in newKv)
+                {
+                    yamlKeyVaultInfo.Id = 0;
+                }
+                await _context.KeyVaultInfoContext.AddRangeAsync(newKv, cancellationToken);
             }
         }
         return "success";

@@ -42,7 +42,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     else
                     {
                         _logger.LogWarning("No cluster found with ID {Id}", command.Id);
-                        return "Entity not found";
+                        return "Delete Cluster Error Entity not found";
                     }
                     break;
                 case DeleteType.Domain:
@@ -54,7 +54,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     else
                     {
                         _logger.LogWarning("No domain found with ID {Id}", command.Id);
-                        return "Entity not found";
+                        return "Delete Domain Error Entity not found";
                     }
                     break;
                 case DeleteType.ConfigFile:
@@ -66,7 +66,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     else
                     {
                         _logger.LogWarning("No ConfigFile found with ID {Id}", command.Id);
-                        return "Entity not found";
+                        return "Delete ConfigFile Error Entity not found";
                     }
                     break;
                 case DeleteType.ConfigMap:
@@ -78,7 +78,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     else
                     {
                         _logger.LogWarning("No configMap found with ID {Id}", command.Id);
-                        return "Entity not found";
+                        return "Delete ConfigMap Error Entity not found";
                     }
                     break;
                 case DeleteType.AppKeyVault:
@@ -91,7 +91,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     else
                     {
                         _logger.LogWarning("No KeyVault found with ID {Id}", command.Id);
-                        return $"Entity [{command.Id}] not found";
+                        return $"Delete KeyVault Error: [{command.Id}] not found";
                     }
                     break;
                 
@@ -104,7 +104,7 @@ public class DeleteCommandHandler : IRequestHandler<DeleteCommand, string>
                     else
                     {
                         _logger.LogWarning("No DiskInfo found with ID {Id}", command.Id);
-                        return $"Entity [{command.Id}] not found ";
+                        return $"Delete DiskInfo Error Entity [{command.Id}] not found ";
                     } 
                     break;
             }
