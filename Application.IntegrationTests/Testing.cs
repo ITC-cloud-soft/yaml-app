@@ -5,13 +5,14 @@ using MySqlConnector;
 using NUnit.Framework;
 using Respawn;
 using Respawn.Graph;
+using Yaml;
 
 namespace YamlTest;
 
 [SetUpFixture]
 public class Testing
 {
-    private static WebApplicationFactory<Testing> _factory = null!;
+    private static WebApplicationFactory<Program> _factory = null!;
     private static IConfiguration _configuration = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
     private static Respawner _checkpoint = null!;

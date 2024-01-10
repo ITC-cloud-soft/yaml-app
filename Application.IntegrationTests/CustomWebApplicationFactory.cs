@@ -1,10 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Yaml;
 
 namespace YamlTest;
 
-public class CustomWebApplicationFactory : WebApplicationFactory<Testing>
+public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
