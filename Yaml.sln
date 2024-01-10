@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yaml", "Yaml\Yaml.csproj", "{FAFEFF22-8A2C-46BC-8E64-2C44B1A8BE27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.IntegrationTests", "Application.IntegrationTests\Application.IntegrationTests.csproj", "{B933F8BF-9AF3-4BFB-B8DA-8EBC8ED81718}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{B3F1DB6D-8B31-4C96-B70C-7421E957898B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,12 @@ Global
 		{FAFEFF22-8A2C-46BC-8E64-2C44B1A8BE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAFEFF22-8A2C-46BC-8E64-2C44B1A8BE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAFEFF22-8A2C-46BC-8E64-2C44B1A8BE27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B933F8BF-9AF3-4BFB-B8DA-8EBC8ED81718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B933F8BF-9AF3-4BFB-B8DA-8EBC8ED81718}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B933F8BF-9AF3-4BFB-B8DA-8EBC8ED81718}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B933F8BF-9AF3-4BFB-B8DA-8EBC8ED81718}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B933F8BF-9AF3-4BFB-B8DA-8EBC8ED81718} = {B3F1DB6D-8B31-4C96-B70C-7421E957898B}
 	EndGlobalSection
 EndGlobal

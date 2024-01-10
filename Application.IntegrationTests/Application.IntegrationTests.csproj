@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>YamlTest</RootNamespace>
+
+        <IsPackable>false</IsPackable>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <None Remove="appsettings.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+
+        <!-- Moq is the most popular and friendly mocking framework for .NET. -->
+        <PackageReference Include="AutoFixture" Version="4.18.1" />
+        <PackageReference Include="Moq" Version="4.20.70" />
+
+        <!-- Support for writing functional tests for MVC applications. -->
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.7" />
+
+        <!-- The MSbuild targets and properties for building .NET test projects. -->
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23577-04" />
+
+        <!--NUnit is a unit-testing framework for all .NET languages. It can run on macOS, Linux and Windows operating systems.-->
+        <PackageReference Include="nunit" Version="4.0.1" />
+
+        <!--The NUnit3 TestAdapter for Visual Studio, all versions from 2012 and onwards, and DotNet (incl. .Net core), versions-->
+        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <!--A very extensive set of extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style unit tests.-->
+        <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.3" />
+
+        <!--Intelligent resetting for database tests-->
+        <PackageReference Include="Respawn" Version="6.1.0" />
+
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Yaml\Yaml.csproj" />
+    </ItemGroup>
+    
+
+</Project>
