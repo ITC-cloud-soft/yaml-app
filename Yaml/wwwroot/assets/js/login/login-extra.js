@@ -86,7 +86,6 @@ const loginComponent = (function ($) {
             })
         }
     }
-
     return {
         login: login
     };

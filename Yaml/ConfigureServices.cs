@@ -25,7 +25,7 @@ public static class ConfigureServices
             options.AddPolicy("AllowSpecificOrigin", builder =>
             {
                 builder
-                    .WithOrigins("http://localhost:5173") 
+                    .WithOrigins("*") 
                     .AllowAnyMethod() 
                     .AllowAnyHeader(); 
             });
