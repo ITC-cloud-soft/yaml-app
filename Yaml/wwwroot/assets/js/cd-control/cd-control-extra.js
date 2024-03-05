@@ -543,7 +543,7 @@ const controllerComponent = (($) => {
                               <button class="a-button a-button--text" onclick="controllerComponent.renderClusterPage(${cluster.id})">
                                   <div class="a-button__label">編集</div>
                               </button>
-                              <button class="a-button a-button--text" onclick="controllerComponent.removeRow(${cluster.id}, 'Cluster')">
+                              <button class="a-button a-button--text" onclick="removeRow(this, ${cluster.id}, 'Cluster')">
                                   <div class="a-button__label">削除 </div>
                               </button>
                           </span>
@@ -854,4 +854,9 @@ const controllerComponent = (($) => {
         bindEvents: initElementEvent,
     };
 })(jQuery)
-
+function removeRow(selector, clusterId, type) {
+    const element = $(selector)
+    const row = element.parent().parent().parent();
+    controllerComponent.deleteItem(clusterId, type)
+    row.remove()
+}

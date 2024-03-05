@@ -35,22 +35,57 @@ public class KuberYamlGenerator : IKuberYamlGenerator
         return await _engine.CompileRenderAsync(path, cluster);
     }
 
-    public async Task<string> GeneratePersistentVolume(YamlClusterInfoDto cluster)
+    public async Task<string> GeneratePersistentVolume(
+        string pvName,
+        string storage,
+        string storageClassName,
+        string SubscriptionId,
+        string ResourceGroup)
     {
         var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeTemplate);
-        return await _engine.CompileRenderAsync(path, cluster);
+        var content = await _engine.CompileRenderAsync(path, new PvRender
+        {
+            Name = pvName,
+            Storage = storage,
+            StorageClassName = storageClassName,
+            SubscriptionId = SubscriptionId,
+            ResourceGroup = "saas-core" // ResourceGroup
+                            
+        });
+        return content;
+    }
+
+    public async Task<string> GeneratePersistentVolumeList(YamlAppInfoDto appInfoDto, YamlClusterInfoDto cluster)
+    {
+        var pv = "";
+        for (var i = 0; i < cluster.DiskInfoList?.Count; i++)
+        {
+            // prepare the parameter
+            var diskInfo = cluster.DiskInfoList[i];
+            var pvName = $"{KubeConstants.PvSubPrefix}-{cluster.ClusterName?.ToLower()}-{i}";
+            var storage = diskInfo.DiskSize;
+            var storageClassName = diskInfo.DiskType;
+            var subscriptionId = appInfoDto.KeyVault?.ManagedId;
+            var resourceGroup = "saas-core";
+            
+            // generate pv content
+            pv += await GeneratePersistentVolume(pvName, storage, storageClassName, subscriptionId, resourceGroup);
+            pv += "\n---\n";
+        }
+        return pv;
     }
 
     public async Task<string> GeneratePersistentVolumeClaim(YamlClusterInfoDto cluster)
     {
         var pvc = "";
-        foreach (var diskInfoDto in cluster.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+        for (var i = 0; i < cluster.DiskInfoList?.Count; i++)
         {
+            var diskInfoDto = cluster.DiskInfoList[i];
+            diskInfoDto.PvName = $"{KubeConstants.PvSubPrefix}-{cluster.ClusterName?.ToLower()}-{i}";
             var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeClaimTemplate);
             pvc += await _engine.CompileRenderAsync(path, diskInfoDto);
             pvc += "\n---\n";
         }
-
         return pvc;
     }
 

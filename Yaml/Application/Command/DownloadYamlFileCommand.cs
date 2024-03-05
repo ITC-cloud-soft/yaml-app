@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Yaml.Application.Query;
 using Yaml.Domain;
 using Yaml.Domain.K8s.Interface;
-using Yaml.Infrastructure.Dto;
 
 namespace Yaml.Application.Command;
 
@@ -41,11 +40,9 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                 cluster.AppName = yamlAppInfoDto.AppName;
                 var service = await _kuberYamlGenerator.GenerateService(cluster);
                 var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
-
-                // cluster.ConfigFile[0].FileContent = "parameter1=value1\n";
-                                                    
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
                 var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
+                var persistentVolume = await _kuberYamlGenerator.GeneratePersistentVolumeList(yamlAppInfoDto, cluster);
                 var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
                 var secret = await _kuberYamlGenerator.GenerateSecret(yamlAppInfoDto);
 
@@ -58,7 +55,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                        $"{ingress}" +
                        $"{NextLine}" +
                        $"{persistentVolumeClaim}" +
-                       $"{NextLine}" +
+                       $"{persistentVolume}" +
                        $"{secret}";
             });
             
@@ -71,8 +68,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                 fileContent,
                 cancellationToken);
             
-            return new FileContentResult(fileBytes, "application/json") 
-                { FileDownloadName = $"{yamlAppInfoDto.AppName}.yaml" };
+            return new FileContentResult(fileBytes, "application/json") { FileDownloadName = $"{yamlAppInfoDto.AppName}.yaml" };
         }
         catch (Exception e)
         {

@@ -11,7 +11,12 @@ public interface IKuberYamlGenerator
     
     public Task<string> GenerateConfigMap(YamlClusterInfoDto cluster);
   
-    public Task<string> GeneratePersistentVolume(YamlClusterInfoDto cluster);
+    public Task<string> GeneratePersistentVolumeList(YamlAppInfoDto appInfoDto, YamlClusterInfoDto cluster);
+    public Task<string> GeneratePersistentVolume(string pvName,
+        string storage,
+        string storageClassName,
+        string SubscriptionId,
+        string ResourceGroup);
     
     public Task<string> GeneratePersistentVolumeClaim(YamlClusterInfoDto cluster);
     

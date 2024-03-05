@@ -8,6 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: @Model.DiskType
+  volumeName: @Model.PvName
   resources:
     requests:
       storage: @Model.DiskSize

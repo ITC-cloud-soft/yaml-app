@@ -86,10 +86,10 @@ public class DiskInfoDto
     
     public string? DiskSize { get; set; }
     
-    public string? PvcName { get; set; }
-    
-    public string? DiskType { get; set; }
-    
+    public string? PvName { get; set; }
+
+    public string DiskType { get; set; } = "";
+
 }
 
 public class ConfigMapDto

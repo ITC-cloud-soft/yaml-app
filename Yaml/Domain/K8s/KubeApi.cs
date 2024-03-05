@@ -6,7 +6,6 @@ using k8s.Autorest;
 using k8s.Models;
 using Microsoft.Extensions.Caching.Memory;
 using RazorLight;
-using Yaml.Domain.AzureApi.Interface;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
@@ -184,10 +183,58 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public Task<V1PersistentVolume> CreatePersistentVolume(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task<List<V1PersistentVolume>> CreatePersistentVolume(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        // TODO CreatePersistentVolume
-        throw new NotImplementedException();
+        //  Create Persistent Volume
+        var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeTemplate);
+        try
+        {
+            // validate if the resource exists in k8s
+            var client = GetKubeClient(dto);
+            var pvsList = await client.ListPersistentVolumeAsync(cancellationToken: cancellationToken);
+            var pvList = new List<V1PersistentVolume>();
+            foreach (var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
+            {
+                if (cluster.DiskInfoList?.Count > 0)
+                {
+                    for (var i = 0; i < cluster.DiskInfoList.Count; i++)
+                    {
+                        var pvName = $"{KubeConstants.PvSubPrefix}-{cluster.ClusterName?.ToLower()}-{i}";
+                        var persistentVolume = pvsList.Items.SingleOrDefault(pv => pv.Metadata.Name == pvName);
+                        // when pv is not found
+                        if (persistentVolume == null)
+                        {
+                            // if not exist, create resource
+                            // prepare the parameter
+                            var diskInfo = cluster.DiskInfoList[i];
+                            var storage = diskInfo.DiskSize;
+                            var storageClassName = diskInfo.DiskType;
+                            var subscriptionId = dto.KeyVault?.ManagedId;
+                            var resourceGroup = "saas-core"; // TODO where should I get resourceGroup
+                        
+                            // generate pv content
+                            var content = await _yamlGenerator.GeneratePersistentVolume(
+                                pvName, 
+                                storage, storageClassName,
+                                subscriptionId, resourceGroup
+                            );
+                            
+                            // create pv on k8s
+                            var pv = KubernetesYaml.Deserialize<V1PersistentVolume>(content);
+                            V1PersistentVolume persistentVolumeAsync = await client.CreatePersistentVolumeAsync(pv, cancellationToken: cancellationToken);
+                            pvList.Add(persistentVolumeAsync);
+                        }
+                    }
+                }
+            }
+            return pvList;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Create V1PersistentVolume [{}] Error", dto.AppName);
+            _logger.LogError(ex, "Error details: ");
+            throw new ServiceException($"Create V1PersistentVolume error {dto.AppName}", ex);
+        }
     }
 
     public async Task<V1PersistentVolumeClaim[]> CreatePersistentVolumeClaim(YamlAppInfoDto dto,

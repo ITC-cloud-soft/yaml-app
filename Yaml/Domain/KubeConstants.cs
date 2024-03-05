@@ -16,6 +16,7 @@ public static class KubeConstants
 
     public const string NamespaceSuffix = "-ns";
     public const string PvcSubSuffix = "-pvc";
+    public const string PvSubPrefix = "pv";
     public const string ConfigMapSuffix = "-configmap";
     public const string ServiceSuffix = "-svc";
     public const string DeploymentSuffix = "-deployment";
