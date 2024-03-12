@@ -2,114 +2,64 @@ using AutoMapper;
 using MediatR;
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
-using Yaml.Infrastructure.Exception;
 
 namespace Yaml.Application.Command;
 
-public class SaveYamlAppCommand : IRequest<string>
+public class SaveClusterCommand: IRequest<string>
 {
-    public YamlAppInfoDto appInfoDto { get; set; }
+    public YamlClusterInfoDto clusterInfo { get; set; }
 }
 
-public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, string>
+public class SaveClusterCommandHandler : IRequestHandler<SaveClusterCommand, string>
 {
     private readonly MyDbContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger _logger;
 
-    public SaveYamlAppCommandHandler(MyDbContext context, IMapper imapper, ILogger<SaveYamlAppCommandHandler> logger)
+    public SaveClusterCommandHandler(MyDbContext context, IMapper imapper, ILogger<SaveYamlAppCommandHandler> logger)
     {
         _context = context;
         _mapper = imapper;
         _logger = logger;
     }
 
-    public async Task<string> Handle(SaveYamlAppCommand command, CancellationToken cancellationToken)
+    public async Task<string> Handle(SaveClusterCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var yamlAppInfoDto = command.appInfoDto;
-            
-            // save app info
-            var yamlAppInfo =await HandleAppInfo(yamlAppInfoDto, cancellationToken);
+        // await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken: cancellationToken);
 
-            // save app key vault info
-            await HandleKeyVaultApp(yamlAppInfoDto, cancellationToken, yamlAppInfo.Id);
+        var yamlClusterInfoDto = request.clusterInfo;
+        var cluster = await HandleCluster(yamlClusterInfoDto, cancellationToken);
+        
+        await HandleDomain(yamlClusterInfoDto, cluster, cancellationToken);
+        
+        await HandleConfigMap(yamlClusterInfoDto, cluster, cancellationToken);
+        
+        await HandleConfigFile(yamlClusterInfoDto, cluster, cancellationToken);
 
-            // save whole cluster info
-            foreach (var yamlClusterInfoDto in yamlAppInfoDto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
-            {
-                var cluster = await HandleCluster(yamlClusterInfoDto, cancellationToken, yamlAppInfo.Id);
-                await HandleDomain(yamlClusterInfoDto, cluster, cancellationToken);
-                await HandleConfigMap(yamlClusterInfoDto, cluster, cancellationToken);
-                await HandleConfigFile(yamlClusterInfoDto, cluster, cancellationToken);
-                await HandleKeyVault(yamlClusterInfoDto, cluster, cancellationToken);
-                await HandleDiskInfo(yamlClusterInfoDto, cluster, cancellationToken);
-            }
+        await HandleKeyVault(yamlClusterInfoDto, cluster, cancellationToken);
 
-            // commit transaction
-            _logger.LogInformation("Save app Info [{}] to DB", yamlAppInfoDto.AppName);
-            return "success";
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error saving app Info to DB");
-            throw new ServiceException("Error saving app Info to DB", e);
-        }
-    }
-    
-    
-    private async Task<YamlAppInfo> HandleAppInfo(YamlAppInfoDto yamlAppInfoDto, CancellationToken cancellationToken)
-    {
-        // save cluster 
-        var yamlAppInfo = _mapper.Map<YamlAppInfo>(yamlAppInfoDto);
-        _context.AppInfoContext.Update(yamlAppInfo);
+        await HandleDiskInfo(yamlClusterInfoDto, cluster, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
-        return yamlAppInfo;
-    }
-
-
-    private async Task<YamlClusterInfo> HandleCluster(YamlClusterInfoDto yamlClusterInfoDto, CancellationToken cancellationToken, 
-        int appId)
-    {
-        // save cluster 
-        var cluster = _mapper.Map<YamlClusterInfo>(yamlClusterInfoDto);
-        cluster.AppId = appId;
-        cluster.Id = cluster.Id < 0 ? 0 : cluster.Id;
-        _context.ClusterContext.Update(cluster);
-        await _context.SaveChangesAsync(cancellationToken);
-        return cluster;
-    }
-    
-
-    private async Task<string> HandleKeyVaultApp(YamlAppInfoDto yamlAppInfoDto, CancellationToken cancellationToken, int appId)
-    {
-        foreach (var kv in yamlAppInfoDto.KeyVault?.KeyVault ?? Enumerable.Empty<KeyVaultDto>())
-        {
-            var yamlKeyVaultInfo = new YamlKeyVaultInfo
-            {
-                ConfigKey = kv.ConfigKey,
-                AppId = appId,
-                Id = kv.Id,
-                Value = kv.Value
-            };
-            if (yamlKeyVaultInfo.Id <= 0)
-            {
-                yamlKeyVaultInfo.Id = 0;
-                await _context.KeyVaultInfoContext.AddAsync(yamlKeyVaultInfo);
-            }
-            else
-            {
-                 _context.KeyVaultInfoContext.Update(yamlKeyVaultInfo); 
-            }
-        }
-        await _context.SaveChangesAsync(cancellationToken);
-
+        
+        // await transaction.CommitAsync(cancellationToken);
+        _logger.LogInformation("Save cluster Info [{}] to DB", yamlClusterInfoDto.ClusterName);
         return "success";
     }
+    
+    private async Task<YamlClusterInfo> HandleCluster(YamlClusterInfoDto yamlClusterInfoDto, CancellationToken cancellationToken)
+{
+    // save cluster 
+    var cluster = _mapper.Map<YamlClusterInfo>(yamlClusterInfoDto);
+    if (cluster.Id < 0)
+    {
+        cluster.Id = 0;
+    }
+    _context.ClusterContext.Update(cluster);
+    await _context.SaveChangesAsync(cancellationToken);
+    return cluster;
+}
 
-    private async Task<string> HandleDomain(YamlClusterInfoDto yamlClusterInfoDto, YamlClusterInfo cluster,
-        CancellationToken cancellationToken)
+    private async Task<string> HandleDomain(YamlClusterInfoDto yamlClusterInfoDto, YamlClusterInfo cluster, CancellationToken cancellationToken)
     {
         if (yamlClusterInfoDto.Domain != null)
         {
@@ -130,13 +80,10 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 domainInfo.Certification = yamlClusterInfoDto.Domain.Certification;
                 domainInfo.PrivateKey = yamlClusterInfoDto.Domain.PrivateKey;
             }
-
-            await _context.SaveChangesAsync(cancellationToken);
         }
         return "success";
     }
     
-
     private async Task<string> HandleConfigMap(YamlClusterInfoDto yamlClusterInfoDto, YamlClusterInfo cluster, CancellationToken cancellationToken)
     {
         if (yamlClusterInfoDto.ConfigMapFlag)
@@ -159,14 +106,11 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             {
                 await _context.ConfigMap.AddRangeAsync(newConfigMaps, cancellationToken);
             }
-
-            await _context.SaveChangesAsync(cancellationToken);
         }
         return "success";
     }
 
-    private async Task<string> HandleConfigFile(YamlClusterInfoDto yamlClusterInfoDto, YamlClusterInfo cluster,
-        CancellationToken cancellationToken)
+    private async Task<string> HandleConfigFile(YamlClusterInfoDto yamlClusterInfoDto, YamlClusterInfo cluster, CancellationToken cancellationToken)
     {
         if (yamlClusterInfoDto.ConfigMapFileFlag)
         {
@@ -189,8 +133,6 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             {
                 await _context.ConfigFile.AddRangeAsync(newConfigFiles, cancellationToken);
             }
-
-            await _context.SaveChangesAsync(cancellationToken);
         }
 
         return "success";
@@ -223,13 +165,11 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
                 }
                 await _context.KeyVaultInfoContext.AddRangeAsync(newKv, cancellationToken);
             }
-            await _context.SaveChangesAsync(cancellationToken);
         }
         return "success";
     }
 
-    private async Task<string> HandleDiskInfo(YamlClusterInfoDto yamlClusterInfoDto, YamlClusterInfo cluster,
-        CancellationToken cancellationToken)
+    private async Task<string> HandleDiskInfo(YamlClusterInfoDto yamlClusterInfoDto, YamlClusterInfo cluster, CancellationToken cancellationToken)
     {
         if (yamlClusterInfoDto.DiskInfoFlag && yamlClusterInfoDto.DiskInfoList != null)
         {
@@ -252,7 +192,6 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             {
                 await _context.DiskInfoContext.AddRangeAsync(newList, cancellationToken);
             } 
-            await _context.SaveChangesAsync(cancellationToken);
         }
 
         return "success";

@@ -41,6 +41,8 @@ public class AppController : ApiControllerBase
     [Produces("application/json")] 
     public async Task<IActionResult> Deploy([FromBody] DeployAppCommand command)
     {
+        var app = await Mediator.Send(new GetAppQuery { AppId = command.AppInfoDto.Id, UserId = 1 });
+        command.AppInfoDto = app;
         return Ok(await Mediator.Send(command));
     }
     

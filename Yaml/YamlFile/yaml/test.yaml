@@ -1,13 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-test-svc
+  namespace: test-app-ns
+spec:
+  selector:
+    app:  cluster-test-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postsql-deployment
-  namespace: pssql-ns
+  name: cluster-test-deployment
+  namespace: test-app-ns
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postsql-app
+      app: cluster-test-app
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -16,43 +30,139 @@ spec:
   template:
     metadata:
       labels:
-        app: postsql-app
-        aadpodidbinding: saas-cluster-mnid # cluster page 的 manageLabel
+        app: cluster-test-app
+        aadpodidbinding: saas-pod-identity
     spec:
       containers:
-        - name: springboot
-          image: djpsaascoreacr.azurecr.io/my-springboot-app-all:latest
+        - name: cluster-test
+          image: thomaszy2077/springboot-app:latest
           imagePullPolicy: Always
           env:
-            - name: Name
+            - name: conf
               valueFrom:
                 configMapKeyRef:
-                  name: postsql-configmap
-                  key: name
-            - name: KeyVaultOne
-              valueFrom: 
-                secretKeyRef:
-                  key: KeyVaultOne # Kubernetes Secret 中的键
-                  name: pssql-secret  # Kubernetes Secret 的名称
-            - name: KeyVaultTwo
+                  name: cluster-test-configmap
+                  key: conf
+            - name: AzureRedis-pass
               valueFrom:
                 secretKeyRef:
-                  key: KeyVaultTwo  # Kubernetes Secret 中的键
-                  name: pssql-secret  # Kubernetes Secret 的名称
-          volumeMounts:
-            - name: secrets-store01-inline
-              mountPath: "/mnt/secrets-store"
-              readOnly: true
+                  name: test-app-secret
+                  key: AzureRedis-pass
+            - name: KeyVaultOne
+              valueFrom:
+                secretKeyRef:
+                  name: test-app-secret
+                  key: KeyVaultOne
+            - name: TiDB-odbc-connector
+              valueFrom:
+                secretKeyRef:
+                  name: test-app-secret
+                  key: TiDB-odbc-connector
           ports:
-            - containerPort: 8080
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /mnt/secrets-store
+              name: @Model.AppName-keyvault-spc
+              readOnly: true
+            - mountPath: /dv1
+              name: cluster-test-275-pvc
           resources:
             limits:
-              memory: 2Gi
+              memory: 512Mi
               cpu: "0.5"
       volumes:
-        - name: secrets-store01-inline
+        - name: cluster-test-275-pvc
+          persistentVolumeClaim:
+            claimName: cluster-test-275-pvc
+        - name: secrets-store-inline
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: "pssql-keyvault-spc"
+              secretProviderClass: test-app-keyvault-spc
+            nodePublishSecretRef:
+              name:  test-app-secret
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-test-configmap
+  namespace: test-app-ns
+data:
+  conf: "confna"
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cluster-test-ingress
+  namespace: test-app-ns
+spec:
+  tls:
+    - hosts:
+        - saascore1.thomaszou2077.com
+      secretName: cluster-test-tls-secret
+  rules:
+    - host: saascore1.thomaszou2077.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cluster-test-svc
+                port:
+                  number: 80
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cluster-test-275-pvc
+  namespace: test-app-ns
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: test-app-keyvault-spc
+  namespace: test-app-ns
+spec:
+  parameters:
+    keyvaultName: kv-saas-core
+    objects: |
+      array:
+        - | 
+          objectType: secret 
+          objectName: AzureRedis-pass 
+        - | 
+          objectType: secret 
+          objectName: KeyVaultOne 
+        - | 
+          objectType: secret 
+          objectName: TiDB-odbc-connector 
+        - | 
+          objectType: secret 
+          objectName: k1 
+    tenantId: "1bf2b880-115d-4e08-a258-aa1dc41dc0d5"
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "69ab9774-6317-4963-90b4-aea06d941ebd"
+  provider: azure
+  secretObjects:
+    - secretName: test-app-secret
+      type: Opaque
+      data:
+        - key: AzureRedis-pass
+          objectName: AzureRedis-pass
+        - key: KeyVaultOne
+          objectName: KeyVaultOne
+        - key: TiDB-odbc-connector
+          objectName: TiDB-odbc-connector
+        - key: k1
+          objectName: k1 

@@ -1,9 +1,12 @@
 using System.Diagnostics;
 using System.Net;
 using System.Text;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using RazorLight;
 using Yaml.Domain.K8s.Interface;
@@ -18,18 +21,22 @@ public class KubeApi : IKubeApi
     private readonly IRazorLightEngine _engine;
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger _logger;
+    private readonly IMapper _mapper;
     private readonly string _currentDirectory = Directory.GetCurrentDirectory();
-
+    private readonly MyDbContext _context;
     public KubeApi(
         IKuberYamlGenerator yamlGenerator, 
         IRazorLightEngine engine, 
         ILogger<KubeApi> logger,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        IMapper mapper, MyDbContext dbContext)
     {
         _yamlGenerator = yamlGenerator;
         _memoryCache = memoryCache;
         _engine = engine;
         _logger = logger;
+        _mapper = mapper;
+        _context = dbContext;;
     }
 
     private Kubernetes GetKubeClient(YamlAppInfoDto dto)
@@ -136,6 +143,7 @@ public class KubeApi : IKubeApi
                     return v1Deployment;
                 }
 
+                cluster.AppName = dto.AppName;
                 var content = await _engine.CompileRenderAsync(path, cluster);
                 await File.WriteAllTextAsync(Path.Combine(_currentDirectory, KubeConstants.OutPutFile), content, cancellationToken);
                 var v1Service = KubernetesYaml.Deserialize<V1Deployment>(content);
@@ -186,7 +194,6 @@ public class KubeApi : IKubeApi
     public async Task<List<V1PersistentVolume>> CreatePersistentVolume(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
         //  Create Persistent Volume
-        var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeTemplate);
         try
         {
             // validate if the resource exists in k8s
@@ -237,29 +244,38 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<V1PersistentVolumeClaim[]> CreatePersistentVolumeClaim(YamlAppInfoDto dto,
+    public async Task<List<V1PersistentVolumeClaim>> CreatePersistentVolumeClaim(
+        YamlAppInfoDto dto,
         CancellationToken cancellationToken)
     {
         var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeClaimTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
         try
         {
+            var resList = new List<V1PersistentVolumeClaim>();
+
             var client = GetKubeClient(dto);
             var pvsList = await client.ListNamespacedPersistentVolumeClaimAsync(namespaceName, cancellationToken: cancellationToken);
-            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            foreach(var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
             {
-                var pvcName = cluster.ClusterName + KubeConstants.PvcSubSuffix;
-                var persistentVolumeClaim = pvsList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == pvcName);
-                if (persistentVolumeClaim != null)
+                
+                for (var i = 0; i < cluster.DiskInfoList?.Count; i++)
                 {
-                    return persistentVolumeClaim;
+                    var diskInfoDto = cluster.DiskInfoList[i];
+                    diskInfoDto.AppName = dto.AppName;
+                    var persistentVolumeClaim = pvsList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == diskInfoDto.Name + KubeConstants.PvcSubSuffix);
+                    // when pvc is not found, then create a new pvc
+                    if (persistentVolumeClaim == null)
+                    {
+                        var content = await _engine.CompileRenderAsync(path, diskInfoDto);
+                        var pvc = KubernetesYaml.Deserialize<V1PersistentVolumeClaim>(content);
+                        var pvcClaim = await client.CreateNamespacedPersistentVolumeClaimAsync(pvc, namespaceName, cancellationToken: cancellationToken);
+                        resList.Add(pvcClaim);
+                        _logger.LogInformation("deploy pvc {}", pvcClaim.Metadata.Name);
+                    }
                 }
-
-                var content = await _engine.CompileRenderAsync(path, cluster);
-                var pvc = KubernetesYaml.Deserialize<V1PersistentVolumeClaim>(content);
-                return await client.CreateNamespacedPersistentVolumeClaimAsync(pvc, namespaceName, cancellationToken: cancellationToken);
-            });
-            return await Task.WhenAll(task).ConfigureAwait(false);
+            }
+            return resList;
         }
         catch (Exception ex)
         {

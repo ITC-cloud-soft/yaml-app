@@ -19,8 +19,6 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddScoped<IKubeApi, KubeApi>();
-        builder.Services.AddScoped<IKuberYamlGenerator, KuberYamlGenerator>();
 
         builder.Services.AddSingleton<Kubernetes>(_ =>
         {
@@ -59,6 +57,8 @@ public class Program
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
                 new MySqlServerVersion(new Version(8, 0, 32)))); // Replace with your MySQL version
+        builder.Services.AddScoped<IKubeApi, KubeApi>();
+        builder.Services.AddScoped<IKuberYamlGenerator, KuberYamlGenerator>();
 
         var app = builder.Build();
         app.UseRequestLocalization();

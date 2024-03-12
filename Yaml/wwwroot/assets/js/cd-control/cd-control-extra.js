@@ -259,7 +259,7 @@ const controllerComponent = (($) => {
                     for (let i = 0; i < cluster.diskInfoList.length; i++) {
                         const diskSelectId = 'diskSelect-' + cluster.diskInfoList[i].id
                         $("#diskConfig-content").append(`
-                            <div class="m-data-table__item" rowId="${cluster.diskInfoList[i].id}" id="{{columnId}}" colcount="${i + 1}">
+                            <div class="m-data-table__item" rowId="${cluster.diskInfoList[i].id}" id="${cluster.diskInfoList[i].id}" colcount="${i + 1}">
                                  <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
                                     <div class="m-form-field__content">    
                                        <div id="diskType" class="a-pulldown">
@@ -602,8 +602,8 @@ const controllerComponent = (($) => {
             clusterName: {required: true},
             imageName: {required: true},
             podCount: {required: true},
-            cpu: {required: true},
-            memory: {required: true},
+            // cpu: {required: true},
+            // memory: {required: true},
             diskSize: {required: true},
             tenantId: {
                 required: {
@@ -773,7 +773,6 @@ const controllerComponent = (($) => {
         } else {
             clusterInfo.domain = {}
         }
-
         return clusterInfo;
     }
     
@@ -784,7 +783,8 @@ const controllerComponent = (($) => {
             const diskType = $(this).children().find('[name="diskType-selector"]').val()
             const path = $(this).children().find('[colname="path"]').val();
             const size = $(this).children().find('[colname="size"]').val();
-            diskList.push({diskType: diskType, path: path, diskSize: size})
+            const id = $(this).first().attr('rowId');
+            diskList.push({diskType: diskType, path: path, diskSize: size, id: id});
         })
         return diskList;
     }

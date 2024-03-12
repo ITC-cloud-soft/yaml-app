@@ -47,8 +47,16 @@ spec:
             @secretkeyref
           }
           ports: 
-           - containerPort: 80
+            - containerPort: 80
           volumeMounts:
+          @if (Model.KeyVaultFlag)
+          {
+            string keyvault =   $"          - mountPath: /mnt/secrets-store \n" + 
+                                $"            name: {Model.AppName}-keyvault-spc \n" + 
+                                $"            readOnly: true \n"
+            ;
+            @keyvault
+          }
           @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
           {
             string mountPath = $"           - mountPath: {diskInfo.Path}\n" +

@@ -8,7 +8,7 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
     public int Id { get; set; }
     public int UserId { get; set; }
 
-    public string? AppName { get; set; }
+    public string AppName { get; set; }
     public string? Cr { get; set; }
     public string? Token { get; set; }
     public string? MailAddress { get; set; }

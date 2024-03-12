@@ -89,10 +89,36 @@ public class KuberYamlGenerator : IKuberYamlGenerator
         return pvc;
     }
 
-    public async Task<string> GenerateSecret(YamlAppInfoDto appInfoDto)
+    public async Task<string> GenerateSecret(YamlAppInfoDto appInfoDto, YamlClusterInfoDto cluster)
     {
+        // key vaults belong to single cluster
+        if (!appInfoDto.KeyVaultFlag)
+        {
+            return "";
+        }
+        
         var path = Path.Combine(_currentDirectory, KubeConstants.SecretTemplate);
-        return await _engine.CompileRenderAsync(path, appInfoDto);
+   
+        var keyVaultRender = new KeyVaultRender()
+        {
+            AppName = appInfoDto.AppName,
+            KeyVaultName = appInfoDto.KeyVault?.KeyVaultName!,
+            ManagedId = appInfoDto.KeyVault?.ManagedId!,
+            TenantId = appInfoDto.KeyVault?.TenantId!,
+            ConfigKeyList = cluster.KeyVault?.Select(kv => kv.ConfigKey!).ToList() ?? new List<string>()
+        };
+    
+        // key vaults belong to the whole application
+        if (appInfoDto.KeyVault?.KeyVault != null)
+        {
+            keyVaultRender.ConfigKeyList.AddRange(
+                appInfoDto.KeyVault.KeyVault
+                    .Where(kv => kv.ConfigKey != null)  
+                    .Select(kv => kv.ConfigKey!).ToList<string>()
+                ); 
+        }
+        
+        return await _engine.CompileRenderAsync(path, keyVaultRender);
     }
 
     public async Task<string> GenerateIngress(YamlClusterInfoDto cluster)

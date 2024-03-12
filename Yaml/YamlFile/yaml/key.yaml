@@ -1,0 +1,112 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+kind: SecretProviderClass
+metadata:
+  name: keyvault-spc-zou37
+  namespace: test-app-ns
+spec:
+  parameters:
+    keyvaultName: kv-saas-core
+    objects: |
+      array:
+        - |
+          objectType: secret
+          objectName: SendGridKey
+        - |
+          objectType: secret
+          objectName: AzureRedis-pass
+        - |
+          objectType: secret
+          objectName: AzureStorageCert
+        - |
+          objectType: secret
+          objectName: AzureStorageClientId-default
+    tenantId: 1bf2b880-115d-4e08-a258-aa1dc41dc0d5
+    usePodIdentity: 'true'
+    useVMManagedIdentity: 'false'
+    userAssignedIdentityID: 69ab9774-6317-4963-90b4-aea06d941ebd
+  provider: azure
+  secretObjects:
+    - data:
+        - key: SendGridKey
+          objectName: SendGridKey
+        - key: AzureRedis-pass
+          objectName: AzureRedis-pass
+        - key: AzureStorageCert
+          objectName: AzureStorageCert
+        - key: AzureStorageClientId-default
+          objectName: AzureStorageClientId-default
+      secretName: ccflow-secret-zou37
+      type: Opaque
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cluster-test-deployment
+  namespace: test-app-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cluster-test-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 3
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: cluster-test-app
+        aadpodidbinding: saas-pod-identity
+    spec:
+      containers:
+        - name: cluster-test
+          image: thomaszy2077/springboot-app:latest
+          imagePullPolicy: Always
+          env:
+            - name: AutoMailFlg
+              value: '0'
+            - name: SendGridKey
+              valueFrom:
+                secretKeyRef:
+                  key: SendGridKey
+                  name: ccflow-secret-zou37
+            - name: AzureRedis_pass
+              valueFrom:
+                secretKeyRef:
+                  key: AzureRedis-pass
+                  name: ccflow-secret-zou37
+            - name: AzureStorageCert_default
+              valueFrom:
+                secretKeyRef:
+                  key: AzureStorageCert
+                  name: ccflow-secret-zou37
+            - name: AzureStorageClientId_default
+              valueFrom:
+                secretKeyRef:
+                  key: AzureStorageClientId-default
+                  name: ccflow-secret-zou37
+            - name: LOGANALYTICS_FLG
+              value: '1'
+            - name: LOGANALYTICS_LOG_DIR
+              value: /app/log
+            - name: LOGANALYTICS_LOG_FILE
+              value: saas-ccflow-backend-zou37.log.json
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /mnt/secrets-store
+              name: secrets-store-inline
+              readOnly: true
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "0.5"
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: keyvault-spc-zou37

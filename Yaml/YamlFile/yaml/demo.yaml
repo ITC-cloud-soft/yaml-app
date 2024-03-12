@@ -31,11 +31,11 @@ spec:
     metadata:
       labels:
         app: cluster-test-app
-        aadpodidbinding:
+        aadpodidbinding: saas-pod-identity
     spec:
       containers:
         - name: cluster-test
-          image: djpest.azurecr.io/ssflow-api:0.0.1
+          image: thomaszy2077/springboot-app:latest
           imagePullPolicy: Always
           env:
             - name: conf
@@ -43,35 +43,37 @@ spec:
                 configMapKeyRef:
                   name: cluster-test-configmap
                   key: conf
-            - name: keyvault-two
+            - name: AzureRedis-pass
               valueFrom:
                 secretKeyRef:
                   name: test-app-secret
-                  key: keyvault-two
+                  key: AzureRedis-pass
+            - name: KeyVaultOne
+              valueFrom:
+                secretKeyRef:
+                  name: test-app-secret
+                  key: KeyVaultOne
+            - name: TiDB-odbc-connector
+              valueFrom:
+                secretKeyRef:
+                  name: test-app-secret
+                  key: TiDB-odbc-connector
           ports:
             - containerPort: 80
-          volumeMounts:
-            - mountPath: /dv1
-              name: cluster-test-446-pvc
-            - mountPath: /dv2
-              name: cluster-test-533-pvc
           resources:
             limits:
               memory: 512Mi
               cpu: "0.5"
+          volumeMounts:
+            - mountPath: /mnt/secrets-store
+              name: test-app-keyvault-spc
+              readOnly: true
+            - mountPath: /dv1
+              name: cluster-test-275-pvc
       volumes:
-        - name: cluster-test-446-pvc
+        - name: cluster-test-275-pvc
           persistentVolumeClaim:
-            claimName: cluster-test-446-pvc
-        - name: cluster-test-533-pvc
-          persistentVolumeClaim:
-            claimName: cluster-test-533-pvc
-        - name: cluster-test-384-pvc
-          persistentVolumeClaim:
-            claimName: cluster-test-384-pvc
-        - name: cluster-test-549-pvc
-          persistentVolumeClaim:
-            claimName: cluster-test-549-pvc
+            claimName: cluster-test-275-pvc
         - name: secrets-store-inline
           csi:
             driver: secrets-store.csi.k8s.io
@@ -87,7 +89,7 @@ metadata:
   name: cluster-test-configmap
   namespace: test-app-ns
 data:
-  conf: "2"
+  conf: "confna"
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -98,10 +100,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - thomas01.thomaszou2077.com
+        - saascore1.thomaszou2077.com
       secretName: cluster-test-tls-secret
   rules:
-    - host: thomas01.thomaszou2077.com
+    - host: saascore1.thomaszou2077.com
       http:
         paths:
           - path: /
@@ -115,134 +117,15 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: cluster-test-446-pvc
+  name: cluster-test-275-pvc
   namespace: test-app-ns
 spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: default
-  volumeName: pv-cluster-test-0
   resources:
     requests:
       storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: cluster-test-533-pvc
-  namespace: test-app-ns
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: default
-  volumeName: pv-cluster-test-1
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: cluster-test-384-pvc
-  namespace: test-app-ns
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: default
-  volumeName: pv-cluster-test-2
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: cluster-test-549-pvc
-  namespace: test-app-ns
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: default
-  volumeName: pv-cluster-test-3
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  annotations:
-    pv.kubernetes.io/provisioned-by: disk.csi.azure.com
-  name: pv-cluster-test-0
-spec:
-  storageClassName: default
-  persistentVolumeReclaimPolicy: Retain
-  capacity:
-    storage:  1Gi
-  accessModes:
-    - ReadWriteOnce
-  csi:
-    driver: disk.csi.azure.com
-    volumeHandle: /subscriptions/277809f3-155d-4b95-b44e-698844918adb/resourceGroups/saas-core/providers/Microsoft.Compute/disks/myAKSDisk
-    volumeAttributes:
-      fsType: ext4
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  annotations:
-    pv.kubernetes.io/provisioned-by: disk.csi.azure.com
-  name: pv-cluster-test-1
-spec:
-  storageClassName: default
-  persistentVolumeReclaimPolicy: Retain
-  capacity:
-    storage:  1Gi
-  accessModes:
-    - ReadWriteOnce
-  csi:
-    driver: disk.csi.azure.com
-    volumeHandle: /subscriptions/277809f3-155d-4b95-b44e-698844918adb/resourceGroups/saas-core/providers/Microsoft.Compute/disks/myAKSDisk
-    volumeAttributes:
-      fsType: ext4
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  annotations:
-    pv.kubernetes.io/provisioned-by: disk.csi.azure.com
-  name: pv-cluster-test-2
-spec:
-  storageClassName: default
-  persistentVolumeReclaimPolicy: Retain
-  capacity:
-    storage:  1Gi
-  accessModes:
-    - ReadWriteOnce
-  csi:
-    driver: disk.csi.azure.com
-    volumeHandle: /subscriptions/277809f3-155d-4b95-b44e-698844918adb/resourceGroups/saas-core/providers/Microsoft.Compute/disks/myAKSDisk
-    volumeAttributes:
-      fsType: ext4
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  annotations:
-    pv.kubernetes.io/provisioned-by: disk.csi.azure.com
-  name: pv-cluster-test-3
-spec:
-  storageClassName: default
-  persistentVolumeReclaimPolicy: Retain
-  capacity:
-    storage:  1Gi
-  accessModes:
-    - ReadWriteOnce
-  csi:
-    driver: disk.csi.azure.com
-    volumeHandle: /subscriptions/277809f3-155d-4b95-b44e-698844918adb/resourceGroups/saas-core/providers/Microsoft.Compute/disks/myAKSDisk
-    volumeAttributes:
-      fsType: ext4
 ---
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
@@ -251,20 +134,35 @@ metadata:
   namespace: test-app-ns
 spec:
   parameters:
-    keyvaultName: keyvault-one
+    keyvaultName: kv-saas-core
     objects: |
       array:
         - | 
           objectType: secret 
-          objectName: x22 
+          objectName: AzureRedis-pass 
+        - | 
+          objectType: secret 
+          objectName: KeyVaultOne 
+        - | 
+          objectType: secret 
+          objectName: TiDB-odbc-connector 
+        - | 
+          objectType: secret 
+          objectName: k1 
     tenantId: "1bf2b880-115d-4e08-a258-aa1dc41dc0d5"
     usePodIdentity: "false"
     useVMManagedIdentity: "true"
-    userAssignedIdentityID: "277809f3-155d-4b95-b44e-698844918adb"
+    userAssignedIdentityID: "69ab9774-6317-4963-90b4-aea06d941ebd"
   provider: azure
   secretObjects:
     - secretName: test-app-secret
       type: Opaque
       data:
-        - key: x22
-          objectName: x22 
+        - key: AzureRedis-pass
+          objectName: AzureRedis-pass
+        - key: KeyVaultOne
+          objectName: KeyVaultOne
+        - key: TiDB-odbc-connector
+          objectName: TiDB-odbc-connector
+        - key: k1
+          objectName: k1 

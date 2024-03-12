@@ -93,6 +93,8 @@ var userLanguage = "jp";
         }, function (error) {
             console.error(error)
             removeLoading();
+
+            commonFunctions.showModal('提示', 'システムエラーが発生しました。システム管理者に連絡してください')
             return Promise.reject(error);
         });
         return axiosInstance;
