@@ -42,21 +42,19 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                 var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
                 var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
-                // var persistentVolume = await _kuberYamlGenerator.GeneratePersistentVolumeList(yamlAppInfoDto, cluster);
                 var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
                 var secret = await _kuberYamlGenerator.GenerateSecret(yamlAppInfoDto, cluster);
 
                 return $"{service}" +
                        $"{NextLine}" +
-                       $"{deployment}" +
+                       $"{secret}" +
                        $"{NextLine}" +
                        $"{configMap}" +
-                       $"{NextLine}" + 
+                       $"{NextLine}" +
                        $"{ingress}" +
                        $"{NextLine}" +
                        $"{persistentVolumeClaim}" +
-                       // $"{persistentVolume}" +
-                       $"{secret}";
+                       $"{deployment}";
             });
             
             var whenAll = await Task.WhenAll(tasks);

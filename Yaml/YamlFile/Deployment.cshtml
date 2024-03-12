@@ -52,7 +52,7 @@ spec:
           @if (Model.KeyVaultFlag)
           {
             string keyvault =   $"          - mountPath: /mnt/secrets-store \n" + 
-                                $"            name: {Model.AppName}-keyvault-spc \n" + 
+                                $"            name: secrets-store-inline \n" + 
                                 $"            readOnly: true \n"
             ;
             @keyvault
@@ -82,5 +82,4 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: @Model.AppName-keyvault-spc
-          nodePublishSecretRef:
-            name:  @Model.AppName-secret
+        
