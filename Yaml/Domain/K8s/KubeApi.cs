@@ -177,6 +177,7 @@ public class KubeApi : IKubeApi
                     return configMap;
                 }
 
+                cluster.AppName = dto.AppName;
                 var content = await _engine.CompileRenderAsync(path, cluster);
                 var v1ConfigMap = KubernetesYaml.Deserialize<V1ConfigMap>(content);
                 return await client.CreateNamespacedConfigMapAsync(v1ConfigMap, namespaceName, cancellationToken: cancellationToken);
@@ -287,43 +288,47 @@ public class KubeApi : IKubeApi
 
     public async Task<string> CreateKeyVault(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        var templatePath = Path.Combine(_currentDirectory, KubeConstants.SecretTemplate);
-        var content = await _engine.CompileRenderAsync(templatePath, dto);
-        Guid prefix = Guid.NewGuid();
-
-        var filePath = Path.Combine(_currentDirectory, KubeConstants.TempPath, prefix + "_" + KubeConstants.KeyVaultYamlFileName);
-        Console.WriteLine(filePath);
         try
         {
-            await File.WriteAllTextAsync(filePath, content, cancellationToken);
-
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            foreach (var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
             {
-                FileName = "kubectl",
-                Arguments = $"apply -f {filePath}",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
+                var content = await _yamlGenerator.GenerateSecret(dto, cluster);
+        
+                Guid prefix = Guid.NewGuid();
 
-            using (Process process = Process.Start(startInfo))
-            {
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    string result = reader.ReadToEnd();
-                    Console.WriteLine(result);
-                }
+                var filePath = Path.Combine(_currentDirectory, KubeConstants.TempPath, prefix + "_" + KubeConstants.KeyVaultYamlFileName);
+                Console.WriteLine(filePath);
+                await File.WriteAllTextAsync(filePath, content, cancellationToken);
 
-                using (StreamReader reader = process.StandardError)
+                ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    string error = reader.ReadToEnd();
-                    if (!string.IsNullOrEmpty(error))
+                    FileName = "kubectl",
+                    Arguments = $"apply -f {filePath}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (Process process = Process.Start(startInfo))
+                {
+                    using (StreamReader reader = process.StandardOutput)
                     {
-                        throw new ServiceException(error);
+                        string result = reader.ReadToEnd();
+                        Console.WriteLine(result);
                     }
-                }
+
+                    using (StreamReader reader = process.StandardError)
+                    {
+                        string error = reader.ReadToEnd();
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            throw new ServiceException(error);
+                        }
+                    }
+                } 
             }
+            
         }
         catch (Exception e)
         {

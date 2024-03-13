@@ -42,7 +42,6 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
             await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateDomainCertification(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
-            // await _kubeApi.CreatePersistentVolume(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);

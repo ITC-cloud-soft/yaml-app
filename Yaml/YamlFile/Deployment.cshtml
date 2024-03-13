@@ -29,21 +29,21 @@ spec:
           @foreach (var cf in @Model.ConfigMap)
           {
             
-            string configMap = $"           - name: {cf.ConfigKey} \n" +
-                               $"             valueFrom: \n" +
-                               $"               configMapKeyRef: \n" +
-                               $"                 name: {Model.ClusterName}-configmap\n" +
-                               $"                 key: {cf.ConfigKey}\n";
+            string configMap = $"            - name: {cf.ConfigKey} \n" +
+                               $"              valueFrom: \n" +
+                               $"                configMapKeyRef: \n" +
+                               $"                  name: {Model.ClusterName}-configmap\n" +
+                               $"                  key: {cf.ConfigKey}\n";
             @configMap
           }
           @foreach (var kv in @Model.KeyVault)
           {
             
-            string secretkeyref = $"           - name: {kv.ConfigKey} \n" +
-                               $"             valueFrom: \n" +
-                               $"               secretKeyRef: \n" +
-                               $"                 name: {Model.AppName}-secret\n" +
-                               $"                 key: {kv.ConfigKey}\n";
+            string secretkeyref = $"            - name: {kv.ConfigKey} \n" +
+                                  $"              valueFrom: \n" +
+                                  $"                secretKeyRef: \n" +
+                                  $"                  name: {Model.AppName}-secret\n" +
+                                  $"                  key: {kv.ConfigKey}\n";
             @secretkeyref
           }
           ports: 
@@ -51,16 +51,16 @@ spec:
           volumeMounts:
           @if (Model.KeyVaultFlag)
           {
-            string keyvault =   $"          - mountPath: /mnt/secrets-store \n" + 
-                                $"            name: secrets-store-inline \n" + 
-                                $"            readOnly: true \n"
+            string keyvault =   $"            - mountPath: /mnt/secrets-store \n" + 
+                                $"              name: secrets-store-inline \n" + 
+                                $"              readOnly: true \n"
             ;
             @keyvault
           }
           @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
           {
-            string mountPath = $"           - mountPath: {diskInfo.Path}\n" +
-                               $"             name: {diskInfo.Name}-pvc \n";
+            string mountPath = $"            - mountPath: {diskInfo.Path}\n" +
+                               $"              name: {diskInfo.Name}-pvc \n";
             @mountPath
           }
           resources:
