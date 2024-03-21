@@ -1,97 +1,3 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: cluster-test-svc
-  namespace: test-app-ns
-spec:
-  selector:
-    app:  cluster-test-app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: ClusterIP
----
-apiVersion: secrets-store.csi.x-k8s.io/v1
-kind: SecretProviderClass
-metadata:
-  name: test-app-keyvault-spc
-  namespace: test-app-ns
-spec:
-  parameters:
-    keyvaultName: kv-saas-core
-    objects: |
-      array:
-        - | 
-          objectType: secret 
-          objectName: KeyVaultOne 
-        - | 
-          objectType: secret 
-          objectName: TiDB-odbc-connector 
-        - | 
-          objectType: secret 
-          objectName: AzureRedis-pass 
-    tenantId: "1bf2b880-115d-4e08-a258-aa1dc41dc0d5"
-    usePodIdentity: "false"
-    useVMManagedIdentity: "true"
-    userAssignedIdentityID: "69ab9774-6317-4963-90b4-aea06d941ebd"
-  provider: azure
-  secretObjects:
-    - secretName: test-app-secret
-      type: Opaque
-      data:
-        - key: KeyVaultOne
-          objectName: KeyVaultOne
-        - key: TiDB-odbc-connector
-          objectName: TiDB-odbc-connector
-        - key: AzureRedis-pass
-          objectName: AzureRedis-pass
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cluster-test-configmap
-  namespace: test-app-ns
-data:
-  conf: "confna"
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: cluster-test-ingress
-  namespace: test-app-ns
-spec:
-  tls:
-    - hosts:
-        - saascore1.thomaszou2077.com
-      secretName: cluster-test-tls-secret
-  rules:
-    - host: saascore1.thomaszou2077.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: cluster-test-svc
-                port:
-                  number: 80
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: cluster-test-162-pvc
-  namespace: test-app-ns
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: default
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -115,14 +21,14 @@ spec:
     spec:
       containers:
         - name: cluster-test
-          image: thomaszy2077/springboot-app:0.0.1
+          image: djpsaascoreacr.azurecr.io/saas-api:24.2.8.37
           imagePullPolicy: Always
           env:
-            - name: conf
+            - name: conf1
               valueFrom:
                 configMapKeyRef:
                   name: cluster-test-configmap
-                  key: conf
+                  key: conf1
             - name: KeyVaultOne
               valueFrom:
                 secretKeyRef:
@@ -133,17 +39,27 @@ spec:
                 secretKeyRef:
                   name: test-app-secret
                   key: TiDB-odbc-connector
+            - name: SendGridKey
+              valueFrom:
+                secretKeyRef:
+                  name: test-app-secret
+                  key: SendGridKey
           ports:
             - containerPort: 80
           volumeMounts:
             - mountPath: /mnt/secrets-store
               name: secrets-store-inline
               readOnly: true
+            - mountPath: /dv1
+              name: cluster-test-808-pvc
           resources:
             limits:
               memory: 512Mi
               cpu: "1"
       volumes:
+        - name: cluster-test-808-pvc
+          persistentVolumeClaim:
+            claimName: cluster-test-808-pvc
         - name: secrets-store-inline
           csi:
             driver: secrets-store.csi.k8s.io

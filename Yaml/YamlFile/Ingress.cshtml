@@ -5,6 +5,7 @@ metadata:
   name: @Model.ClusterName-ingress
   namespace: @Model.AppName-ns
 spec:
+  ingressClassName: nginx
   tls:
     - hosts:
         - @Model.Domain?.DomainName

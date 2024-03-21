@@ -2,11 +2,9 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using RazorLight;
 using Yaml.Domain.K8s.Interface;
@@ -63,7 +61,6 @@ public class KubeApi : IKubeApi
         {
             throw new ServiceException("Error creating Kubernetes client.", ex);
         }
-
         return client ?? throw new ServiceException("Client creation failed unexpectedly.");
     }
     
