@@ -1,0 +1,33 @@
+@model Yaml.Infrastructure.Dto.KeyVaultRender
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: @Model.AppName-keyvault-spc
+  namespace: @Model.AppName-ns
+spec:
+  parameters:
+    keyvaultName: @Model.KeyVaultName
+    objects: |
+      array:
+        @foreach (var kv in @Model.ConfigKeyList)
+        {
+          string obj = $"        - | \n" +
+                       $"          objectType: secret \n" +
+                       $"          objectName: {kv} \n";
+          @obj
+        }
+    tenantId: "@Model.TenantId"
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "@Model.ManagedId"
+  provider: azure
+  secretObjects:
+    - secretName: @Model.AppName-secret
+      type: Opaque
+      data:
+        @foreach (var kv in Model.ConfigKeyList)
+        {
+          string sc = $"        - key: {kv} \n" +
+                      $"          objectName: {kv} \n";
+          @sc
+        }

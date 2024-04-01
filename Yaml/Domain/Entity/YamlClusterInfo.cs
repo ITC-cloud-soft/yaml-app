@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Yaml.Application;
 using Yaml.Infrastructure.Presistence.dao;
 namespace Yaml.Domain.Entity;
 
@@ -9,6 +8,7 @@ namespace Yaml.Domain.Entity;
 public class YamlClusterInfo : CommonFields
 {
     [Required]
+    [Key]
     public int Id { get; set; }
  
     [Column("cluster_name")]
@@ -16,7 +16,6 @@ public class YamlClusterInfo : CommonFields
     
     [Column("image")]
     public string? Image { get; set; }
-
     
     [Column("pod_num")]
     public int? PodNum { get; set; }
@@ -44,4 +43,6 @@ public class YamlClusterInfo : CommonFields
     
     [Column("configmap_file_flag")]
     public bool ConfigMapFileFlag { get; set; }
+    [Column("diskInfo_flag")]
+    public bool DiskInfoFlag { get; set; }
 }

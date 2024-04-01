@@ -7,9 +7,10 @@ namespace Yaml.Domain.Entity;
 [Table("TBL_YAML_APP_INFO")]
 public class YamlAppInfo : CommonFields
 {
-    [Required]
-    public int Id;
-    
+    [Required] 
+    [Key]
+    public int Id { get; set; } 
+
     [Column("app_name")] 
     public string? AppName { get; set; } 
     
@@ -34,5 +35,12 @@ public class YamlAppInfo : CommonFields
     [Column("managed_id")]
     public string? ManagedId { get; set; }
 
-    [Column("netdata_flag")] public bool NetdataFlag { get; set; } = false;
+    [Column("netdata_flag")] 
+    public bool NetdataFlag { get; set; } = false;
+    
+    [Column("user_id")]
+    public int UserId { get; set; }
+    
+    [Column("Kube_Config")]
+    public string? KubeConfig { get; set; }
 }

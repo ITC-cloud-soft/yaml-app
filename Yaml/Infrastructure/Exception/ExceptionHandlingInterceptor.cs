@@ -1,3 +1,5 @@
+using k8s.Autorest;
+
 namespace Yaml.Infrastructure.Exception;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
@@ -22,7 +24,19 @@ public class ExceptionHandlingInterceptor
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsync(e.Message);
         }
+        catch (ServiceException e)
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync(e.Message);
+        }
+        catch (HttpOperationException e)
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync(e.Message);
+        }
+        catch (System.Exception ex)
+        { context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync(ex.Message);
+        }
     }
-
-
 }

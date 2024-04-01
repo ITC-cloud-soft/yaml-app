@@ -1,0 +1,14 @@
+@model Yaml.Infrastructure.Dto.DiskInfoDto
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: @Model.Name-pvc
+  namespace: @Model.AppName-ns
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: @Model.DiskType
+  @* volumeName: @Model.PvName *@
+  resources:
+    requests:
+      storage: @Model.DiskSize

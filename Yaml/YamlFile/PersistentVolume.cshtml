@@ -1,0 +1,19 @@
+@model Yaml.Infrastructure.Dto.PvRender
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: disk.csi.azure.com
+  name: @Model.Name
+spec:
+  storageClassName: @Model.StorageClassName
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage:  @Model.Storage
+  accessModes:
+    - ReadWriteOnce
+  csi:
+    driver: disk.csi.azure.com
+    volumeHandle: /subscriptions/@Model.SubscriptionId/resourceGroups/@Model.ResourceGroup/providers/Microsoft.Compute/disks/myAKSDisk
+    volumeAttributes:
+      fsType: ext4

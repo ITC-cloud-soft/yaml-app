@@ -7,27 +7,50 @@
         <RootNamespace>Yaml</RootNamespace>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+    </PropertyGroup>
+
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
     <ItemGroup>
+        <PackageReference Include="KubernetesClient" Version="12.1.1" />
         <PackageReference Include="MediatR" Version="12.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
+        <PackageReference Include="Microsoft.Azure.Management.Fluent" Version="1.38.1" />
+        <PackageReference Include="Microsoft.Azure.Management.ResourceManager.Fluent" Version="1.38.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="RazorLight" Version="2.3.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
         <PackageReference Include="RazorEngine.NetCore" Version="3.1.0" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
-        <PackageReference Include="YamlDotNet" Version="13.4.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
+        <PackageReference Include="YamlDotNet" Version="13.7.1" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Domain\" />
       <Folder Include="Infrastructure\Presistence\" />
-      <Folder Include="Infrastructure\Vm\" />
+      <Folder Include="uploads\" />
+      <Folder Include="wwwroot\assets\locales\en\" />
+      <Folder Include="wwwroot\assets\locales\ja\" />
+      <Folder Include="YamlFile\json\" />
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Redis\redis-deployment.cshtml" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Localization\Application\Command\UserLoginCommand.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>UserLoginCommand.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Localization\Application\Command\UserLoginCommand.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UserLoginCommand.en.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

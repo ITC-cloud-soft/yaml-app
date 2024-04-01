@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Yaml.Domain.Entity;
+using Yaml.Infrastructure.Dto;
 
 public class MyDbContext : DbContext
 {
@@ -12,8 +13,7 @@ public class MyDbContext : DbContext
     {
         
     }
-   
-   
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Key configuration
@@ -23,8 +23,11 @@ public class MyDbContext : DbContext
 
  	public DbSet<YamlAppInfo> AppInfoContext { get; set; }
  	public DbSet<YamlClusterInfo> ClusterContext { get; set; }
- 	public DbSet<YamlKeyVaultInfo> KeyVaultInfo { get; set; }
- 	public DbSet<YamlClusterDomainInfo> Domain { get; set; }
+    
+ 	public DbSet<YamlClusterDiskInfo> DiskInfoContext{ get; set; }
+ 	public DbSet<YamlKeyVaultInfo> KeyVaultInfoContext { get; set; }
+ 	public DbSet<YamlClusterDomainInfo> DomainContext { get; set; }
  	public DbSet<YamlClusterConfigFileInfo> ConfigFile { get; set; }
  	public DbSet<YamlClusterConfigMapInfo> ConfigMap { get; set; }
+ 	public DbSet<YamlUser> User { get; set; }
 }

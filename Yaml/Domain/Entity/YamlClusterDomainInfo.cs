@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Yaml.Infrastructure.Presistence.dao;
 namespace Yaml.Domain.Entity;

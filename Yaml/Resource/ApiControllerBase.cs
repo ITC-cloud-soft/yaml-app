@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-
+namespace Yaml.Resource;
 
 [ApiController]
 [Route("api/[controller]")]

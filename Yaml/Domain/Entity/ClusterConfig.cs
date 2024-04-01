@@ -25,5 +25,4 @@ public class ClusterConfig : CommonFields
     [Required]
     [Column("COMMENT")]
     public string? Comment { get; set; }
-
 }

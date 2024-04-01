@@ -1,0 +1,85 @@
+@using Yaml.Infrastructure.Dto
+@model Yaml.Infrastructure.Dto.YamlClusterInfoDto
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: @Model.ClusterName-deployment
+  namespace: @Model.AppName-ns
+spec:
+  replicas: @Model.PodNum
+  selector:
+    matchLabels:
+      app: @Model.ClusterName-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 3
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: @Model.ClusterName-app
+        aadpodidbinding: @Model.ManageLabel
+    spec:
+      containers:
+        - name: @Model.ClusterName
+          image: @Model.Image
+          imagePullPolicy: Always
+          env:
+          @foreach (var cf in @Model.ConfigMap)
+          {
+            
+            string configMap = $"            - name: {cf.ConfigKey} \n" +
+                               $"              valueFrom: \n" +
+                               $"                configMapKeyRef: \n" +
+                               $"                  name: {Model.ClusterName}-configmap\n" +
+                               $"                  key: {cf.ConfigKey}\n";
+            @configMap
+          }
+          @foreach (var kv in @Model.KeyVault)
+          {
+            
+            string secretkeyref = $"            - name: {kv.ConfigKey} \n" +
+                                  $"              valueFrom: \n" +
+                                  $"                secretKeyRef: \n" +
+                                  $"                  name: {Model.AppName}-secret\n" +
+                                  $"                  key: {kv.ConfigKey}\n";
+            @secretkeyref
+          }
+          ports: 
+            - containerPort: 80
+          volumeMounts:
+          @if (Model.KeyVaultFlag)
+          {
+            string keyvault =   $"            - mountPath: /mnt/secrets-store \n" + 
+                                $"              name: secrets-store-inline \n" + 
+                                $"              readOnly: true \n"
+            ;
+            @keyvault
+          }
+          @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+          {
+            string mountPath = $"            - mountPath: {diskInfo.Path}\n" +
+                               $"              name: {diskInfo.Name}-pvc \n";
+            @mountPath
+          }
+          resources:
+           limits:
+             memory: @Model.Memory
+             cpu: "@Model.Cpu"
+      volumes:
+      @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+      {
+        string pvc = $"      - name: {diskInfo.Name}-pvc\n" +
+                     $"        persistentVolumeClaim:\n" +
+                     $"          claimName: {diskInfo.Name}-pvc\n";             
+        
+        @pvc
+      }
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: @Model.AppName-keyvault-spc
+        
