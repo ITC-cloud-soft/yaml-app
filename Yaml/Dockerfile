@@ -16,4 +16,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
 COPY --from=build-env /app/out .
 
+# 安装bash 
+RUN apt-get update && apt-get install -y bash
+
 ENTRYPOINT ["dotnet", "YAML.dll"]

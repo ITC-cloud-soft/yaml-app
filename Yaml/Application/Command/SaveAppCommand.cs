@@ -96,7 +96,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             if (yamlKeyVaultInfo.Id <= 0)
             {
                 yamlKeyVaultInfo.Id = 0;
-                await _context.KeyVaultInfoContext.AddAsync(yamlKeyVaultInfo);
+                await _context.KeyVaultInfoContext.AddAsync(yamlKeyVaultInfo, cancellationToken);
             }
             else
             {
