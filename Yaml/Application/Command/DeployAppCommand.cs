@@ -39,16 +39,17 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
         {
             var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateKeyVault(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateDomainCertification(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
-            await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateDomainCertification(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
+            // await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
             return v1Namespace.Metadata.Name;
         }
         catch (Exception e)
         {
+            _logger.LogError("Deploy APP Error :" + e);
             throw new ServiceException("Deploy APP Error : ", e);
         }
     }

@@ -6,6 +6,7 @@ create table tbl_yaml_app_info
     CR             varchar(100) not null,
     TOKEN          varchar(300) not null,
     MAIL_ADDRESS   varchar(50)  not null,
+    CLOUD_TYPE     tinyint      null comment '1: Azure,  2: AWS, 3: Ali Cloud',
     KEYVAULT_FLAG  tinyint(1)   not null,
     TENANTID       varchar(50)  not null,
     KEY_VAULT_NAME varchar(50)  not null,

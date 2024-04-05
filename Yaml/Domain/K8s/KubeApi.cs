@@ -8,8 +8,13 @@ using k8s.Models;
 using Microsoft.Extensions.Caching.Memory;
 using RazorLight;
 using Yaml.Domain.K8s.Interface;
+using Yaml.Infrastructure.CoustomService;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
+using Yaml.Infrastructure.YamlEum;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.TypeInspectors;
+using YamlDotNet.Serialization.TypeResolvers;
 
 namespace Yaml.Domain.K8s;
 
@@ -283,61 +288,137 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<string> CreateKeyVault(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task<string> CreateKeyVault(YamlAppInfoDto appInfoDto, CancellationToken cancellationToken)
     {
-        try
+
+        var client = GetKubeClient(appInfoDto);
+        foreach (var cluster in appInfoDto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
         {
-            foreach (var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
+            var keyVaultRender = new KeyVaultRender()
             {
-                var content = await _yamlGenerator.GenerateSecret(dto, cluster);
-        
-                Guid prefix = Guid.NewGuid();
-
-                var filePath = Path.Combine(_currentDirectory, KubeConstants.TempPath, prefix + "_" + KubeConstants.KeyVaultYamlFileName);
-                Console.WriteLine(filePath);
-                await File.WriteAllTextAsync(filePath, content, cancellationToken);
-
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = "kubectl",
-                    Arguments = $"apply -f {filePath}",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using (Process process = Process.Start(startInfo))
-                {
-                    using (StreamReader reader = process.StandardOutput)
-                    {
-                        string result = reader.ReadToEnd();
-                        Console.WriteLine(result);
-                    }
-
-                    using (StreamReader reader = process.StandardError)
-                    {
-                        string error = reader.ReadToEnd();
-                        if (!string.IsNullOrEmpty(error))
-                        {
-                            throw new ServiceException(error);
-                        }
-                    }
-                } 
+                AppName = appInfoDto.AppName,
+                KeyVaultName = appInfoDto.KeyVault?.KeyVaultName!,
+                ManagedId = appInfoDto.KeyVault?.ManagedId!,
+                TenantId = appInfoDto.KeyVault?.TenantId!,
+                ConfigKeyList = cluster.KeyVault?.Select(kv => kv.ConfigKey!).ToList() ?? new List<string>()
+            };
+    
+            // key vaults belong to the whole application
+            if (appInfoDto.KeyVault?.KeyVault != null)
+            {
+                keyVaultRender.ConfigKeyList.AddRange(
+                    appInfoDto.KeyVault.KeyVault
+                        .Where(kv => kv.ConfigKey != null)  
+                        .Select(kv => kv.ConfigKey!).ToList<string>()
+                ); 
             }
             
+            var secretObjects = new List<object>();
+            var objects = "";
+            foreach (var keyVault in keyVaultRender.ConfigKeyList ?? new List<string>())
+            {
+                secretObjects.Add(new Dictionary<string, string>
+                    {
+                        ["key"] = keyVault,
+                        ["objectName"] = keyVault
+                    }
+                );
+                objects +=
+                    $"        - | \n" +
+                    $"          objectType: secret \n" +
+                    $"          objectName: {keyVault} \n";
+            }
+            
+            if(CloudType.AWS == appInfoDto.CloudType)
+            {
+                // 创建 SecretProviderClass 的动态对象
+                var secretProviderClass = new Unstructured
+                {
+                    ApiVersion = "secrets-store.csi.x-k8s.io/v1",
+                    Kind = "SecretProviderClass",
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = $"{appInfoDto.AppName}-keyvault-spc",
+                        NamespaceProperty = $"{appInfoDto.AppName}-ns"
+                    },
+
+                    Spec = new Dictionary<string, object>
+                    {
+                        ["parameters"] = new Dictionary<string, object>
+                        {
+                            ["keyvaultName"] = keyVaultRender.KeyVaultName,
+                            ["objects"] = $"\n      array:\n{objects}",
+                            ["region"] = appInfoDto
+                        },
+                        ["provider"] = "aws",
+                        ["secretObjects"] = new List<object>
+                        {
+                            new Dictionary<string, object>
+                            {
+                                ["secretName"] = $"{appInfoDto.AppName}-secret",
+                                ["type"] = "Opaque",
+                                ["data"] = secretObjects
+                            }
+                        }
+                    }
+                };
+                // 创建 SecretProviderClass 资源
+                var result = client.CreateNamespacedCustomObject(secretProviderClass, "secrets-store.csi.x-k8s.io", "v1", secretProviderClass.Metadata.NamespaceProperty, "secretproviderclasses");
+                return "success";
+            }
+            if (CloudType.Azure == appInfoDto.CloudType)
+            {
+                var secretProviderClass = new Unstructured
+                {
+                    ApiVersion = "secrets-store.csi.x-k8s.io/v1",
+                    Kind = "SecretProviderClass",
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = $"{appInfoDto.AppName}-keyvault-spc",
+                        NamespaceProperty = $"{appInfoDto.AppName}-ns"
+                    },
+
+                        Spec = new Dictionary<string, object>
+                        {
+                            ["parameters"] = new Dictionary<string, object>
+                            {
+                                ["keyvaultName"] = keyVaultRender.KeyVaultName,
+                                ["objects"] = $"\n      array:\n{objects}",
+                                ["tenantId"] = keyVaultRender.TenantId,
+                                ["usePodIdentity"] = "false",
+                                ["useVMManagedIdentity"] = "true",
+                                ["userAssignedIdentityID"] = keyVaultRender.ManagedId
+                            },
+                            ["provider"] = "azure",
+                            ["secretObjects"] = new List<object>
+                            {
+                                new Dictionary<string, object>
+                                {
+                                    ["secretName"] = $"{appInfoDto.AppName}-secret",
+                                    ["type"] = "Opaque",
+                                    ["data"] = secretObjects
+                                }
+                            }
+                        }
+                };
+                // 创建一个序列化器
+                var serializer = new SerializerBuilder()
+                    .WithTypeInspector(inner => new ReadablePropertiesTypeInspector(new DynamicTypeResolver())) // 使输出更友好
+                    .Build();
+
+                var yaml = serializer.Serialize(secretProviderClass);
+                Console.WriteLine(yaml);
+                var result = client.CreateNamespacedCustomObject(secretProviderClass, "secrets-store.csi.x-k8s.io", "v1", secretProviderClass.Metadata.NamespaceProperty, "secretproviderclasses");
+                Console.WriteLine($"Created SecretProviderClass: {result}");
+                return "";
+            }
         }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error creating KeyVault for namespace: {AppName}", dto.AppName);
-            throw new ServiceException("Error creating KeyVault", e);
-        }
-        finally
-        {
-             // File.Delete(filePath);
-        }
+
         return "success";
     }
+    
+    
+    
 
     public async Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
