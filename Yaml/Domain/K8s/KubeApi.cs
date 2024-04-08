@@ -6,6 +6,7 @@ using k8s;
 using k8s.Autorest;
 using k8s.Models;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using RazorLight;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.CoustomService;
@@ -315,6 +316,7 @@ public class KubeApi : IKubeApi
             
             var secretObjects = new List<object>();
             var objects = "";
+            var objectsList = new List<Dictionary<string, string>>();
             foreach (var keyVault in keyVaultRender.ConfigKeyList ?? new List<string>())
             {
                 secretObjects.Add(new Dictionary<string, string>
@@ -324,9 +326,16 @@ public class KubeApi : IKubeApi
                     }
                 );
                 objects +=
-                    $"        - | \n" +
-                    $"          objectType: secret \n" +
-                    $"          objectName: {keyVault} \n";
+                    $"      - | \n" +
+                    $"        objectType: secret \n" +
+                    $"        objectName: {keyVault} \n";
+                
+                var secretObject = new Dictionary<string, string>
+                {
+                    {"objectName", keyVault},
+                    {"objectType", "secretsmanager"}  // 假设您要的是 secret 类型，根据实际情况调整
+                };
+                objectsList.Add(secretObject);
             }
             
             if(CloudType.AWS == appInfoDto.CloudType)
@@ -347,19 +356,18 @@ public class KubeApi : IKubeApi
                         ["provider"] = "aws",
                         ["parameters"] = new Dictionary<string, object>
                         {
-                            // ["region"] = "ap-northeast-1",
-                            ["keyvaultName"] = keyVaultRender.KeyVaultName,
-                            ["objects"] = $"\n{objects}"
+                            ["region"] = "ap-northeast-1",
+                            ["objects"] = JsonConvert.SerializeObject(objectsList)
                         },
-                        // ["secretObjects"] = new List<object>
-                        // {
-                        //     new Dictionary<string, object>
-                        //     {
-                        //         ["secretName"] = $"{appInfoDto.AppName}-secret",
-                        //         ["type"] = "Opaque",
-                        //         ["data"] = secretObjects
-                        //     }
-                        // }
+                        ["secretObjects"] = new List<object>
+                        {
+                            new Dictionary<string, object>
+                            {
+                                ["secretName"] = $"{appInfoDto.AppName}-secret",
+                                ["type"] = "Opaque",
+                                ["data"] = secretObjects
+                            }
+                        }
                     }
                 };
                 // 创建 SecretProviderClass 资源
@@ -414,7 +422,6 @@ public class KubeApi : IKubeApi
                 return "";
             }
         }
-
         return "success";
     }
     

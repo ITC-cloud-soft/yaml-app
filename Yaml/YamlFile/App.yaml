@@ -25,10 +25,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: Name 
-              valueFrom: 
-                secretKeyRef: 
-                  name: aws-app-secret
-                  key: Name
+              value: /mnt/secrets-store/Name
           ports: 
             - containerPort: 80
           volumeMounts:
