@@ -38,6 +38,19 @@
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Redis\redis-deployment.cshtml" />
+      <_ContentIncludedByDefault Remove="out\web.config" />
+      <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="out\appsettings.json" />
+      <_ContentIncludedByDefault Remove="out\uploads\3fbc0426-d594-4253-9866-a0631a91c6c1_theme.json" />
+      <_ContentIncludedByDefault Remove="out\uploads\e567d5dc-924f-4654-9c58-dcdfc0161a3a_response.json" />
+      <_ContentIncludedByDefault Remove="out\uploads\e90fc8fb-e276-4b30-b20d-4c5080889284_content.json" />
+      <_ContentIncludedByDefault Remove="out\wwwroot\assets\locales\en-US\translation.json" />
+      <_ContentIncludedByDefault Remove="out\wwwroot\assets\locales\en\translation.json" />
+      <_ContentIncludedByDefault Remove="out\wwwroot\assets\locales\ja\translation.json" />
+      <_ContentIncludedByDefault Remove="out\wwwroot\assets\locales\zh-CN\translation.json" />
+      <_ContentIncludedByDefault Remove="out\wwwroot\assets\locales\zh\translation.json" />
+      <_ContentIncludedByDefault Remove="out\Yaml.deps.json" />
+      <_ContentIncludedByDefault Remove="out\Yaml.runtimeconfig.json" />
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Update="Localization\Application\Command\UserLoginCommand.en.resx">

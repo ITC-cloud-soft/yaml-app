@@ -344,26 +344,27 @@ public class KubeApi : IKubeApi
 
                     Spec = new Dictionary<string, object>
                     {
+                        ["provider"] = "aws",
                         ["parameters"] = new Dictionary<string, object>
                         {
+                            // ["region"] = "ap-northeast-1",
                             ["keyvaultName"] = keyVaultRender.KeyVaultName,
-                            ["objects"] = $"\n      array:\n{objects}",
-                            ["region"] = appInfoDto
+                            ["objects"] = $"\n{objects}"
                         },
-                        ["provider"] = "aws",
-                        ["secretObjects"] = new List<object>
-                        {
-                            new Dictionary<string, object>
-                            {
-                                ["secretName"] = $"{appInfoDto.AppName}-secret",
-                                ["type"] = "Opaque",
-                                ["data"] = secretObjects
-                            }
-                        }
+                        // ["secretObjects"] = new List<object>
+                        // {
+                        //     new Dictionary<string, object>
+                        //     {
+                        //         ["secretName"] = $"{appInfoDto.AppName}-secret",
+                        //         ["type"] = "Opaque",
+                        //         ["data"] = secretObjects
+                        //     }
+                        // }
                     }
                 };
                 // 创建 SecretProviderClass 资源
                 var result = client.CreateNamespacedCustomObject(secretProviderClass, "secrets-store.csi.x-k8s.io", "v1", secretProviderClass.Metadata.NamespaceProperty, "secretproviderclasses");
+                Console.WriteLine($"Created SecretProviderClass: {result}");
                 return "success";
             }
             if (CloudType.Azure == appInfoDto.CloudType)

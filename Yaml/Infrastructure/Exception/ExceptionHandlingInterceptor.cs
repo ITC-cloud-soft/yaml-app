@@ -21,7 +21,7 @@ public class ExceptionHandlingInterceptor
         }
         catch (NotFoundException e)
         {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsync(e.Message);
         }
         catch (ServiceException e)

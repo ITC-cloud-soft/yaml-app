@@ -40,7 +40,7 @@ $(function () {
     tableComponent.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
     tableComponent.initDiskTable()
     // TODO from current user
-    controllerComponent.getAppDataDtoFromBackend('1')
+    controllerComponent.getAppDataDtoFromBackend('2')
     controllerComponent.bindUploadEvent('#uploadConfig', '#uploadk8s', '#uploadk8sFile')
     
 })
@@ -481,6 +481,7 @@ const controllerComponent = (($) => {
         clusterInfoList = appInfoDto.clusterInfoList;
 
         // App Info Page
+        $(selectors.cloudTypeSelector)[0].__component._choices.setChoiceByValue(appInfoDto.cloudType+"")
         $(selectors.appName).val(appInfoDto.appName)
         $(selectors.crServer).val(appInfoDto.cr)
         $(selectors.token).val(appInfoDto.token)
@@ -737,7 +738,8 @@ const controllerComponent = (($) => {
         appInfoDto.keyVault.keyVaultName = $(selectors.keyVault).val();
         appInfoDto.netdataFlag = $(selectors.Netdata).prop("checked");
         appInfoDto.clusterInfoList = clusterInfoList;
-        
+        appInfoDto.cloudType = Number.parseInt($(selectors.cloudType).val());
+            
         clusterInfoList.forEach(cluster =>{
             cluster.appName = appInfoDto.appName;
         })

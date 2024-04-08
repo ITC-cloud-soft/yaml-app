@@ -24,7 +24,8 @@ const selectors = {
     configMapFileCheckbox : "#ConfigFileChk",
     configMapId : "#configMap",
     diskInfo : "#diskInfo",
-    
+    cloudType:"#cloudType",
+    cloudTypeSelector:"#cloudTypeSelector",
     confirmButton : "#confirmButton",
     cancelButton : "#cancelButton",
     diskConfig : "#diskConfig",
