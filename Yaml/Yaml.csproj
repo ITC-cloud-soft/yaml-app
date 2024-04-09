@@ -34,8 +34,14 @@
       <Folder Include="uploads\" />
       <Folder Include="wwwroot\assets\locales\en\" />
       <Folder Include="wwwroot\assets\locales\ja\" />
-      <Folder Include="YamlFile\json\" />
     </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="YamlFile/**" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+    <PropertyGroup>
+        <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    </PropertyGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Redis\redis-deployment.cshtml" />
       <_ContentIncludedByDefault Remove="out\web.config" />
