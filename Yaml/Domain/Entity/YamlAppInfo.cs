@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Yaml.Infrastructure.Presistence.dao;
+using Yaml.Infrastructure.YamlEum;
+
 namespace Yaml.Domain.Entity;
 
 
@@ -23,6 +25,9 @@ public class YamlAppInfo : CommonFields
     [Column("mail_address")]
     public string? MailAddress { get; set; }
     
+    [Column("cloud_type")]
+    public CloudType? CloudType { get; set; }
+
     [Column("keyvault_flag")]
     public bool KeyVaultFlag { get; set; }
     

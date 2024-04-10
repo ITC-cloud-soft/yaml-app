@@ -49,6 +49,7 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
         }
         catch (Exception e)
         {
+            _logger.LogError("Deploy APP Error :" + e);
             throw new ServiceException("Deploy APP Error : ", e);
         }
     }

@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cluster-test-deployment
-  namespace: test-app-ns
+  name: aws-cluster-deployment
+  namespace: aws-app-ns
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cluster-test-app
+      app: aws-cluster-app
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -16,69 +16,31 @@ spec:
   template:
     metadata:
       labels:
-        app: cluster-test-app
-        aadpodidbinding: saas-pod-identity
+        app: aws-cluster-app
+        aadpodidbinding: 1
     spec:
       containers:
-        - name: cluster-test
-          image: djpsaascoreacr.azurecr.io/saas-api:24.2.8.37
+        - name: aws-cluster
+          image: nginx:latest
           imagePullPolicy: Always
           env:
-            - name: ApiDynamicHandler 
-              valueFrom: 
-                configMapKeyRef: 
-                  name: cluster-test-configmap
-                  key: ApiDynamicHandler
-            - name: AppCenterDSN 
-              valueFrom: 
-                configMapKeyRef: 
-                  name: cluster-test-configmap
-                  key: AppCenterDSN
-            - name: ENVIRONMENT 
-              valueFrom: 
-                configMapKeyRef: 
-                  name: cluster-test-configmap
-                  key: ENVIRONMENT
-            - name: BaseUrl 
-              valueFrom: 
-                configMapKeyRef: 
-                  name: cluster-test-configmap
-                  key: BaseUrl
-            - name: KeyVaultOne 
-              valueFrom: 
-                secretKeyRef: 
-                  name: test-app-secret
-                  key: KeyVaultOne
-            - name: TiDB-odbc-connector 
-              valueFrom: 
-                secretKeyRef: 
-                  name: test-app-secret
-                  key: TiDB-odbc-connector
-            - name: SendGridKey 
-              valueFrom: 
-                secretKeyRef: 
-                  name: test-app-secret
-                  key: SendGridKey
+            - name: Name 
+              value: /mnt/secrets-store/Name
           ports: 
             - containerPort: 80
           volumeMounts:
             - mountPath: /mnt/secrets-store 
               name: secrets-store-inline 
               readOnly: true 
-            - mountPath: /dv1
-              name: cluster-test-698-pvc 
           resources:
            limits:
              memory: 512Mi
-             cpu: "1"
+             cpu: "0.25"
       volumes:
-      - name: cluster-test-698-pvc
-        persistentVolumeClaim:
-          claimName: cluster-test-698-pvc
       - name: secrets-store-inline
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: test-app-keyvault-spc
+            secretProviderClass: aws-app-keyvault-spc
         

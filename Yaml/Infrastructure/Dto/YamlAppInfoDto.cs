@@ -1,5 +1,6 @@
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Mappings;
+using Yaml.Infrastructure.YamlEum;
 
 namespace Yaml.Infrastructure.Dto;
 
@@ -12,6 +13,7 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
     public string? Cr { get; set; }
     public string? Token { get; set; }
     public string? MailAddress { get; set; }
+    public CloudType  CloudType { get; set; }
     public string? KubeConfig { get; set; }
 
     public bool NetdataFlag { get; set; }

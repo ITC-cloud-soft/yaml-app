@@ -84,9 +84,9 @@
             </div>
         </div>
         <div class="o-whole__body">
-            
+         
             <!-- language select drop list -->
-            <div class="a-pulldown" style="max-width: 120px; float: right">
+            <div class="a-pulldown" style="max-width: 120px; float: right; ">
                 <select name="something" id="languageSwitcher" class="a-pulldown__select">
                     <option value="ja">日本語</option>
                     <option value="en">English</option>
@@ -96,7 +96,16 @@
                     <i class="a-icon a-icon--arrow-down"></i>
                 </div>
             </div>
-
+            <!-- language select drop list -->
+            <div class="a-pulldown" id="cloudTypeSelector" style="max-width: 120px; float: right; margin-right: 10px">
+                <select name="cloudType" id="cloudType" class="a-pulldown__select">
+                    <option value="1">AZURE</option>
+                    <option value="2">AWS</option>
+                </select>
+                <div class="a-pulldown__icon-container">
+                    <i class="a-icon a-icon--arrow-down"></i>
+                </div>
+            </div>
             <section class="m-section m-section--no-padding">
                 <div class="m-page-heading" id="appId" appId>
                     <h1 class="a-heading a-heading--h1 undefined"><span class="a-heading__label"  data-i18n="appInfoPage.title">Yamler--CDコントロール</span></h1>

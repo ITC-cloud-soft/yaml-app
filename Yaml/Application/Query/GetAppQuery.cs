@@ -82,6 +82,8 @@ public class GetAppInfoCommandHandler : IRequestHandler<GetAppQuery, YamlAppInfo
             {
                 var yamlClusterInfoDto = _mapper.Map<YamlClusterInfoDto>(yamlClusterInfo);
 
+                yamlClusterInfoDto.AppName = yamlAppInfoDto.AppName;
+                
                 yamlClusterInfoDto.Domain = await _context.DomainContext
                     .AsNoTracking()
                     .Where(e => e.ClusterId == yamlClusterInfo.Id)

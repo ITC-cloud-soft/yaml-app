@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Yaml.Infrastructure.Dto;
 
 public class KeyVaultRender

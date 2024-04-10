@@ -481,6 +481,7 @@ const controllerComponent = (($) => {
         clusterInfoList = appInfoDto.clusterInfoList;
 
         // App Info Page
+        $(selectors.cloudTypeSelector)[0].__component._choices.setChoiceByValue(appInfoDto.cloudType+"")
         $(selectors.appName).val(appInfoDto.appName)
         $(selectors.crServer).val(appInfoDto.cr)
         $(selectors.token).val(appInfoDto.token)
@@ -737,7 +738,8 @@ const controllerComponent = (($) => {
         appInfoDto.keyVault.keyVaultName = $(selectors.keyVault).val();
         appInfoDto.netdataFlag = $(selectors.Netdata).prop("checked");
         appInfoDto.clusterInfoList = clusterInfoList;
-        
+        appInfoDto.cloudType = Number.parseInt($(selectors.cloudType).val());
+            
         clusterInfoList.forEach(cluster =>{
             cluster.appName = appInfoDto.appName;
         })
