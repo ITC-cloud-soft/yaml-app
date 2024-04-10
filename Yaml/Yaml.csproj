@@ -39,6 +39,7 @@
     <!-- for cshtml -->
     <ItemGroup>
         <Content Include="YamlFile/**" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="wwwroot/**" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
     
     <PropertyGroup>

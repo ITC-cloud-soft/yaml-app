@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Net;
 using System.Text;
 using AutoMapper;
@@ -40,7 +39,7 @@ public class KubeApi : IKubeApi
         _engine = engine;
         _logger = logger;
         _mapper = mapper;
-        _context = dbContext;;
+        _context = dbContext;
     }
 
     private Kubernetes GetKubeClient(YamlAppInfoDto dto)
@@ -74,28 +73,26 @@ public class KubeApi : IKubeApi
     public async Task<V1Namespace> CreateNamespace(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
-        try
-        {
+     
             var kubeClient = GetKubeClient(dto);
             try
             {
-                var existedNamespace = await kubeClient.ReadNamespaceAsync(namespaceName, cancellationToken: cancellationToken);
-                return existedNamespace;
+                return await kubeClient.ReadNamespaceAsync(namespaceName, cancellationToken: cancellationToken);
             }
             catch (HttpOperationException ex) when(ex.Response.StatusCode == HttpStatusCode.NotFound)
             {
-                // Namespace not found - normal flow for creating a new namespace
-                _logger.LogInformation(" Namespace not found - normal flow for creating a new namespace");
+                // Namespace not found, create a new one
+                _logger.LogInformation("Namespace {NamespaceName} not found. Creating new namespace", namespaceName);
+                var newNamespace = new V1Namespace { Metadata = new V1ObjectMeta { Name = namespaceName } };
+                var createdNamespace = await kubeClient.CreateNamespaceAsync(newNamespace, cancellationToken: cancellationToken);
+                _logger.LogInformation("Namespace {NamespaceName} created successfully", namespaceName);
+                return createdNamespace;
             }
-            _logger.LogInformation("Creating new namespace: {NamespaceName}", namespaceName);
-            var newNamespace = new V1Namespace {Metadata = new V1ObjectMeta { Name = namespaceName }};
-            return await kubeClient.CreateNamespaceAsync(newNamespace, cancellationToken: cancellationToken);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error creating namespace '{NamespaceName}'", namespaceName);
-            throw new ServiceException($"Create namespace error {namespaceName}", e);
-        }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error creating namespace '{NamespaceName}'", namespaceName);
+                throw new ServiceException($"Create namespace error {namespaceName}", e);
+            }
     }
 
     public async Task<V1Service[]> CreateService(YamlAppInfoDto dto, CancellationToken cancellationToken)
@@ -129,69 +126,75 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<V1Deployment[]> CreateDeployment(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task CreateDeployment(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
         var path = Path.Combine(_currentDirectory, KubeConstants.DeploymentTemplate);
-        try
-        {
-            var client = GetKubeClient(dto);
-            var v1DeploymentList = await client.ListNamespacedDeploymentAsync(namespaceName, cancellationToken: cancellationToken);
-            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
-            {
-                var deploymentName = cluster.ClusterName + KubeConstants.DeploymentSuffix;
-                var v1Deployment = v1DeploymentList.Items.SingleOrDefault(v1Deployment => v1Deployment.Metadata.Name == deploymentName);
-                if (v1Deployment != null)
-                {
-                    return v1Deployment;
-                }
+        var client = GetKubeClient(dto);
 
+        // create deployment for each cluster
+        foreach (var cluster in dto.ClusterInfoList ??  Enumerable.Empty<YamlClusterInfoDto>())
+        {
+            var deploymentName = cluster.ClusterName + KubeConstants.DeploymentSuffix;
+            try
+            {
+                // when deployment exists, update deployment
+                await client.ReadNamespacedDeploymentAsync(deploymentName, namespaceName, false, cancellationToken);
+                _logger.LogInformation("Deployment {DeploymentName} already exists in namespace {NamespaceName}", deploymentName, namespaceName);
+            }
+            catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                // when deployments not exist, create
+                _logger.LogInformation("Deployment {DeploymentName} does not exist in namespace {NamespaceName}, creating...", deploymentName, namespaceName);
+                
                 cluster.AppName = dto.AppName;
                 var content = await _engine.CompileRenderAsync(path, cluster);
                 await File.WriteAllTextAsync(Path.Combine(_currentDirectory, KubeConstants.OutPutFile), content, cancellationToken);
                 var v1Service = KubernetesYaml.Deserialize<V1Deployment>(content);
-                return await client.CreateNamespacedDeploymentAsync(v1Service, namespaceName, cancellationToken: cancellationToken);
-            });
-            return await Task.WhenAll(task).ConfigureAwait(false);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError("CreateDeployment error [{}]", dto.AppName);
-            _logger.LogError(e, "Error details: ");
-            throw new ServiceException($"CreateDeployment error {dto.AppName}", e);
+                await client.CreateNamespacedDeploymentAsync(v1Service, namespaceName, cancellationToken: cancellationToken);
+                _logger.LogInformation("DeploymentName {DeploymentName} created successfully", deploymentName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error processing cluster {ClusterName} for app {AppName}: {Message}", cluster.ClusterName, dto.AppName, e.Message);
+                throw;
+            }
         }
     }
 
-    public async Task<V1ConfigMap?[]> CreateConfigMap(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task CreateConfigMap(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        var path = Path.Combine(_currentDirectory, KubeConstants.ConfigMapTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
-
-        try
+        var client = GetKubeClient(dto);
+        
+        // create config map 
+        foreach (var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
         {
-            var client = GetKubeClient(dto);
-            var v1ConfigMapList = await client.ListNamespacedConfigMapAsync(namespaceName, cancellationToken: cancellationToken);
-            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            var configMapName = cluster.ClusterName + KubeConstants.ConfigMapSuffix;
+            try
             {
-                var configMapName = cluster.ClusterName + KubeConstants.ConfigMapSuffix;
-                var configMap = v1ConfigMapList.Items.SingleOrDefault(cf => cf.Metadata.Name == configMapName);
-                if (configMap != null)
-                {
-                    return configMap;
-                }
+                await client.ReadNamespacedConfigMapAsync(configMapName, namespaceName,
+                    cancellationToken: cancellationToken);
+                _logger.LogInformation("ConfigMap {ConfigMap} already exists in namespace {NamespaceName}", configMapName, namespaceName);
+            }
+            catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                _logger.LogInformation("ConfigMap {ConfigMap} does not exist in namespace {NamespaceName}, creating...", configMapName, namespaceName);
 
                 cluster.AppName = dto.AppName;
+                var path = Path.Combine(_currentDirectory, KubeConstants.ConfigMapTemplate);
                 var content = await _engine.CompileRenderAsync(path, cluster);
                 var v1ConfigMap = KubernetesYaml.Deserialize<V1ConfigMap>(content);
-                return await client.CreateNamespacedConfigMapAsync(v1ConfigMap, namespaceName, cancellationToken: cancellationToken);
-            });
-            return await Task.WhenAll(task).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("CreateConfigMap error [{}]", dto.AppName);
-            _logger.LogError(ex, "Error details: ");
-            throw new ServiceException($"CreateConfigMap error {dto.AppName}", ex);
+                await client.CreateNamespacedConfigMapAsync(v1ConfigMap, namespaceName, cancellationToken: cancellationToken);  
+                
+                _logger.LogInformation("ConfigMap {ConfigMap} created successfully", configMapName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("CreateConfigMap error [{}]", dto.AppName);
+                _logger.LogError(ex, "Error details: ");
+                throw new ServiceException($"CreateConfigMap error {dto.AppName}", ex);
+            }
         }
     }
 
@@ -289,10 +292,14 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<string> CreateKeyVault(YamlAppInfoDto appInfoDto, CancellationToken cancellationToken)
+    public async Task CreateKeyVault(YamlAppInfoDto appInfoDto, CancellationToken cancellationToken)
     {
 
         var client = GetKubeClient(appInfoDto);
+        
+        // check if key vaults already exists
+        // client.
+        
         foreach (var cluster in appInfoDto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
         {
             var keyVaultRender = new KeyVaultRender()
@@ -373,7 +380,6 @@ public class KubeApi : IKubeApi
                 // 创建 SecretProviderClass 资源
                 var result = client.CreateNamespacedCustomObject(secretProviderClass, "secrets-store.csi.x-k8s.io", "v1", secretProviderClass.Metadata.NamespaceProperty, "secretproviderclasses");
                 Console.WriteLine($"Created SecretProviderClass: {result}");
-                return "success";
             }
             if (CloudType.Azure == appInfoDto.CloudType)
             {
@@ -419,14 +425,9 @@ public class KubeApi : IKubeApi
                 Console.WriteLine(yaml);
                 var result = client.CreateNamespacedCustomObject(secretProviderClass, "secrets-store.csi.x-k8s.io", "v1", secretProviderClass.Metadata.NamespaceProperty, "secretproviderclasses");
                 Console.WriteLine($"Created SecretProviderClass: {result}");
-                return "";
             }
         }
-        return "success";
     }
-    
-    
-    
 
     public async Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
