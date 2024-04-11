@@ -7,7 +7,7 @@ public interface IKubeApi
 {
     public Task<V1Namespace> CreateNamespace(YamlAppInfoDto dto, CancellationToken cancellationToken);
     
-    public Task<V1Service[]> CreateService(YamlAppInfoDto dto, CancellationToken cancellationToken);
+    public Task CreateService(YamlAppInfoDto dto, CancellationToken cancellationToken);
     
     public Task CreateDeployment(YamlAppInfoDto dto, CancellationToken cancellationToken);
    
@@ -19,7 +19,7 @@ public interface IKubeApi
 
     public Task CreateKeyVault(YamlAppInfoDto appInfoDto, CancellationToken cancellationToken);
     
-    public Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken);
+    public Task CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
     public Task<V1Secret[]> CreateDomainCertification(YamlAppInfoDto dto, CancellationToken cancellationToken);
 }

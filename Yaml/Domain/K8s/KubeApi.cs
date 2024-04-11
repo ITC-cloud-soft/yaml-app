@@ -95,34 +95,39 @@ public class KubeApi : IKubeApi
             }
     }
 
-    public async Task<V1Service[]> CreateService(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    public async Task CreateService(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
+        var client = GetKubeClient(dto);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
-        try
-        {
-            var client = GetKubeClient(dto);
-            var v1ServiceList = await client.ListNamespacedServiceAsync(namespaceName, cancellationToken: cancellationToken);
-            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
-                .Select(async cluster =>
-                {
-                    var serviceName = cluster.ClusterName + KubeConstants.ServiceSuffix;
-                    var service = v1ServiceList.Items.SingleOrDefault(service => service.Metadata.Name == serviceName);
-                    if (service != null)
-                    {
-                        return service;
-                    }
 
-                    var content = await _yamlGenerator.GenerateService(cluster);
-                    var v1Service = KubernetesYaml.Deserialize<V1Service>(content);
-                    return await client.CreateNamespacedServiceAsync(v1Service, namespaceName, cancellationToken: cancellationToken);
-                });
-            return await Task.WhenAll(task).ConfigureAwait(false);
-        }
-        catch (Exception e)
+
+        foreach (var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
         {
-            _logger.LogError("CreateConfigMap error [{}]", dto.AppName);
-            _logger.LogError(e, "Error details: ");
-            throw new ServiceException($"CreateConfigMap error {dto.AppName}", e);
+            var serviceName = cluster.ClusterName + KubeConstants.ServiceSuffix;
+            try
+            {
+                await client.ReadNamespacedDeploymentAsync(
+                    serviceName,
+                    namespaceName,
+                    cancellationToken: cancellationToken);
+                _logger.LogWarning("Service {ServiceName} already exists in namespace {NamespaceName}", serviceName, namespaceName);
+            }
+            catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                _logger.LogInformation("Service {ServiceName} does not exist in namespace {NamespaceName}, creating...",
+                    serviceName, namespaceName);
+                var content = await _yamlGenerator.GenerateService(cluster);
+                var v1Service = KubernetesYaml.Deserialize<V1Service>(content);
+                await client.CreateNamespacedServiceAsync(v1Service, namespaceName,
+                    cancellationToken: cancellationToken);
+                _logger.LogInformation("Service {ServiceName} created successfully", serviceName);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error processing Service {ServiceName} for app {AppName}: {Message}", serviceName, dto.AppName, e.Message);
+                throw;
+            }
         }
     }
 
@@ -140,7 +145,7 @@ public class KubeApi : IKubeApi
             {
                 // when deployment exists, update deployment
                 await client.ReadNamespacedDeploymentAsync(deploymentName, namespaceName, false, cancellationToken);
-                _logger.LogInformation("Deployment {DeploymentName} already exists in namespace {NamespaceName}", deploymentName, namespaceName);
+                _logger.LogWarning("Deployment {DeploymentName} already exists in namespace {NamespaceName}", deploymentName, namespaceName);
             }
             catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -175,7 +180,7 @@ public class KubeApi : IKubeApi
             {
                 await client.ReadNamespacedConfigMapAsync(configMapName, namespaceName,
                     cancellationToken: cancellationToken);
-                _logger.LogInformation("ConfigMap {ConfigMap} already exists in namespace {NamespaceName}", configMapName, namespaceName);
+                _logger.LogWarning("ConfigMap {ConfigMap} already exists in namespace {NamespaceName}", configMapName, namespaceName);
             }
             catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -217,9 +222,8 @@ public class KubeApi : IKubeApi
                         var persistentVolume = pvsList.Items.SingleOrDefault(pv => pv.Metadata.Name == pvName);
                         // when pv is not found
                         if (persistentVolume == null)
-                        {
+                        { 
                             // if not exist, create resource
-                            // prepare the parameter
                             var diskInfo = cluster.DiskInfoList[i];
                             var storage = diskInfo.DiskSize;
                             var storageClassName = diskInfo.DiskType;
@@ -229,8 +233,10 @@ public class KubeApi : IKubeApi
                             // generate pv content
                             var content = await _yamlGenerator.GeneratePersistentVolume(
                                 pvName, 
-                                storage, storageClassName,
-                                subscriptionId, resourceGroup
+                                storage, 
+                                storageClassName,
+                                subscriptionId, 
+                                resourceGroup
                             );
                             
                             // create pv on k8s
@@ -286,177 +292,129 @@ public class KubeApi : IKubeApi
         }
         catch (Exception ex)
         {
-            _logger.LogError("Create V1PersistentVolumeClaim  [{}] Error", dto.AppName);
-            _logger.LogError(ex, "Error details: ");
+            _logger.LogError("Create V1PersistentVolumeClaim  [{}] Error: [{}] ", dto.AppName, ex.Message);
             throw new ServiceException($"Create V1PersistentVolumeClaim error {dto.AppName}", ex);
         }
     }
 
     public async Task CreateKeyVault(YamlAppInfoDto appInfoDto, CancellationToken cancellationToken)
     {
-
+        var namespaceName = appInfoDto.AppName + KubeConstants.NamespaceSuffix;
         var client = GetKubeClient(appInfoDto);
         
         // check if key vaults already exists
-        // client.
-        
         foreach (var cluster in appInfoDto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
         {
-            var keyVaultRender = new KeyVaultRender()
-            {
-                AppName = appInfoDto.AppName,
-                KeyVaultName = appInfoDto.KeyVault?.KeyVaultName!,
-                ManagedId = appInfoDto.KeyVault?.ManagedId!,
-                TenantId = appInfoDto.KeyVault?.TenantId!,
-                ConfigKeyList = cluster.KeyVault?.Select(kv => kv.ConfigKey!).ToList() ?? new List<string>()
-            };
-    
-            // key vaults belong to the whole application
-            if (appInfoDto.KeyVault?.KeyVault != null)
-            {
-                keyVaultRender.ConfigKeyList.AddRange(
-                    appInfoDto.KeyVault.KeyVault
-                        .Where(kv => kv.ConfigKey != null)  
-                        .Select(kv => kv.ConfigKey!).ToList<string>()
-                ); 
-            }
+
+            // generate key vault
+            var keyVaultRender = GenerateKeyVaultRender(appInfoDto, cluster);
+
+            // generate key vault parameters for spc
+            var (secretObjects, objects, objectsList) = GenerateKeyVaultParams(keyVaultRender);
+       
+            // create Unstructured object
+            var secretProviderClass = CreatedSecretProviderByCloud(appInfoDto, secretObjects, objects, objectsList, keyVaultRender);
             
-            var secretObjects = new List<object>();
-            var objects = "";
-            var objectsList = new List<Dictionary<string, string>>();
-            foreach (var keyVault in keyVaultRender.ConfigKeyList ?? new List<string>())
+            try
             {
-                secretObjects.Add(new Dictionary<string, string>
-                    {
-                        ["key"] = keyVault,
-                        ["objectName"] = keyVault
-                    }
-                );
-                objects +=
-                    $"      - | \n" +
-                    $"        objectType: secret \n" +
-                    $"        objectName: {keyVault} \n";
+                // create SecretProviderClass
+                var result = await client.CreateNamespacedCustomObjectAsync(
+                    secretProviderClass, 
+                    "secrets-store.csi.x-k8s.io",
+                    "v1", 
+                    secretProviderClass.Metadata?.NamespaceProperty, 
+                    "secretproviderclasses",
+                    cancellationToken: cancellationToken);
+                _logger.LogInformation("SecretProviderClass [{}] created successfully", result);
+            }
+            catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.Conflict)
+            {
+                // spc can not be replaced, so delete before creation
+                _logger.LogWarning("SecretProviderClass {SecretProviderClass} already existed in namespace {NamespaceName}, deleting...", secretProviderClass.Metadata?.Name, namespaceName);
+                var deleteResult = await client.DeleteNamespacedCustomObjectAsync(
+                    "secrets-store.csi.x-k8s.io", 
+                    "v1",
+                    namespaceName,
+                    "secretproviderclasses",
+                    $"{appInfoDto.AppName}-keyvault-spc",
+                    cancellationToken: cancellationToken);
+                _logger.LogInformation("SecretProviderClass [{}] delete successfully", deleteResult);
                 
-                var secretObject = new Dictionary<string, string>
-                {
-                    {"objectName", keyVault},
-                    {"objectType", "secretsmanager"}  // 假设您要的是 secret 类型，根据实际情况调整
-                };
-                objectsList.Add(secretObject);
-            }
-            
-            if(CloudType.AWS == appInfoDto.CloudType)
-            {
-                // 创建 SecretProviderClass 的动态对象
-                var secretProviderClass = new Unstructured
-                {
-                    ApiVersion = "secrets-store.csi.x-k8s.io/v1",
-                    Kind = "SecretProviderClass",
-                    Metadata = new V1ObjectMeta
-                    {
-                        Name = $"{appInfoDto.AppName}-keyvault-spc",
-                        NamespaceProperty = $"{appInfoDto.AppName}-ns"
-                    },
-
-                    Spec = new Dictionary<string, object>
-                    {
-                        ["provider"] = "aws",
-                        ["parameters"] = new Dictionary<string, object>
-                        {
-                            ["region"] = "ap-northeast-1",
-                            ["objects"] = JsonConvert.SerializeObject(objectsList)
-                        },
-                        ["secretObjects"] = new List<object>
-                        {
-                            new Dictionary<string, object>
-                            {
-                                ["secretName"] = $"{appInfoDto.AppName}-secret",
-                                ["type"] = "Opaque",
-                                ["data"] = secretObjects
-                            }
-                        }
-                    }
-                };
-                // 创建 SecretProviderClass 资源
-                var result = client.CreateNamespacedCustomObject(secretProviderClass, "secrets-store.csi.x-k8s.io", "v1", secretProviderClass.Metadata.NamespaceProperty, "secretproviderclasses");
-                Console.WriteLine($"Created SecretProviderClass: {result}");
-            }
-            if (CloudType.Azure == appInfoDto.CloudType)
-            {
-                var secretProviderClass = new Unstructured
-                {
-                    ApiVersion = "secrets-store.csi.x-k8s.io/v1",
-                    Kind = "SecretProviderClass",
-                    Metadata = new V1ObjectMeta
-                    {
-                        Name = $"{appInfoDto.AppName}-keyvault-spc",
-                        NamespaceProperty = $"{appInfoDto.AppName}-ns"
-                    },
-
-                        Spec = new Dictionary<string, object>
-                        {
-                            ["parameters"] = new Dictionary<string, object>
-                            {
-                                ["keyvaultName"] = keyVaultRender.KeyVaultName,
-                                ["objects"] = $"\n      array:\n{objects}",
-                                ["tenantId"] = keyVaultRender.TenantId,
-                                ["usePodIdentity"] = "false",
-                                ["useVMManagedIdentity"] = "true",
-                                ["userAssignedIdentityID"] = keyVaultRender.ManagedId
-                            },
-                            ["provider"] = "azure",
-                            ["secretObjects"] = new List<object>
-                            {
-                                new Dictionary<string, object>
-                                {
-                                    ["secretName"] = $"{appInfoDto.AppName}-secret",
-                                    ["type"] = "Opaque",
-                                    ["data"] = secretObjects
-                                }
-                            }
-                        }
-                };
-                // 创建一个序列化器
-                var serializer = new SerializerBuilder()
-                    .WithTypeInspector(inner => new ReadablePropertiesTypeInspector(new DynamicTypeResolver())) // 使输出更友好
-                    .Build();
-
-                var yaml = serializer.Serialize(secretProviderClass);
-                Console.WriteLine(yaml);
-                var result = client.CreateNamespacedCustomObject(secretProviderClass, "secrets-store.csi.x-k8s.io", "v1", secretProviderClass.Metadata.NamespaceProperty, "secretproviderclasses");
-                Console.WriteLine($"Created SecretProviderClass: {result}");
+                // create spc
+                var result = await client.CreateNamespacedCustomObjectAsync(
+                    secretProviderClass, 
+                    "secrets-store.csi.x-k8s.io",
+                    "v1",
+                    secretProviderClass.Metadata?.NamespaceProperty, 
+                    "secretproviderclasses",
+                     cancellationToken: cancellationToken);
+                _logger.LogInformation("SecretProviderClass [{}] created successfully", result);
             }
         }
     }
-
-    public async Task<V1Ingress[]> CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    
+    public async Task CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
+        // var path = Path.Combine(_currentDirectory, KubeConstants.IngressFileTemplate);
+        // var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
+        // try
+        // {
+        //     var client = GetKubeClient(dto);
+        //     var ingressList = 
+        //         await client.ListNamespacedIngressAsync(namespaceName, cancellationToken: cancellationToken);
+        //     var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+        //     {
+        //         var pvcName = cluster.ClusterName + KubeConstants.IngressSuffix;
+        //         var ingressSig = ingressList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == pvcName);
+        //         if (ingressSig != null)
+        //         {
+        //             return ingressSig;
+        //         }
+        //
+        //         var content = await _engine.CompileRenderAsync(path, cluster);
+        //         var ingress = KubernetesYaml.Deserialize<V1Ingress>(content);
+        //         return await client.CreateNamespacedIngressAsync(ingress, namespaceName, cancellationToken: cancellationToken);
+        //     });
+        //     return await Task.WhenAll(task).ConfigureAwait(false);
+        // }
+        // catch (Exception ex)
+        // {
+        //     _logger.LogError("Create Ingress  [{}] Error", dto.AppName);
+        //     throw new ServiceException($"Create Ingress error {dto.AppName}", ex);
+        // }
         var path = Path.Combine(_currentDirectory, KubeConstants.IngressFileTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
-        try
+        var client = GetKubeClient(dto);
+        foreach (var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
         {
-            var client = GetKubeClient(dto);
-            var ingressList = 
-                await client.ListNamespacedIngressAsync(namespaceName, cancellationToken: cancellationToken);
-            var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
+            var ingressName = cluster.ClusterName + KubeConstants.IngressSuffix;
+            try
             {
-                var pvcName = cluster.ClusterName + KubeConstants.IngressSuffix;
-                var ingressSig = ingressList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == pvcName);
-                if (ingressSig != null)
-                {
-                    return ingressSig;
-                }
+                // when deployment exists, update deployment
+                await client.ReadNamespacedIngressAsync(ingressName, namespaceName, false, cancellationToken);
+                _logger.LogWarning("Ingress {IngressName} already exists in namespace {NamespaceName}",
+                    ingressName, namespaceName);
+            }
+            catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                // when deployments not exist, create
+                _logger.LogInformation(
+                    "Ingress {IngressName} does not exist in namespace {NamespaceName}, creating...",
+                    ingressName, namespaceName);
 
+                cluster.AppName = dto.AppName;
                 var content = await _engine.CompileRenderAsync(path, cluster);
-                var ingress = KubernetesYaml.Deserialize<V1Ingress>(content);
-                return await client.CreateNamespacedIngressAsync(ingress, namespaceName, cancellationToken: cancellationToken);
-            });
-            return await Task.WhenAll(task).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Create Ingress  [{}] Error", dto.AppName);
-            throw new ServiceException($"Create Ingress error {dto.AppName}", ex);
+                await File.WriteAllTextAsync(Path.Combine(_currentDirectory, KubeConstants.OutPutFile), content, cancellationToken);
+                var v1Service = KubernetesYaml.Deserialize<V1Deployment>(content);
+                await client.CreateNamespacedDeploymentAsync(v1Service, namespaceName, cancellationToken: cancellationToken);
+                _logger.LogInformation("Ingress {IngressName} created successfully", ingressName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error processing Ingress {IngressName} for app {AppName}: {Message}",
+                    cluster.ClusterName, dto.AppName, e.Message);
+                throw;
+            }
         }
     }
 
@@ -515,4 +473,160 @@ public class KubeApi : IKubeApi
             throw new ServiceException("Error creating secrets", e);
         }
     }
+    
+        private Unstructured CreatedSecretProviderByCloud(
+        YamlAppInfoDto appInfoDto,
+        List<object> secretObjects,
+        string objects,
+        List<Dictionary<string, string>> objectsList,
+        KeyVaultRender keyVaultRender)
+    {
+        var secretProviderClass = new Unstructured();
+        if(CloudType.AWS == appInfoDto.CloudType)
+        {
+            secretProviderClass =
+                CreateAwsServiceSecretProvider(appInfoDto, secretObjects, objectsList);
+        }
+        if (CloudType.Azure == appInfoDto.CloudType)
+        {
+            secretProviderClass = 
+                CreateAzureServiceSecretProvider(appInfoDto, keyVaultRender, objects, secretObjects);
+        }
+
+        return secretProviderClass;
+    }
+    
+    private (List<object>, string, List<Dictionary<string, string>>) GenerateKeyVaultParams(KeyVaultRender keyVaultRender)
+    {
+        var secretObjects = new List<object>();
+        var objects = "";
+        var objectsList = new List<Dictionary<string, string>>();
+        foreach (var keyVault in keyVaultRender.ConfigKeyList ?? new List<string>())
+        {
+            secretObjects.Add(new Dictionary<string, string>
+                {
+                    ["key"] = keyVault,
+                    ["objectName"] = keyVault
+                }
+            );
+            objects +=
+                $"      - | \n" +
+                $"        objectType: secret \n" +
+                $"        objectName: {keyVault} \n";
+                
+            var secretObject = new Dictionary<string, string>
+            {
+                {"objectName", keyVault},
+                {"objectType", "secretsmanager"}  // 假设您要的是 secret 类型，根据实际情况调整
+            };
+            objectsList.Add(secretObject);
+        }
+        return (secretObjects, objects, objectsList);
+    }
+
+    private Unstructured CreateAzureServiceSecretProvider(
+        YamlAppInfoDto appInfoDto, 
+        KeyVaultRender keyVaultRender, 
+        string objects, 
+        List<object> secretObjects)
+    {
+        var secretProviderClass = new Unstructured
+        {
+            ApiVersion = "secrets-store.csi.x-k8s.io/v1",
+            Kind = "SecretProviderClass",
+            Metadata = new V1ObjectMeta
+            {
+                Name = $"{appInfoDto.AppName}-keyvault-spc",
+                NamespaceProperty = appInfoDto.AppName  + KubeConstants.NamespaceSuffix
+            },
+
+            Spec = new Dictionary<string, object>
+            {
+                ["parameters"] = new Dictionary<string, object>
+                {
+                    ["keyvaultName"] = keyVaultRender.KeyVaultName,
+                    ["objects"] = $"\n      array:\n{objects}",
+                    ["tenantId"] = keyVaultRender.TenantId,
+                    ["usePodIdentity"] = "false",
+                    ["useVMManagedIdentity"] = "true",
+                    ["userAssignedIdentityID"] = keyVaultRender.ManagedId
+                },
+                ["provider"] = "azure",
+                ["secretObjects"] = new List<object>
+                {
+                    new Dictionary<string, object>
+                    {
+                        ["secretName"] = $"{appInfoDto.AppName}-secret",
+                        ["type"] = "Opaque",
+                        ["data"] = secretObjects
+                    }
+                }
+            }
+        };
+        return secretProviderClass;
+    }
+    
+    private Unstructured CreateAwsServiceSecretProvider(
+        YamlAppInfoDto appInfoDto, 
+        List<object> secretObjects, 
+        List<Dictionary<string, string>> objectsList)
+    {
+        // 创建 SecretProviderClass 的动态对象
+        var secretProviderClass = new Unstructured
+        {
+            ApiVersion = "secrets-store.csi.x-k8s.io/v1",
+            Kind = "SecretProviderClass",
+            Metadata = new V1ObjectMeta
+            {
+                Name = $"{appInfoDto.AppName}-keyvault-spc",
+                NamespaceProperty = appInfoDto.AppName  + KubeConstants.NamespaceSuffix
+            },
+
+            Spec = new Dictionary<string, object>
+            {
+                ["provider"] = "aws",
+                ["parameters"] = new Dictionary<string, object>
+                {
+                    ["region"] = "ap-northeast-1",
+                    ["objects"] = JsonConvert.SerializeObject(objectsList)
+                },
+                ["secretObjects"] = new List<object>
+                {
+                    new Dictionary<string, object>
+                    {
+                        ["secretName"] = $"{appInfoDto.AppName}-secret",
+                        ["type"] = "Opaque",
+                        ["data"] = secretObjects
+                    }
+                }
+            }
+        };
+        return secretProviderClass;
+    }
+
+    private KeyVaultRender GenerateKeyVaultRender(YamlAppInfoDto appInfoDto, YamlClusterInfoDto cluster)
+    {
+        // key vaults belong to the cluster
+        var keyVaultRender = new KeyVaultRender()
+        {
+            AppName = appInfoDto.AppName,
+            KeyVaultName = appInfoDto.KeyVault?.KeyVaultName!,
+            ManagedId = appInfoDto.KeyVault?.ManagedId!,
+            TenantId = appInfoDto.KeyVault?.TenantId!,
+            ConfigKeyList = cluster.KeyVault?.Select(kv => kv.ConfigKey!).ToList() ?? new List<string>()
+        };
+    
+        // key vaults belong to the whole application
+        if (appInfoDto.KeyVault?.KeyVault != null)
+        {
+            keyVaultRender.ConfigKeyList.AddRange(
+                appInfoDto.KeyVault.KeyVault
+                    .Where(kv => kv.ConfigKey != null)  
+                    .Select(kv => kv.ConfigKey!).ToList<string>()
+            ); 
+        }
+
+        return keyVaultRender;
+    }
+    
 }
