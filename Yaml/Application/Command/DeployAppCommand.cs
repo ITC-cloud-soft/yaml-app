@@ -17,19 +17,13 @@ public class DeployAppCommand : IRequest<string>
 public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
 {
     private readonly ILogger _logger;
-    private readonly  IRazorLightEngine _engine;
     private readonly  IKubeApi _kubeApi;
 
     public DeployAppCommandHandler(
-        MyDbContext context, 
-        IMapper mapper, 
         ILogger<DeployAppCommandHandler> logger,
-        IRazorLightEngine razorLightEngine,
-        IKubeApi kubeApi
-        )
+        IKubeApi kubeApi)
     {
         _logger = logger;
-        _engine = razorLightEngine;
         _kubeApi = kubeApi;
     }
 
@@ -40,16 +34,16 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
             var v1Namespace = await _kubeApi.CreateNamespace(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateKeyVault(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateConfigMap(command.AppInfoDto, cancellationToken);
-            // await _kubeApi.CreateDomainCertification(command.AppInfoDto, cancellationToken);
-            // await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
-            // await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
-            // await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreateDomainCertification(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreatePersistentVolumeClaim(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
+            await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
             return v1Namespace.Metadata.Name;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Deploy APP Error :", e.Message);
+            _logger.LogError(e, "Deploy APP Error: {[]}", e.Message);
             throw new ServiceException("Deploy APP Error : ", e);
         }
     }

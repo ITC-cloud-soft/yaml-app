@@ -24,22 +24,17 @@ public class KubeApi : IKubeApi
     private readonly IRazorLightEngine _engine;
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
     private readonly string _currentDirectory = Directory.GetCurrentDirectory();
-    private readonly MyDbContext _context;
     public KubeApi(
         IKuberYamlGenerator yamlGenerator, 
         IRazorLightEngine engine, 
         ILogger<KubeApi> logger,
-        IMemoryCache memoryCache,
-        IMapper mapper, MyDbContext dbContext)
+        IMemoryCache memoryCache)
     {
         _yamlGenerator = yamlGenerator;
         _memoryCache = memoryCache;
         _engine = engine;
         _logger = logger;
-        _mapper = mapper;
-        _context = dbContext;
     }
 
     private Kubernetes GetKubeClient(YamlAppInfoDto dto)
@@ -106,7 +101,7 @@ public class KubeApi : IKubeApi
             var serviceName = cluster.ClusterName + KubeConstants.ServiceSuffix;
             try
             {
-                await client.ReadNamespacedDeploymentAsync(
+                await client.ReadNamespacedServiceAsync(
                     serviceName,
                     namespaceName,
                     cancellationToken: cancellationToken);
@@ -121,7 +116,6 @@ public class KubeApi : IKubeApi
                 await client.CreateNamespacedServiceAsync(v1Service, namespaceName,
                     cancellationToken: cancellationToken);
                 _logger.LogInformation("Service {ServiceName} created successfully", serviceName);
-
             }
             catch (Exception e)
             {
@@ -154,9 +148,9 @@ public class KubeApi : IKubeApi
                 
                 cluster.AppName = dto.AppName;
                 var content = await _engine.CompileRenderAsync(path, cluster);
-                await File.WriteAllTextAsync(Path.Combine(_currentDirectory, KubeConstants.OutPutFile), content, cancellationToken);
                 var v1Service = KubernetesYaml.Deserialize<V1Deployment>(content);
                 await client.CreateNamespacedDeploymentAsync(v1Service, namespaceName, cancellationToken: cancellationToken);
+               
                 _logger.LogInformation("DeploymentName {DeploymentName} created successfully", deploymentName);
             }
             catch (Exception e)
@@ -257,44 +251,38 @@ public class KubeApi : IKubeApi
         }
     }
 
-    public async Task<List<V1PersistentVolumeClaim>> CreatePersistentVolumeClaim(
+    public async Task CreatePersistentVolumeClaim(
         YamlAppInfoDto dto,
         CancellationToken cancellationToken)
     {
         var path = Path.Combine(_currentDirectory, KubeConstants.PersistentVolumeClaimTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
-        try
+        var client = GetKubeClient(dto);
+        foreach(var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
         {
-            var resList = new List<V1PersistentVolumeClaim>();
-
-            var client = GetKubeClient(dto);
-            var pvsList = await client.ListNamespacedPersistentVolumeClaimAsync(namespaceName, cancellationToken: cancellationToken);
-            foreach(var cluster in dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>())
+            foreach (var diskInfo in cluster.DiskInfoList)
             {
-                
-                for (var i = 0; i < cluster.DiskInfoList?.Count; i++)
+                var diskInfoDto = diskInfo;
+                diskInfoDto.AppName = dto.AppName;
+                var pvcName = diskInfoDto.Name + KubeConstants.PvcSubSuffix;
+                try
                 {
-                    var diskInfoDto = cluster.DiskInfoList[i];
-                    diskInfoDto.AppName = dto.AppName;
-                    var persistentVolumeClaim = pvsList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == diskInfoDto.Name + KubeConstants.PvcSubSuffix);
-                    // when pvc is not found, then create a new pvc
-                    if (persistentVolumeClaim == null)
-                    {
-                        var content = await _engine.CompileRenderAsync(path, diskInfoDto);
-                        var pvc = KubernetesYaml.Deserialize<V1PersistentVolumeClaim>(content);
-                        var pvcClaim = await client.CreateNamespacedPersistentVolumeClaimAsync(pvc, namespaceName, cancellationToken: cancellationToken);
-                        resList.Add(pvcClaim);
-                        _logger.LogInformation("deploy pvc {}", pvcClaim.Metadata.Name);
-                    }
+                    await client.ReadNamespacedPersistentVolumeClaimAsync(pvcName, namespaceName, cancellationToken: cancellationToken);
+                    _logger.LogWarning("V1PersistentVolumeClaim {PvcName} already exists in namespace {NamespaceName}", pvcName, namespaceName);
+                }
+                catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    _logger.LogInformation("V1PersistentVolumeClaim {ConfigMap} does not exist in namespace {NamespaceName}, creating...", pvcName, namespaceName);
+                
+                    var content = await _engine.CompileRenderAsync(path, diskInfoDto);
+                    var pvc = KubernetesYaml.Deserialize<V1PersistentVolumeClaim>(content);
+                    await client.CreateNamespacedPersistentVolumeClaimAsync(pvc, namespaceName, cancellationToken: cancellationToken);
+                    
+                    _logger.LogInformation("V1PersistentVolumeClaim {ConfigMap} created successfully", pvcName);
                 }
             }
-            return resList;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError("Create V1PersistentVolumeClaim  [{}] Error: [{}] ", dto.AppName, ex.Message);
-            throw new ServiceException($"Create V1PersistentVolumeClaim error {dto.AppName}", ex);
-        }
+     
     }
 
     public async Task CreateKeyVault(YamlAppInfoDto appInfoDto, CancellationToken cancellationToken)
@@ -314,18 +302,18 @@ public class KubeApi : IKubeApi
        
             // create Unstructured object
             var secretProviderClass = CreatedSecretProviderByCloud(appInfoDto, secretObjects, objects, objectsList, keyVaultRender);
-            
+            var kvName = $"{appInfoDto.AppName}-keyvault-spc";
             try
             {
                 // create SecretProviderClass
-                var result = await client.CreateNamespacedCustomObjectAsync(
+                await client.CreateNamespacedCustomObjectAsync(
                     secretProviderClass, 
                     "secrets-store.csi.x-k8s.io",
                     "v1", 
                     secretProviderClass.Metadata?.NamespaceProperty, 
                     "secretproviderclasses",
                     cancellationToken: cancellationToken);
-                _logger.LogInformation("SecretProviderClass [{}] created successfully", result);
+                _logger.LogInformation("SecretProviderClass [{}] created successfully", secretProviderClass.Metadata?.Name);
             }
             catch (HttpOperationException ex) when (ex.Response.StatusCode == HttpStatusCode.Conflict)
             {
@@ -336,9 +324,9 @@ public class KubeApi : IKubeApi
                     "v1",
                     namespaceName,
                     "secretproviderclasses",
-                    $"{appInfoDto.AppName}-keyvault-spc",
+                    kvName,
                     cancellationToken: cancellationToken);
-                _logger.LogInformation("SecretProviderClass [{}] delete successfully", deleteResult);
+                _logger.LogInformation("SecretProviderClass [{}] delete successfully", kvName);
                 
                 // create spc
                 var result = await client.CreateNamespacedCustomObjectAsync(
@@ -348,40 +336,13 @@ public class KubeApi : IKubeApi
                     secretProviderClass.Metadata?.NamespaceProperty, 
                     "secretproviderclasses",
                      cancellationToken: cancellationToken);
-                _logger.LogInformation("SecretProviderClass [{}] created successfully", result);
+                _logger.LogInformation("SecretProviderClass [{}] created successfully", kvName);
             }
         }
     }
     
     public async Task CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken)
     {
-        // var path = Path.Combine(_currentDirectory, KubeConstants.IngressFileTemplate);
-        // var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
-        // try
-        // {
-        //     var client = GetKubeClient(dto);
-        //     var ingressList = 
-        //         await client.ListNamespacedIngressAsync(namespaceName, cancellationToken: cancellationToken);
-        //     var task = (dto.ClusterInfoList ?? Enumerable.Empty<YamlClusterInfoDto>()).Select(async cluster =>
-        //     {
-        //         var pvcName = cluster.ClusterName + KubeConstants.IngressSuffix;
-        //         var ingressSig = ingressList.Items.SingleOrDefault(pvc => pvc.Metadata.Name == pvcName);
-        //         if (ingressSig != null)
-        //         {
-        //             return ingressSig;
-        //         }
-        //
-        //         var content = await _engine.CompileRenderAsync(path, cluster);
-        //         var ingress = KubernetesYaml.Deserialize<V1Ingress>(content);
-        //         return await client.CreateNamespacedIngressAsync(ingress, namespaceName, cancellationToken: cancellationToken);
-        //     });
-        //     return await Task.WhenAll(task).ConfigureAwait(false);
-        // }
-        // catch (Exception ex)
-        // {
-        //     _logger.LogError("Create Ingress  [{}] Error", dto.AppName);
-        //     throw new ServiceException($"Create Ingress error {dto.AppName}", ex);
-        // }
         var path = Path.Combine(_currentDirectory, KubeConstants.IngressFileTemplate);
         var namespaceName = dto.AppName + KubeConstants.NamespaceSuffix;
         var client = GetKubeClient(dto);
@@ -404,9 +365,8 @@ public class KubeApi : IKubeApi
 
                 cluster.AppName = dto.AppName;
                 var content = await _engine.CompileRenderAsync(path, cluster);
-                await File.WriteAllTextAsync(Path.Combine(_currentDirectory, KubeConstants.OutPutFile), content, cancellationToken);
-                var v1Service = KubernetesYaml.Deserialize<V1Deployment>(content);
-                await client.CreateNamespacedDeploymentAsync(v1Service, namespaceName, cancellationToken: cancellationToken);
+                var ingress = KubernetesYaml.Deserialize<V1Ingress>(content);
+                await client.CreateNamespacedIngressAsync(ingress, namespaceName, cancellationToken: cancellationToken);
                 _logger.LogInformation("Ingress {IngressName} created successfully", ingressName);
             }
             catch (Exception e)

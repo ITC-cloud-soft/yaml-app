@@ -15,7 +15,7 @@ public interface IKubeApi
     
     public Task<List<V1PersistentVolume>> CreatePersistentVolume(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
-    public Task<List<V1PersistentVolumeClaim>> CreatePersistentVolumeClaim(YamlAppInfoDto dto, CancellationToken cancellationToken);
+    public Task CreatePersistentVolumeClaim(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
     public Task CreateKeyVault(YamlAppInfoDto appInfoDto, CancellationToken cancellationToken);
     
