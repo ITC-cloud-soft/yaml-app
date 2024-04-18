@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using AutoMapper;
 using MediatR;
-using RazorLight;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
