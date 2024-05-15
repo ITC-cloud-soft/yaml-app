@@ -40,7 +40,7 @@ $(function () {
     tableComponent.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
     tableComponent.initDiskTable()
     // TODO from current user
-    controllerComponent.getAppDataDtoFromBackend('2')
+    controllerComponent.getAppDataDtoFromBackend('1')
     controllerComponent.bindUploadEvent('#uploadConfig', '#uploadk8s', '#uploadk8sFile')
     
 })

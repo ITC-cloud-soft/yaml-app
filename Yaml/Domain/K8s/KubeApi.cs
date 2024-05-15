@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using AutoMapper;
@@ -12,10 +13,6 @@ using Yaml.Infrastructure.CoustomService;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
 using Yaml.Infrastructure.YamlEum;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.TypeInspectors;
-using YamlDotNet.Serialization.TypeResolvers;
-
 namespace Yaml.Domain.K8s;
 
 public class KubeApi : IKubeApi
@@ -588,5 +585,144 @@ public class KubeApi : IKubeApi
 
         return keyVaultRender;
     }
-    
+
+    public async Task CreateClusterRoleAndBindingAsync(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+        var clusterRole = new V1ClusterRole
+        {
+            Metadata = new V1ObjectMeta
+            {
+                Name = "namespace-admin"
+            },
+            Rules = new[]
+            {
+                new V1PolicyRule
+                {
+                    ApiGroups = new[] { "" },
+                    Resources = new[] { "namespaces", "services", "configmaps", "secrets", "pods", "nodes", "nodes/metrics", "nodes/proxy", "persistentvolumeclaims", "serviceaccounts" },
+                    Verbs = new[] { "get", "list", "create", "delete", "update", "patch" }
+                },
+                new V1PolicyRule
+                {
+                    ApiGroups = new[] { "apps" },
+                    Resources = new[] { "deployments", "statefulsets", "daemonsets", "replicasets" },
+                    Verbs = new[] { "get", "list", "create", "delete", "update", "patch" }
+                },
+                new V1PolicyRule
+                {
+                    ApiGroups = new[] { "batch" },
+                    Resources = new[] { "jobs", "cronjobs" },
+                    Verbs = new[] { "get", "list", "create", "delete", "update", "patch" }
+                },
+                new V1PolicyRule
+                {
+                    ApiGroups = new[] { "extensions" },
+                    Resources = new[] { "deployments", "replicasets", "ingresses" },
+                    Verbs = new[] { "get", "list", "create", "delete", "update", "patch" }
+                },
+                new V1PolicyRule
+                {
+                    ApiGroups = new[] { "rbac.authorization.k8s.io" },
+                    Resources = new[] { "clusterroles", "clusterrolebindings" },
+                    Verbs = new[] { "get", "list", "create", "delete", "update", "patch" }
+                }
+            }
+        };
+
+        try
+        {
+            await GetKubeClient(dto).CreateClusterRoleAsync(clusterRole, cancellationToken: cancellationToken);
+            _logger.LogInformation("ClusterRole 'namespace-admin' created successfully.");
+        }
+        catch (HttpOperationException ex) when (ex.Response.StatusCode == System.Net.HttpStatusCode.Conflict)
+        {
+            _logger.LogWarning("ClusterRole 'namespace-admin' already exists.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating ClusterRole 'namespace-admin': {Message}", ex.Message);
+            throw;
+        }
+
+        var clusterRoleBinding = new V1ClusterRoleBinding
+        {
+            Metadata = new V1ObjectMeta
+            {
+                Name = "namespace-admin-binding"
+            },
+            Subjects = new[]
+            {
+                new V1Subject
+                {
+                    Kind = "ServiceAccount",
+                    Name = "kubectl-sa",
+                    NamespaceProperty = "netdata"
+                }
+            },
+            RoleRef = new V1RoleRef
+            {
+                ApiGroup = "rbac.authorization.k8s.io",
+                Kind = "ClusterRole",
+                Name = "namespace-admin"
+            }
+        };
+
+        try
+        {
+            await GetKubeClient(dto).CreateClusterRoleBindingAsync(clusterRoleBinding, cancellationToken: cancellationToken);
+            _logger.LogInformation("ClusterRoleBinding 'namespace-admin-binding' created successfully.");
+        }
+        catch (HttpOperationException ex) when (ex.Response.StatusCode == System.Net.HttpStatusCode.Conflict)
+        {
+            _logger.LogWarning("ClusterRoleBinding 'namespace-admin-binding' already exists.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating ClusterRoleBinding 'namespace-admin-binding': {Message}", ex.Message);
+            throw;
+        }
+    }
+
+    public async Task DeployNetaData(YamlAppInfoDto dto, CancellationToken cancellationToken)
+    {
+
+        // create namespace
+        CreateNs( dto, "netdata", cancellationToken);
+        
+        var yamlFilePath = Path.Combine(_currentDirectory, "YamlFile/yaml/netdata.yaml"); // 替换为你的 YAML 文件路径
+        var kubectlManager = new KubectlManager();
+        try
+        {
+            await kubectlManager.ApplyYamlAsync(yamlFilePath);
+            _logger.LogInformation("YAML file applied successfully.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Failed to apply YAML file: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async void CreateNs(YamlAppInfoDto dto, string namespaceName, CancellationToken cancellationToken)
+    {
+        // create namespace 
+        var kubeClient = GetKubeClient(dto);
+        try
+        {
+            await kubeClient.ReadNamespaceAsync(namespaceName, cancellationToken: cancellationToken);
+        }
+        catch (HttpOperationException ex) when(ex.Response.StatusCode == HttpStatusCode.NotFound)
+        {
+            // Namespace not found, create a new one
+            _logger.LogInformation("Namespace {NamespaceName} not found. Creating new namespace", namespaceName);
+            var newNamespace = new V1Namespace { Metadata = new V1ObjectMeta { Name = namespaceName } };
+            await kubeClient.CreateNamespaceAsync(newNamespace, cancellationToken: cancellationToken);
+            _logger.LogInformation("Namespace {NamespaceName} created successfully", namespaceName);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error creating namespace '{NamespaceName}'", namespaceName);
+            throw new ServiceException($"Create namespace error {namespaceName}", e);
+        }
+    }
 }

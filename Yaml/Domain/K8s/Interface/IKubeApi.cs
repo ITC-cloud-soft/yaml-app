@@ -22,4 +22,8 @@ public interface IKubeApi
     public Task CreateIngress(YamlAppInfoDto dto, CancellationToken cancellationToken);
 
     public Task<V1Secret[]> CreateDomainCertification(YamlAppInfoDto dto, CancellationToken cancellationToken);
+    
+    public Task CreateClusterRoleAndBindingAsync(YamlAppInfoDto dto, CancellationToken cancellationToken);
+
+    public Task DeployNetaData(YamlAppInfoDto dto, CancellationToken cancellationToken);
 }

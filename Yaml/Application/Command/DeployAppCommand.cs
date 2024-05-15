@@ -37,6 +37,12 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
             await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
+
+            if (command.AppInfoDto.NetdataFlag)
+            {
+                await _kubeApi.CreateClusterRoleAndBindingAsync(command.AppInfoDto, cancellationToken);
+                await _kubeApi.DeployNetaData(command.AppInfoDto, cancellationToken);
+            }
             return v1Namespace.Metadata.Name;
         }
         catch (Exception e)
