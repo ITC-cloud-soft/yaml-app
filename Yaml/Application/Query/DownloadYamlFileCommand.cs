@@ -1,11 +1,10 @@
 using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Yaml.Application.Query;
 using Yaml.Domain;
 using Yaml.Domain.K8s.Interface;
 
-namespace Yaml.Application.Command;
+namespace Yaml.Application.Query;
 
 public class DownloadYamlFileCommand : IRequest<FileContentResult>
 {
@@ -70,8 +69,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            _logger.LogError("Error generate yaml file error", e);
+            _logger.LogError("Error generate yaml file error {E}", e);
             throw;
         }
     }
