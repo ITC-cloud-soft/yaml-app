@@ -8,8 +8,8 @@
   },
   "appInfoPage": {
     "all": "All",
-    "controller": "Controller",
-    "clusterStorage": "ClusterStorage",
+    "controller": "Yamler",
+    "clusterStorage": "CloudStorage",
     "manual": "Manual",
     "title": "Yamler--GUI tool for CD",
     "required": "Required",

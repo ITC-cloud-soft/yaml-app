@@ -31,6 +31,7 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Infrastructure\Presistence\" />
+      <Folder Include="out\" />
       <Folder Include="uploads\" />
       <Folder Include="wwwroot\assets\locales\en\" />
       <Folder Include="wwwroot\assets\locales\ja\" />

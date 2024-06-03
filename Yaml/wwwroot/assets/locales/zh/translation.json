@@ -8,8 +8,8 @@
   },
   "appInfoPage": {
     "all":"全部",
-    "controller": "Controller",
-    "clusterStorage": "集群存储",
+    "controller": "Yamler",
+    "clusterStorage": "ClusterStorage",
     "manual": "手册",
     "title": "Yamler--GUI tool for CD",
     "required": "必须",
