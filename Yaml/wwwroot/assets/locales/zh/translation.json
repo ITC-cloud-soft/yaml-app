@@ -11,7 +11,7 @@
     "controller": "Controller",
     "clusterStorage": "集群存储",
     "manual": "手册",
-    "title": "Yamler--CD Controller",
+    "title": "Yamler--GUI tool for CD",
     "required": "必须",
     "appName": "应用名称",
     "letter": "※英数",

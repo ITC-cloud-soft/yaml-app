@@ -14,7 +14,7 @@
     "controller": "CDコントロール",
     "clusterStorage": "クラウドストア",
     "manual": "マニュアル",
-    "title": "Yamler--CD Controller",
+    "title": "Yamler--GUI tool for CD",
     "required": "必須",
     "appName": "システム・アプリ名",
     "letter": "※英数字",

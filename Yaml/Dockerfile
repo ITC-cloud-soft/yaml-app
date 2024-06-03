@@ -19,4 +19,4 @@ COPY --from=build-env /app/out .
 # 安装bash 
 RUN apt-get update && apt-get install -y bash
 
-ENTRYPOINT ["dotnet", "YAML.dll"]
+ENTRYPOINT ["dotnet", "Yaml.dll"]

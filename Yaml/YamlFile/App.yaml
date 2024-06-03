@@ -1,22 +1,164 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: aws-cluster-ingress
-  namespace: aws-app-ns
+  name: appsettings-config
+data:
+  Logging: |
+    {
+      "LogLevel": {
+        "Default": "Information",
+        "Microsoft": "Warning",
+        "Microsoft.AspNetCore": "Warning",
+        "Microsoft.Hosting.Lifetime": "Information",
+        "Microsoft.EntityFrameworkCore.Database.Command": "Warning"
+      }
+    }
+  AllowedHosts: "*"
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-app-deployment
 spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - aws.thomaszou2077.com
-      secretName: aws-cluster-tls-secret
-  rules:
-    - host: aws.thomaszou2077.com
-      http:
-        paths:
-          - path: 1
-            pathType: Prefix
-            backend:
-              service:
-                name: aws-cluster-svc
-                port:
-                  number: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: your-app
+  template:
+    metadata:
+      labels:
+        app: your-app
+    spec:
+      containers:
+        - name: your-app
+          image: your-app-image:latest
+          env:
+            - name: Logging__LogLevel__Default
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Default
+            - name: Logging__LogLevel__Microsoft
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft
+            - name: Logging__LogLevel__Microsoft.AspNetCore
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft.AspNetCore
+            - name: Logging__LogLevel__Microsoft.Hosting.Lifetime
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft.Hosting.Lifetime
+            - name: Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command
+            - name: AllowedHosts
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: AllowedHosts
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: ConnectionStrings__DefaultConnection
+            - name: Azure__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__ClientId
+            - name: Azure__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__ClientSecret
+            - name: Azure__TenantId
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__TenantId
+            - name: Azure__SubscriptionId
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__SubscriptionId
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: your-app
+  template:
+    metadata:
+      labels:
+        app: your-app
+    spec:
+      containers:
+        - name: your-app
+          image: your-app-image:latest
+          env:
+            - name: Logging__LogLevel__Default
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Default
+            - name: Logging__LogLevel__Microsoft
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft
+            - name: Logging__LogLevel__Microsoft.AspNetCore
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft.AspNetCore
+            - name: Logging__LogLevel__Microsoft.Hosting.Lifetime
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft.Hosting.Lifetime
+            - name: Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command
+            - name: AllowedHosts
+              valueFrom:
+                configMapKeyRef:
+                  name: appsettings-config
+                  key: AllowedHosts
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: ConnectionStrings__DefaultConnection
+            - name: Azure__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__ClientId
+            - name: Azure__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__ClientSecret
+            - name: Azure__TenantId
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__TenantId
+            - name: Azure__SubscriptionId
+              valueFrom:
+                secretKeyRef:
+                  name: appsettings-secret
+                  key: Azure__SubscriptionId
