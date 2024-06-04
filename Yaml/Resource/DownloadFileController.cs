@@ -9,6 +9,6 @@ public class DownloadFileController : ApiControllerBase
     [HttpGet("{fileName}")]
     public async Task<IActionResult> Save([FromRoute] string fileName)
     {
-        return Ok(await Mediator.Send(new DownloadManualCommand(){FileName = fileName}));
+       return await Mediator.Send(new DownloadManualCommand{FileName = fileName});
     }
 }

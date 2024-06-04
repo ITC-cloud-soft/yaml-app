@@ -111,8 +111,7 @@
         axios
             .get(url, { responseType: 'blob' })
             .then(function (response) {
-                console.log(response)
-                const fileBlob = new Blob([response.data], { type: response.headers['content-type'] });
+                const fileBlob = new Blob([response.data], { type: 'application/pdf' });
                 const objectUrl = URL.createObjectURL(fileBlob);
 
                 const tempLink = document.createElement('a');

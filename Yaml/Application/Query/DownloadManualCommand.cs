@@ -25,7 +25,7 @@ public class DownloadManualCommandHandler : IRequestHandler<DownloadManualComman
         Guard.Against.NotFound("FileName", request.FileName);
         _logger.LogInformation("Downloading manual : {FileName}",  request.FileName);
         
-        var bytes = await File.ReadAllBytesAsync(Path.Combine(KubeConstants.ManualFilePath, request.FileName), cancellationToken);
-        return new FileContentResult(bytes, "application/json") { FileDownloadName = request.FileName };
+        var bytes = await File.ReadAllBytesAsync(Path.Combine(_currentDirectory, KubeConstants.ManualFilePath + request.FileName), cancellationToken);
+        return new FileContentResult(bytes, "application/pdf") { FileDownloadName = request.FileName };
     }
 }
