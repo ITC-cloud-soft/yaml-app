@@ -9,7 +9,7 @@
   "appInfoPage": {
     "all":"全部",
     "controller": "Yamler",
-    "clusterStorage": "ClusterStorage",
+    "clusterStorage": "ClusterStore",
     "manual": "手册",
     "title": "Yamler--GUI tool for CD",
     "required": "必须",

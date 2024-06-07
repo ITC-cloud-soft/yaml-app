@@ -25,7 +25,7 @@ public class SaveClusterCommandHandler : IRequestHandler<SaveClusterCommand, str
 
     public async Task<string> Handle(SaveClusterCommand request, CancellationToken cancellationToken)
     {
-        // await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken: cancellationToken);
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken: cancellationToken);
 
         var yamlClusterInfoDto = request.clusterInfo;
         var cluster = await HandleCluster(yamlClusterInfoDto, cancellationToken);
@@ -41,7 +41,7 @@ public class SaveClusterCommandHandler : IRequestHandler<SaveClusterCommand, str
         await HandleDiskInfo(yamlClusterInfoDto, cluster, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        // await transaction.CommitAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
         _logger.LogInformation("Save cluster Info [{}] to DB", yamlClusterInfoDto.ClusterName);
         return "success";
     }

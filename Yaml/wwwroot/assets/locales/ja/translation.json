@@ -12,7 +12,7 @@
   "appInfoPage": {
     "all": "全般",
     "controller": "Yamler",
-    "clusterStorage": "CloudStorage",
+    "clusterStorage": "クラウドストア",
     "manual": "マニュアル",
     "title": "Yamler--GUI tool for CD",
     "required": "必須",
