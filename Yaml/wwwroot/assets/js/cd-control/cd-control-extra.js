@@ -40,7 +40,8 @@ $(function () {
     tableComponent.initComponent(3, selectors.configMapField, ["upload"], ["filePath", "fileLink"], "ConfigFile");
     tableComponent.initDiskTable()
     // TODO from current user
-    controllerComponent.getAppDataDtoFromBackend('1')
+    
+    controllerComponent.getAppInfo()
     controllerComponent.bindUploadEvent('#uploadConfig', '#uploadk8s', '#uploadk8sFile')
     
 })
@@ -59,7 +60,29 @@ const controllerComponent = (($) => {
 
     function initElementEvent() {
         
-
+        $(selectors.portCheckbox).change(function(){
+            if($(this).is(':checked')){
+                $('#port_div').css({"display": "block"})
+            }else{
+                $('#port_div').css({"display": "none"})
+            }
+        })
+        
+        $("#domainFlag").change(function(){
+            if($(this).is(':checked')){
+                $('#domainArea').css({"display": "block"})
+            }else{
+                $('#domainArea').css({"display": "none"})
+            }
+        })
+        
+        $(selectors.k8sConfig).change(function() {
+            if($(this).is(':checked')) {
+                $('#k8sConfigDiv').css({"display": "block"})
+            } else {
+                $('#k8sConfigDiv').css({"display": "none"})
+            }
+        });
         // bind new cluster btn event 
         $('#deploy-button').off('click').click(() => {
             commonFunctions.showModal('提示', 'デプロイ操作を実行しますか？', deployment)
@@ -108,11 +131,12 @@ const controllerComponent = (($) => {
             if (appForm.valid() && tableComponent.validateTableContent("#keyVault-content")) {
                 const appInfoData = getAppInfoData()
                 console.log({appInfoDto: appInfoData})
+                debugger
                 commonFunctions.axios().post('/api/App/save',
                     {appInfoDto: appInfoData}
                 ).then(function (res) {
                     console.log(res)
-                    location.reload();
+                    // location.reload();
                 }).catch(function (error) {
                     console.log(error)
                 })
@@ -151,7 +175,8 @@ const controllerComponent = (($) => {
             commonFunctions.axios().post('/api/App/import/json', formData)
                 .then(response => {
                     $(fileInputSelector).attr('files', '')
-                    commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadSuccessText'), 'Green')
+                    commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadSuccessText'), 'Green');
+                    window.location.reload();
                 })
                 .catch(error => {
                     commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadErrorText'), 'indianred')
@@ -165,11 +190,18 @@ const controllerComponent = (($) => {
         // bind help button event
         $('.a-help-button').off('click').click(function () {
             const helpText = $(this).attr('name');
+            const id = $(this).attr('id');
+        
             const parent = $(this).parent()
             let text = parent.find('[data-i18n]').text();
             text = text ? text : parent.parent().text();
             const header = `<i class="a-icon a-icon--help"></i></br>${text} ${i18next.t('appInfoPage.is')}`
-            commonFunctions.showModal(header, i18next.t(helpText))
+            if(id == 'k8sHelpText'){
+                debugger;
+                commonFunctions.showModal(header, i18next.t(helpText) + `</br><a href="/manual.html">${i18next.t('appInfoPage.Demo')}</a>`　)
+            }else {
+                commonFunctions.showModal(header, i18next.t(helpText)　)
+            }
         })
     }
 
@@ -231,6 +263,8 @@ const controllerComponent = (($) => {
         commonFunctions.axios().post('/api/App/deploy', {'AppInfoDto': infoData})
             .then(function (res){
                 console.log(res)
+                // commonFunctions.showToast(3000, i18next.t('appInfoPage.jsonUploadSuccessText'), 'Green');
+                commonFunctions.showToast(3000, "Deploy Succeed", 'Green');
             }).catch(function (error){
             commonFunctions.showToast(3000, error, '#cc3300')
         })
@@ -251,7 +285,13 @@ const controllerComponent = (($) => {
                 $(selectors.memory).val(cluster.memory)
                 $(selectors.manageLevel).val(cluster.manageLabel)
                 $(selectors.prefix).val(cluster.prefix)
-
+                cluster.portFlag = true;
+                if (cluster.portFlag){
+                    $(selectors.portCheckbox).prop('checked', true);
+                    renderArea(cluster.portFlag, '#port_div')
+                    $(selectors.port).val(cluster.port)
+                    $(selectors.targetPort).val(cluster.targetPort)
+                }
                 if (cluster.diskInfoFlag) {
                     $(selectors.diskCheckbox).prop('checked', true)
                     renderArea(cluster.diskInfoFlag, '#disk_div')
@@ -401,7 +441,7 @@ const controllerComponent = (($) => {
 
                     let privateKey = cluster.domain.privateKey
                     privateKey = privateKey.includes('_') ? privateKey.split('_')[1] : privateKey;
-
+                 
                     $('#domain-content').append(`
                         <div class="m-data-table__item" columnid="{{columnId}}">
                              <span class="m-data-table__content m-data-table__content--type-data m-data-table__content--align-left m-data-table__content--valign-center">
@@ -437,6 +477,14 @@ const controllerComponent = (($) => {
                         </div>
                     `)
 
+
+                    if(cluster.domainFlag){
+                        $('#domainArea').css({"display": "block"})
+                    }else{
+                        $('#domainArea').css({"display": "none"})
+
+                    }
+                    debugger;
                     // bind upload event fn
                     tableComponent.bindUploadEvent(
                         '#domain-content',
@@ -468,6 +516,21 @@ const controllerComponent = (($) => {
                 controllerComponent.renderPage(appInfoDto)
                 console.log(appInfoDto)
                 $('#appId').attr('appId', appInfoDto.id)
+            }).catch(function (ex) {
+            console.error(ex)
+        })
+    }
+    
+    function getAppInfo(){
+        commonFunctions.axios()
+            .get(`/api/App/list`)
+            .then(function (response) {
+                const appInfoDto = response.data;
+                console.log(appInfoDto);
+                debugger;
+                if(appInfoDto != null && appInfoDto.length > 0) {
+                    getAppDataDtoFromBackend(appInfoDto[0].id)
+                }
             }).catch(function (ex) {
             console.error(ex)
         })
@@ -553,6 +616,11 @@ const controllerComponent = (($) => {
                 `)
             })
         }
+        
+        if (appInfoDto.k8sConfig){
+            $(selectors.k8sConfig).prop("checked", "checked");
+            renderArea(appInfoDto.k8sConfig, '#k8sConfigDiv')
+        }
     }
 
     function initValidation(i18next) {
@@ -566,7 +634,6 @@ const controllerComponent = (($) => {
             "#keyVault-content"
         )
 
-        // TODO cluster disk info checkbox validation
         validate(
             "DiskInfoValidation",
             "#diskCheckbox",
@@ -731,6 +798,7 @@ const controllerComponent = (($) => {
         appInfoDto.mailAddress = $(selectors.mail).val();
         appInfoDto.KubeConfig = $(selectors.uploadK8sFile).attr("data-filename")
         appInfoDto.keyVaultFlag = $(selectors.keyConnect).prop("checked");
+        appInfoDto.k8sConfig = $(selectors.k8sConfig).prop("checked");
         appInfoDto.keyVault = {};
         appInfoDto.keyVault.tenantId = $(selectors.tenantId).val();
         appInfoDto.keyVault.managedId = $(selectors.manageId).val();
@@ -763,9 +831,13 @@ const controllerComponent = (($) => {
         clusterInfo.manageLabel = $(selectors.manageLevel).val();
         clusterInfo.prefix = $(selectors.prefix).val();
         clusterInfo.diskInfoFlag = $(selectors.diskCheckbox).prop("checked");
+        clusterInfo.portFlag = $(selectors.portCheckbox).prop("checked");
+        clusterInfo.port = $(selectors.port).val();
+        clusterInfo.targetPort = $(selectors.targetPort).val();
         clusterInfo.keyVaultFlag = $(selectors.KeyCheckbox).prop("checked");
         clusterInfo.configMapFlag = $(selectors.configCheckbox).prop("checked");
         clusterInfo.configMapFileFlag = $(selectors.configMapFileCheckbox).prop("checked");
+        clusterInfo.domainFlag = $('#domainFlag').prop("checked");
         clusterInfo.configFile = configMapFileTableData;
         clusterInfo.configMap = configMapTableData;
         clusterInfo.keyVault = keyVaultClusterData;
@@ -810,18 +882,20 @@ const controllerComponent = (($) => {
         $(selectors.clusterName).val('');
         $(selectors.imageName).val('');
         $(selectors.podCount).val('');
-        $(selectors.cpu).val('');
-        $(selectors.memory).val('');
         $(selectors.manageLevel).val('');
         $(selectors.prefix).val('');
         $(selectors.diskCheckbox).val('');
+        $(selectors.portCheckbox).val('');
+        $(selectors.port).val('');
+        $(selectors.targetPort).val('');
         $(selectors.configCheckbox).prop('checked', false);
         $(selectors.configMapFileCheckbox).prop('checked', false);
         $(selectors.diskSize).val('')
         $(selectors.diskCheckbox).prop('checked', false)
+        $(selectors.portCheckbox).prop('checked', false)
         
         // clear table content and unbind button's event
-        const configMapFieldContent = $('#configMapField-content').find('.m-data-table__container-item')[0];
+        const configMapFieldContent = $('#configMapField-content');
         $(configMapFieldContent).html('')
         $('#domain-content').html('')
         $('#configMap-content').html('')
@@ -840,8 +914,11 @@ const controllerComponent = (($) => {
         }
         commonFunctions.axios().delete(`/api/App/delete?id=${id}&type=${type}`)
             .then(function (response) {
-                // TODO delete success bubble
-                console.log(response)
+                console.log(response);
+                // if cluster flush page
+                if(type === 'Cluster'){
+                    window.location.reload();
+                }
             });
     }
 
@@ -850,6 +927,7 @@ const controllerComponent = (($) => {
         bindValidation: initValidation,
         bindUploadEvent: bindUploadEvent,
         getAppDataDtoFromBackend: getAppDataDtoFromBackend,
+        getAppInfo: getAppInfo,
         renderPage: renderAppPage,
         fileUpload: fileUpload,
         renderClusterPage: renderClusterPage,

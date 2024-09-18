@@ -7,11 +7,12 @@
     "pwdEmpty": "密码不能为空"
   },
   "appInfoPage": {
+    "Demo":" 如何导出 kubeconfig 文件",
     "all":"全部",
-    "controller": "Controller",
-    "clusterStorage": "集群存储",
+    "controller": "Yamler",
+    "clusterStorage": "CloudStore",
     "manual": "手册",
-    "title": "Yamler--CD Controller",
+    "title": "Yamler--GUI tool for CD",
     "required": "必须",
     "appName": "应用名称",
     "letter": "※英数",
@@ -84,6 +85,12 @@
     "configMapSetText": "如果您想在镜像中添加常量，请以Key-Value的形式添加。",
     "domainText": "请添加与集群关联的域名，可以添加多个。",
     "jsonUploadErrorText": "Json File 格式错误 请检查后再上传",
-    "is": " 是 ?"
+    "is": " 是 ?",
+    "k8sConfig": "K8S设置",
+    "k8sHelpText":"上传您的 Kubernetes 配置文件以连接到您的集群。请确保文件格式正确，并且包含必要的认证信息。",
+    "domainFlag": "域名设置",
+    "portText":"Kubernetes 服务对象（Service）用于暴露 Pod，使得其他 Pod 或外部客户端能够与它们通信。",
+    "portSetText":"Kubernetes 服务对象（Service）用于暴露 Pod，使得其他 Pod 或外部客户端能够与它们通信",
+    "targetPortText":"映射到 Pod 内部容器的端口（即 containerPort）。通常用于将服务的 port 转发到容器的 containerPort。"
   }
 }

@@ -19,7 +19,7 @@ var userLanguage = "jp";
     function showModal(header, content, callback){
         let modal = $("#custom-modal")[0].__component;
         $(".modal-header-a").html(header);
-        $(".modal-content-a").text(content);
+        $(".modal-content-a").html(content);
         modal.opened = !0;
         modal.onCloseRequested = function () {
             return modal.opened = !1
@@ -71,7 +71,7 @@ var userLanguage = "jp";
     function axiosWithInterceptor (){
 
         const axiosInstance = axios.create({
-            timeout: 5000,
+            timeout: 25000,
         });
 
         // Add a request interceptor
@@ -93,13 +93,16 @@ var userLanguage = "jp";
         }, function (error) {
             console.error(error)
             removeLoading();
-
             commonFunctions.showModal('提示', 'システムエラーが発生しました。システム管理者に連絡してください')
             return Promise.reject(error);
         });
         return axiosInstance;
     }
-    
+
+    $("#manual").click(function(){
+        debugger
+        this.css('color', "#b60081")
+    })
     window.commonFunctions = {
         showModal: showModal,
         showToast: showToast,

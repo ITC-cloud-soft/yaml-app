@@ -1,10 +1,13 @@
 using System.Globalization;
+using Azure.Storage.Blobs;
 using k8s;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Yaml.Domain.K8s;
 using Yaml.Domain.K8s.Interface;
+using Yaml.Infrastructure.CoustomService;
 using Yaml.Infrastructure.Exception;
 namespace Yaml;
 
@@ -28,7 +31,7 @@ public class Program
             };
             return new Kubernetes(config);
         });
-
+        
         // localization service
         builder.Services.AddLocalization(options => options.ResourcesPath = "Localization");
         builder.Services.Configure<RequestLocalizationOptions>(
@@ -53,15 +56,16 @@ public class Program
         builder.Services.AddControllersWithViews()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddDataAnnotationsLocalization();
-
-        builder.Services.AddDbContext<MyDbContext>(options =>
-            options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-                new MySqlServerVersion(new Version(8, 0, 32)))); // Replace with your MySQL version
+        
         builder.Services.AddScoped<IKubeApi, KubeApi>();
         builder.Services.AddScoped<IKuberYamlGenerator, KuberYamlGenerator>();
 
         var app = builder.Build();
         app.UseRequestLocalization();
+        var rewriteOptions = new RewriteOptions()
+            .AddRewrite("^$", "cd-control.html", skipRemainingRules: true);
+        app.UseRewriter(rewriteOptions);
+        
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -74,6 +78,14 @@ public class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.MapControllers();
+        
+        
+        // 确保在应用启动时应用任何挂起的迁移
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+            dbContext.Database.Migrate();
+        }
         app.Run();
     }
 }

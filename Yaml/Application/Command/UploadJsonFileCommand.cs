@@ -29,7 +29,6 @@ public class ImportJsonCommandHandler : IRequestHandler<UploadJsonFileCommand, s
         try
         {
             var fileContent = await reader.ReadToEndAsync(cancellationToken);
-            Console.WriteLine(fileContent);
             var yamlAppInfoDto = JsonSerializer.Deserialize<YamlAppInfoDto>(fileContent);
             await _mediator.Send(new SaveYamlAppCommand { appInfoDto = yamlAppInfoDto });
             return fileContent;

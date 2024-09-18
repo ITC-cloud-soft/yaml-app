@@ -7,11 +7,12 @@
     "pwdEmpty": "Password cannot be empty."
   },
   "appInfoPage": {
+    "Demo":"How to export kubeconfig file",
     "all": "All",
-    "controller": "Controller",
-    "clusterStorage": "ClusterStorage",
+    "controller": "Yamler",
+    "clusterStorage": "CloudStore",
     "manual": "Manual",
-    "title": "Yamler--CD Controller",
+    "title": "Yamler--GUI tool for CD",
     "required": "Required",
     "appName": "AppName",
     "letter": "※Letter",
@@ -83,7 +84,9 @@
     "useProjectText": "",
     "configMapSetText": "If you want to add constants for use in the image, please add them in the form of Key-Value.",
     "domainText": "Please add domains associated with the cluster; multiple domains can be added.",
-    "is": " is ?"
+    "is": " is ?",
+    "k8sConfig": "K8S Settings",
+    "k8sHelpText":"Please upload your Kubernetes configuration file (.yaml, .yml) for configuring cluster settings."
   }
 }
 

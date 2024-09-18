@@ -3,6 +3,7 @@ namespace Yaml.Domain;
 public static class KubeConstants
 {
     public const string OutPutFile = "YamlFile/App.yaml";
+    public const string ManualFilePath = "YamlFile/manual/";
     public const string TempPath = "YamlFile/yaml/";
     public const string KeyVaultYamlFileName = "kv.yaml";
     
@@ -13,6 +14,7 @@ public static class KubeConstants
     public const string ServiceTemplate = "YamlFile/Service.cshtml";
     public const string SecretTemplate = "YamlFile/Keyvault.cshtml";
     public const string IngressFileTemplate = "YamlFile/Ingress.cshtml";
+    public const string IngressSecretTemplate = "YamlFile/TlsSecret.cshtml";
 
     public const string NamespaceSuffix = "-ns";
     public const string PvcSubSuffix = "-pvc";

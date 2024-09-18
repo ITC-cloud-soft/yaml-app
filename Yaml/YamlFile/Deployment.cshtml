@@ -36,16 +36,14 @@ spec:
                                $"                  key: {cf.ConfigKey}\n";
             @configMap
           }
-          @foreach (var kv in @Model.KeyVault)
+          @if (Model.KeyVaultFlag)
           {
-
-            string secretkeyref = $"            - name: {kv.ConfigKey} \n" +
-                                  $"              value: /mnt/secrets-store/{kv.ConfigKey}\n";
-                                  // $"              valueFrom: \n" +
-                                  // $"                secretKeyRef: \n" +
-                                  // $"                  name: {Model.AppName}-secret\n" +
-                                  // $"                  key: {kv.ConfigKey}\n";
-            @secretkeyref
+            @foreach (var kv in @Model.KeyVault)
+            {
+              string secretkeyref = $"            - name: {kv.ConfigKey} \n" +
+                                    $"              value: /mnt/secrets-store/{kv.ConfigKey}\n";
+              @secretkeyref
+            }
           }
           ports: 
             - containerPort: 80

@@ -9,7 +9,7 @@ public class YamlClusterInfo : CommonFields
 {
     [Required]
     [Key]
-    public int Id { get; set; }
+    public int? Id { get; set; }
  
     [Column("cluster_name")]
     public string? ClusterName { get; set; }
@@ -45,4 +45,13 @@ public class YamlClusterInfo : CommonFields
     public bool ConfigMapFileFlag { get; set; }
     [Column("diskInfo_flag")]
     public bool DiskInfoFlag { get; set; }
+    
+    [Column("port")]
+    public string Port { set; get; }
+    
+    [Column("target_port")]
+    public string TargetPort { set; get; }
+    
+    [Column("domain_flag")]
+    public bool DomainFlag { set; get; }
 }

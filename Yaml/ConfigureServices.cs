@@ -1,15 +1,9 @@
-
-
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 using RazorLight;
 using RazorLight.Extensions;
-using Yaml.Domain.AzureApi;
-using Yaml.Domain.AzureApi.Interface;
 
 namespace Yaml;
 
@@ -22,7 +16,11 @@ public static class ConfigureServices
         services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
-        
+        services.Configure<KestrelServerOptions>(options =>
+        {
+            options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+            options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
+        });
         // 1.CROS
         services.AddCors(options =>
         {
@@ -34,7 +32,6 @@ public static class ConfigureServices
                     .AllowAnyHeader(); 
             });
         });
-      
         
         // 2.Inject RazorLight into Container
         services.AddRazorLight(() =>
@@ -56,19 +53,11 @@ public static class ConfigureServices
             options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
         });
         
-        // 4.Azure Identity Manager
-        services.AddSingleton<IAzureIdentityManager, AzureIdentityManager>(provider =>
-        {
-            string clientId = configuration["Azure:ClientId"] ?? "";
-            string clientSecret = configuration["Azure:ClientSecret"] ?? "";
-            string tenantId = configuration["Azure:TenantId"] ?? "";
-            string subscriptionId = configuration["Azure:SubscriptionId"] ?? "";
-
-            return new AzureIdentityManager(clientId, clientSecret, tenantId, subscriptionId);
-        });
-        
         // 5.Memory Cache
         services.AddMemoryCache();
+        
+        services.AddDbContext<MyDbContext>(options =>
+            options.UseSqlite("Data Source=data/app.db"));
         return services;
     }
 }

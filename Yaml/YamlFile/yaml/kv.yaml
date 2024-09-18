@@ -1,0 +1,46 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+kind: SecretProviderClass
+metadata:
+  labels:
+    app.kubernetes.io/instance: argocd-saas-itc-one
+  name: itc-keyvault-spc-itc-one
+  namespace: itc-saas-ccflow
+spec:
+  parameters:
+    keyvaultName: kv-saas-core
+    objects: |
+      array:
+        - |
+          objectType: secret
+          objectName: SendGridKey
+        - |
+          objectType: secret
+          objectName: AzureRedis-pass
+        - |
+          objectType: secret
+          objectName: AzureStorageCert
+        - |
+          objectType: secret
+          objectName: AzureStorageClientId-default
+        - |
+          objectType: secret
+          objectName: ApimSubscriptionKey
+    tenantId: 1bf2b880-115d-4e08-a258-aa1dc41dc0d5
+    usePodIdentity: 'false'
+    useVMManagedIdentity: 'true'
+    userAssignedIdentityID: 69ab9774-6317-4963-90b4-aea06d941ebd
+  provider: azure
+  secretObjects:
+    - data:
+        - key: SendGridKey
+          objectName: SendGridKey
+        - key: AzureRedis-pass
+          objectName: AzureRedis-pass
+        - key: AzureStorageCert
+          objectName: AzureStorageCert
+        - key: AzureStorageClientId-default
+          objectName: AzureStorageClientId-default
+        - key: ApimSubscriptionKey
+          objectName: ApimSubscriptionKey
+      secretName: itc-ccflow-secret-itc-one
+      type: Opaque

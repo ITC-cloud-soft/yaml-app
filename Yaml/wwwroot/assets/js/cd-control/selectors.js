@@ -12,11 +12,14 @@ const selectors = {
     clusterName : "[name='clusterName']",
     imageName : "[name='imageName']",
     podCount : "[name='podCount']",
-    cpu : "[name='cpu']",
+    cpu : 'select[name="cpu"]',
     memory : "[name='memory']",
     manageLevel : "[name='managedLevel']",
     prefix : "[name='prefix']",
     diskCheckbox : "[name='diskCheckbox']",
+    portCheckbox : "[name='portCheckbox']",
+    port : "[name='port']",
+    targetPort : "[name='targetPort']",
     diskSize : "[name='diskSize']",
     diskType : "[name='diskType']",
     KeyCheckbox : "[name='KeyCheckbox']",
@@ -33,5 +36,6 @@ const selectors = {
     domainContent : "#domain-content",
     configMapField : "#configMapField",
     clusterKeyVault : "#clusterKeyVault",
-    uploadK8sFile: "#uploadk8sFile"
+    uploadK8sFile: "#uploadk8sFile",
+    k8sConfig:"#k8sConfig"
 }

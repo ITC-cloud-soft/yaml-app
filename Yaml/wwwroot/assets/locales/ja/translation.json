@@ -1,5 +1,5 @@
 {
-  "common":{
+  "common": {
     "notNull": "{{fieldName}} は空白できません"
   },
   "login-page": {
@@ -10,11 +10,12 @@
     "pwdEmpty": "パスワードは空白できません"
   },
   "appInfoPage": {
+    "Demo": "kubeconfig ファイルをエクスポートする方法",
     "all": "全般",
-    "controller": "CDコントロール",
+    "controller": "Yamler",
     "clusterStorage": "クラウドストア",
     "manual": "マニュアル",
-    "title": "Yamler--CD Controller",
+    "title": "Yamler--GUI tool for CD",
     "required": "必須",
     "appName": "システム・アプリ名",
     "letter": "※英数字",
@@ -23,6 +24,7 @@
     "token": "トークン",
     "mail": "メールアドレス",
     "keyVaultConnection": "KeyVault接続",
+    "k8sConfig": "K8S設置",
     "projectName": "項目名",
     "projectEnName": "項目英語名",
     "keyVaultsKey": "（keyVaultのキー）",
@@ -88,7 +90,12 @@
     "domainText": "クラスターに紐づけるドメインを追加してください、複数追加可能です。",
     "jsonUploadErrorText": "Jsonファイルの形式が間違っています。確認してから再度アップロードしてください。",
     "jsonUploadSuccessText": "Jsonファイルが正常にアップロードされました。",
-    "is": " とは ?"
+    "is": " とは ?",
+    "k8sHelpText": "Kubernetes設定ファイル（config）をアップロードしてクラスタ設定を行ってください。",
+    "domainFlag": "ドメイン設定",
+    "portText": "Kubernetes サービスオブジェクトは、Pod を公開し、他の Pod や外部クライアントがそれらと通信できるようにするために使用されます。",
+    "portSetText": "Kubernetes サービスオブジェクトは、Pod を公開し、他の Pod や外部クライアントがそれらと通信できるようにするために使用されます。",
+    "targetPortText": "Pod 内のコンテナのポート（つまり、containerPort）にマッピングされます。通常、サービスの port をコンテナの containerPort に転送するために使用されます。"
   }
 }
 

@@ -228,12 +228,19 @@ const tableComponent = (() => {
 
     function bindUploadEvent(selector, uploadButtonSelector, fileInputSelector, selectedFileNames) {
 
-        $(selector).off('click', uploadButtonSelector).on('click', uploadButtonSelector, function () {
-            $(fileInputSelector).click(); // Trigger file input click
+        // 解绑上传按钮的点击事件处理器
+        $(selector).off('click', uploadButtonSelector);
+
+        // 绑定上传按钮的点击事件处理器
+        $(selector).on('click', uploadButtonSelector, function () {
+            $(fileInputSelector).click(); // 触发文件输入的点击动作
         });
 
-        // Handle file selection and upload
-        $(selector).off('click', fileInputSelector).on('change', fileInputSelector, function () {
+        // 解绑文件输入的变更事件处理器
+        $(fileInputSelector).off('change');
+
+        // 绑定文件输入的变更事件处理器
+        $(fileInputSelector).on('change', function () {
             const selectedFiles = $(this).prop('files');
             if (selectedFiles.length > 0) {
                 // Display the names of selected files

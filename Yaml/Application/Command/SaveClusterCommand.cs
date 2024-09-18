@@ -25,7 +25,7 @@ public class SaveClusterCommandHandler : IRequestHandler<SaveClusterCommand, str
 
     public async Task<string> Handle(SaveClusterCommand request, CancellationToken cancellationToken)
     {
-        // await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken: cancellationToken);
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken: cancellationToken);
 
         var yamlClusterInfoDto = request.clusterInfo;
         var cluster = await HandleCluster(yamlClusterInfoDto, cancellationToken);
@@ -41,7 +41,7 @@ public class SaveClusterCommandHandler : IRequestHandler<SaveClusterCommand, str
         await HandleDiskInfo(yamlClusterInfoDto, cluster, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        // await transaction.CommitAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
         _logger.LogInformation("Save cluster Info [{}] to DB", yamlClusterInfoDto.ClusterName);
         return "success";
     }
@@ -70,7 +70,7 @@ public class SaveClusterCommandHandler : IRequestHandler<SaveClusterCommand, str
             {
                 // If doesn't exist, map and add a new domain 
                 var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(yamlClusterInfoDto.Domain);
-                clusterDomain.ClusterId = cluster.Id;
+                clusterDomain.ClusterId = cluster.Id ?? 0;
                 await _context.DomainContext.AddAsync(clusterDomain);
             }
             else
@@ -177,7 +177,7 @@ public class SaveClusterCommandHandler : IRequestHandler<SaveClusterCommand, str
             var diskInfoList = yamlClusterInfoDto.DiskInfoList.Select(dto =>
             {
                 var yamlClusterDiskInfo = _mapper.Map<YamlClusterDiskInfo>(dto);
-                yamlClusterDiskInfo.ClusterId = cluster.Id;
+                yamlClusterDiskInfo.ClusterId = cluster.Id ?? 0;
                 yamlClusterDiskInfo.Name = cluster.ClusterName + "-" + random.Next(0, 1000);
                 return yamlClusterDiskInfo;
             }).ToList();

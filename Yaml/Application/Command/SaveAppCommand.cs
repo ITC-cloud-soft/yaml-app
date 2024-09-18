@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Yaml.Domain.Entity;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
@@ -63,7 +64,15 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
     {
         // save cluster 
         var yamlAppInfo = _mapper.Map<YamlAppInfo>(yamlAppInfoDto);
-        _context.AppInfoContext.Update(yamlAppInfo);
+        var existingAppInfo = await _context.AppInfoContext.FirstOrDefaultAsync();
+        if (existingAppInfo != null)
+        {
+            _context.Entry(existingAppInfo).CurrentValues.SetValues(yamlAppInfo);
+        }
+        else
+        {
+            _context.AppInfoContext.Add(yamlAppInfo);
+        }
         await _context.SaveChangesAsync(cancellationToken);
         return yamlAppInfo;
     }
@@ -75,8 +84,21 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
         // save cluster 
         var cluster = _mapper.Map<YamlClusterInfo>(yamlClusterInfoDto);
         cluster.AppId = appId;
-        cluster.Id = cluster.Id < 0 ? 0 : cluster.Id;
-        _context.ClusterContext.Update(cluster);
+        
+        // 检查ID值来决定是新增还是更新
+        if (cluster.Id <= 0)
+        {
+            cluster.Id = null;
+            // ID为0或负值时新增
+            _context.ClusterContext.Add(cluster);
+        }
+        else
+        {
+            // ID为正值时更新
+            _context.ClusterContext.Update(cluster);
+        }
+
+        // 保存更改
         await _context.SaveChangesAsync(cancellationToken);
         return cluster;
     }
@@ -120,7 +142,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             {
                 // If doesn't exist, map and add a new domain 
                 var clusterDomain = _mapper.Map<YamlClusterDomainInfo>(yamlClusterInfoDto.Domain);
-                clusterDomain.ClusterId = cluster.Id;
+                clusterDomain.ClusterId = cluster.Id ?? 0;
                 await _context.DomainContext.AddAsync(clusterDomain);
             }
             else
@@ -237,7 +259,7 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             var diskInfoList = yamlClusterInfoDto.DiskInfoList.Select(dto =>
             {
                 var yamlClusterDiskInfo = _mapper.Map<YamlClusterDiskInfo>(dto);
-                yamlClusterDiskInfo.ClusterId = cluster.Id;
+                yamlClusterDiskInfo.ClusterId = cluster.Id ??  0;
                 yamlClusterDiskInfo.Name = cluster.ClusterName + "-" + random.Next(0, 1000);
                 return yamlClusterDiskInfo;
             }).ToList();

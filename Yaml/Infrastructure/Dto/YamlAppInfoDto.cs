@@ -9,7 +9,7 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
     public int Id { get; set; }
     public int UserId { get; set; }
 
-    public string AppName { get; set; }
+    public string? AppName { get; set; }
     public string? Cr { get; set; }
     public string? Token { get; set; }
     public string? MailAddress { get; set; }
@@ -18,6 +18,7 @@ public class YamlAppInfoDto : IMapFrom<YamlAppInfo>
 
     public bool NetdataFlag { get; set; }
     public bool KeyVaultFlag { get; set; }
+    public bool K8sConfig { get; set; }
     public AppKeyVault? KeyVault { get; set; }
 
     public List<YamlClusterInfoDto>? ClusterInfoList { get; set; }
@@ -71,9 +72,15 @@ public class YamlClusterInfoDto : IMapFrom<YamlClusterInfo>
     // DomainDto
     public DomainDto? Domain { set; get; }
     
+    public bool domainFlag { set; get; }
+    
     // Disk Info 
     public bool DiskInfoFlag { set; get; }
     public List<DiskInfoDto>? DiskInfoList { set; get; }
+
+    public string Port { set; get; } = "80";
+
+    public string TargetPort { set; get; } = "80";
 }
 
 public class DiskInfoDto

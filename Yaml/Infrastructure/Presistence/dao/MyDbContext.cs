@@ -9,9 +9,8 @@ public class MyDbContext : DbContext
         
     }
 
-    public MyDbContext(DbContextOptions options) : base(options)
+    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
     {
-        
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,13 +20,13 @@ public class MyDbContext : DbContext
             .Property(e => e.Id);
     }
 
- 	public DbSet<YamlAppInfo> AppInfoContext { get; set; }
- 	public DbSet<YamlClusterInfo> ClusterContext { get; set; }
+    public DbSet<YamlAppInfo> AppInfoContext { get; set; }
+    public DbSet<YamlClusterInfo> ClusterContext { get; set; }
     
- 	public DbSet<YamlClusterDiskInfo> DiskInfoContext{ get; set; }
- 	public DbSet<YamlKeyVaultInfo> KeyVaultInfoContext { get; set; }
- 	public DbSet<YamlClusterDomainInfo> DomainContext { get; set; }
- 	public DbSet<YamlClusterConfigFileInfo> ConfigFile { get; set; }
- 	public DbSet<YamlClusterConfigMapInfo> ConfigMap { get; set; }
- 	public DbSet<YamlUser> User { get; set; }
+    public DbSet<YamlClusterDiskInfo> DiskInfoContext{ get; set; }
+    public DbSet<YamlKeyVaultInfo> KeyVaultInfoContext { get; set; }
+    public DbSet<YamlClusterDomainInfo> DomainContext { get; set; }
+    public DbSet<YamlClusterConfigFileInfo> ConfigFile { get; set; }
+    public DbSet<YamlClusterConfigMapInfo> ConfigMap { get; set; }
+    public DbSet<YamlUser> User { get; set; }
 }

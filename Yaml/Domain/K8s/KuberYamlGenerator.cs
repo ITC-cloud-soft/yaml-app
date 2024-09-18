@@ -123,7 +123,41 @@ public class KuberYamlGenerator : IKuberYamlGenerator
 
     public async Task<string> GenerateIngress(YamlClusterInfoDto cluster)
     {
+        if (!cluster.domainFlag)
+        {
+            return "";
+        }
         var path = Path.Combine(_currentDirectory, KubeConstants.IngressFileTemplate);
+        return await _engine.CompileRenderAsync(path, cluster);
+    }
+    
+    public async Task<string> GenerateIngressSecret(YamlAppInfoDto appInfoDto, YamlClusterInfoDto cluster)
+    {
+        if (!cluster.domainFlag)
+        {
+            return "";
+        }
+        
+        if (cluster.Domain != null && String.IsNullOrEmpty(cluster.Domain.Certification) && String.IsNullOrEmpty(cluster.Domain.PrivateKey))
+        {
+            return "";
+        }
+        var certificationLocation = Path.Combine(_currentDirectory, cluster.Domain?.Certification ?? "");
+        var privateKeyLocation = Path.Combine(_currentDirectory, cluster.Domain?.PrivateKey ?? "");
+
+        // 读取证书和私钥的字节数据
+        var certificationBytes = await File.ReadAllBytesAsync(certificationLocation);
+        var privateKeyBytes = await File.ReadAllBytesAsync(privateKeyLocation);
+
+        // 将字节数据转换为 Base64 字符串
+        var certificationBase64 = Convert.ToBase64String(certificationBytes);
+        var privateKeyBase64 = Convert.ToBase64String(privateKeyBytes);
+
+        // 更新 cluster 对象的 Certification 和 PrivateKey 属性为 Base64 编码的字符串
+        cluster.Domain!.Certification = certificationBase64;
+        cluster.Domain!.PrivateKey = privateKeyBase64;
+        
+        var path = Path.Combine(_currentDirectory, KubeConstants.IngressSecretTemplate);
         return await _engine.CompileRenderAsync(path, cluster);
     }
 }

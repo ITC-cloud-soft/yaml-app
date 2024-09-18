@@ -48,4 +48,7 @@ public class YamlAppInfo : CommonFields
     
     [Column("Kube_Config")]
     public string? KubeConfig { get; set; }
+    
+    [Column("K8s_Config")]
+    public bool? K8sConfig { get; set; }
 }

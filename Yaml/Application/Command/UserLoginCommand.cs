@@ -21,7 +21,7 @@ public class UserLoginCommand : IRequest<ApiResponse<UserLoginResponse>>
 public class UserLoginCommandHandler : IRequestHandler<UserLoginCommand, ApiResponse<UserLoginResponse>>
 {
     private readonly MyDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly IMapper _mapper; 
     private readonly ILogger _logger;
     private readonly IStringLocalizer<SharedResources> _sharedLocalizer;
     public UserLoginCommandHandler(MyDbContext context,

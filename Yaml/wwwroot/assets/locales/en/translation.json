@@ -7,11 +7,12 @@
     "pwdEmpty": "Password cannot be empty."
   },
   "appInfoPage": {
+    "Demo":"How to export kubeconfig file",
     "all": "All",
-    "controller": "Controller",
-    "clusterStorage": "ClusterStorage",
+    "controller": "Yamler",
+    "clusterStorage": "CloudStore",
     "manual": "Manual",
-    "title": "Yamler--CD Controller",
+    "title": "Yamler--GUI tool for CD",
     "required": "Required",
     "appName": "AppName",
     "letter": "※Letter",
@@ -85,6 +86,12 @@
     "domainText": "Please add domains associated with the cluster; multiple domains can be added.",
     "jsonUploadErrorText": "Json File format error. Please check and upload again.",
     "jsonUploadSuccessText": "Json File uploaded successfully.",
-    "is": " is ?"
+    "is": " is ?",
+    "k8sConfig": "K8S Settings",
+    "k8sHelpText":"Please upload your Kubernetes configuration file (config) for configuring cluster settings.",
+    "domainFlag": "Domain Settings",
+    "portText": "Kubernetes Service objects are used to expose Pods, allowing other Pods or external clients to communicate with them.",
+    "portSetText": "Kubernetes Service objects are used to expose Pods, allowing other Pods or external clients to communicate with them.",
+    "targetPortText": "Mapped to the port inside the container in the Pod (i.e., containerPort). It is usually used to forward the Service's port to the container's containerPort."
   }
 }

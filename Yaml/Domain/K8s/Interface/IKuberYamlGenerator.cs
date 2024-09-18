@@ -24,5 +24,6 @@ public interface IKuberYamlGenerator
     public Task<string> GenerateSecret(YamlAppInfoDto appInfoDto, YamlClusterInfoDto cluster);
     
     public Task<string> GenerateIngress(YamlClusterInfoDto cluster);
+    public Task<string> GenerateIngressSecret(YamlAppInfoDto appInfoDto, YamlClusterInfoDto cluster);
 
 }

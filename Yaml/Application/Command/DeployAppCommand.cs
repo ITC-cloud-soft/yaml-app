@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using AutoMapper;
 using MediatR;
-using RazorLight;
 using Yaml.Domain.K8s.Interface;
 using Yaml.Infrastructure.Dto;
 using Yaml.Infrastructure.Exception;
@@ -17,19 +15,13 @@ public class DeployAppCommand : IRequest<string>
 public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
 {
     private readonly ILogger _logger;
-    private readonly  IRazorLightEngine _engine;
     private readonly  IKubeApi _kubeApi;
 
     public DeployAppCommandHandler(
-        MyDbContext context, 
-        IMapper mapper, 
         ILogger<DeployAppCommandHandler> logger,
-        IRazorLightEngine razorLightEngine,
-        IKubeApi kubeApi
-        )
+        IKubeApi kubeApi)
     {
         _logger = logger;
-        _engine = razorLightEngine;
         _kubeApi = kubeApi;
     }
 
@@ -45,11 +37,17 @@ public class DeployAppCommandHandler : IRequestHandler<DeployAppCommand, string>
             await _kubeApi.CreateIngress(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateService(command.AppInfoDto, cancellationToken);
             await _kubeApi.CreateDeployment(command.AppInfoDto, cancellationToken);
+
+            if (command.AppInfoDto.NetdataFlag)
+            {
+                await _kubeApi.CreateClusterRoleAndBindingAsync(command.AppInfoDto, cancellationToken);
+                await _kubeApi.DeployNetaData(command.AppInfoDto, cancellationToken);
+            }
             return v1Namespace.Metadata.Name;
         }
         catch (Exception e)
         {
-            _logger.LogError("Deploy APP Error :" + e);
+            _logger.LogError(e, "Deploy APP Error: {[]}", e.Message);
             throw new ServiceException("Deploy APP Error : ", e);
         }
     }

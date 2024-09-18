@@ -1,13 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: batch-job-backend-svc
+  namespace: batch-job-yamler-ns
+spec:
+  selector:
+    app:  batch-job-backend-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+
+---
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: batch-job-backend-configmap
+  namespace: batch-job-yamler-ns
+data:
+  ConnectionStrings__DefaultConnection: "Server=mysql-service-svc.batch-job-yamler-ns;Database=batch;Port=3306;Uid=root;Pwd=hsaidawaw!@;AllowUserVariables=True;Connect Timeout=60;Pooling=True;default command timeout=90;"
+
+---
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aws-cluster-deployment
-  namespace: aws-app-ns
+  name: batch-job-backend-deployment
+  namespace: batch-job-yamler-ns
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aws-cluster-app
+      app: batch-job-backend-app
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -16,25 +45,25 @@ spec:
   template:
     metadata:
       labels:
-        app: aws-cluster-app
-        aadpodidbinding: 1
+        app: batch-job-backend-app
+        aadpodidbinding: saas-pod-identity
     spec:
       containers:
-        - name: aws-cluster
-          image: nginx:latest
+        - name: batch-job-backend
+          image: thomaszy2077/batch:1
           imagePullPolicy: Always
           env:
-            - name: Name 
-              value: /mnt/secrets-store/Name
+            - name: ConnectionStrings__DefaultConnection 
+              valueFrom: 
+                configMapKeyRef: 
+                  name: batch-job-backend-configmap
+                  key: ConnectionStrings__DefaultConnection
           ports: 
             - containerPort: 80
           volumeMounts:
-            - mountPath: /mnt/secrets-store 
-              name: secrets-store-inline 
-              readOnly: true 
           resources:
            limits:
-             memory: 512Mi
+             memory: 256Mi
              cpu: "0.25"
       volumes:
       - name: secrets-store-inline
@@ -42,5 +71,105 @@ spec:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: aws-app-keyvault-spc
+            secretProviderClass: batch-job-yamler-keyvault-spc
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service-svc
+  namespace: batch-job-yamler-ns
+spec:
+  selector:
+    app:  mysql-service-app
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  type: ClusterIP
+---
+
+---
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-service-configmap
+  namespace: batch-job-yamler-ns
+data:
+  MYSQL_ROOT_PASSWORD: "hsaidawaw!@"
+  MYSQL_PASSWORD: "hsaidawaw!@"
+
+---
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-service-823-pvc
+  namespace: batch-job-yamler-ns
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 1G
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-service-deployment
+  namespace: batch-job-yamler-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-service-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 3
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: mysql-service-app
+        aadpodidbinding: saas
+    spec:
+      containers:
+        - name: mysql-service
+          image: mysql:8.0
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_ROOT_PASSWORD 
+              valueFrom: 
+                configMapKeyRef: 
+                  name: mysql-service-configmap
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_PASSWORD 
+              valueFrom: 
+                configMapKeyRef: 
+                  name: mysql-service-configmap
+                  key: MYSQL_PASSWORD
+          ports: 
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-service-823-pvc 
+          resources:
+           limits:
+             memory: 512Mi
+             cpu: "0.5"
+      volumes:
+      - name: mysql-service-823-pvc
+        persistentVolumeClaim:
+          claimName: mysql-service-823-pvc
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: batch-job-yamler-keyvault-spc
         

@@ -11,9 +11,51 @@ public class AppController : ApiControllerBase
     public async Task<IActionResult> DownloadAppJsonFile([FromQuery] GetAppQuery getAppQuery)
     {
         var yamlAppInfoDto = await Mediator.Send(getAppQuery);
+
+        yamlAppInfoDto.KubeConfig = "";
+        foreach (var cluster in yamlAppInfoDto.ClusterInfoList)
+        {
+            cluster.Id = 0;
+
+            if (cluster.Domain != null)
+            {
+                cluster.Domain = null;
+            }
+            
+            if (cluster.ConfigFile != null)
+            {
+                cluster.ConfigFile = [];
+            }
+            
+            if (cluster.ConfigMap != null)
+            {
+                foreach (var configMap in cluster.ConfigMap)
+                {
+                    configMap.Id = 0;
+                } 
+            }
+
+            if (cluster.KeyVault != null)
+            {
+                foreach (var keyVault in cluster.KeyVault)
+                {
+                    keyVault.ClusterId = 0;
+                    keyVault.Id = 0;
+                }
+            }
+
+            if (cluster.DiskInfoList != null)
+            {
+                foreach (var disk in cluster.DiskInfoList)
+                {
+                    disk.Id = 0;
+                    disk.ClusterId = 0;
+                }  
+            }
+        }
         
         // Serialize the app data to JSON.
-        var json = JsonConvert.SerializeObject(yamlAppInfoDto);
+        var json = JsonConvert.SerializeObject(yamlAppInfoDto, Formatting.Indented);
         
         // Create a FileContentResult with appropriate headers
         var fileBytes = System.Text.Encoding.UTF8.GetBytes(json);
@@ -36,14 +78,28 @@ public class AppController : ApiControllerBase
     {
         return Ok(await Mediator.Send(getAppQuery));
     }
-
+    
+    [HttpGet("list")]
+    [Produces("application/json")] 
+    public async Task<IActionResult> GetAppInfo([FromQuery] ListQuery getAppQuery)
+    {
+        return Ok(await Mediator.Send(getAppQuery));
+    }
+    
     [HttpPost("deploy")]
     [Produces("application/json")] 
     public async Task<IActionResult> Deploy([FromBody] DeployAppCommand command)
     {
-        var app = await Mediator.Send(new GetAppQuery { AppId = command.AppInfoDto.Id, UserId = 1 });
-        command.AppInfoDto = app;
-        return Ok(await Mediator.Send(command));
+        if (command.AppInfoDto.K8sConfig)
+        {
+            var app = await Mediator.Send(new GetAppQuery { AppId = command.AppInfoDto.Id, UserId = 1 });
+            command.AppInfoDto = app;
+            return Ok(await Mediator.Send(command));
+        }
+
+        var deployByYamlCommand = new DeployByYamlCommand(){AppId = command.AppInfoDto.Id};
+        await Mediator.Send(deployByYamlCommand);
+        return Ok();
     }
     
     [HttpPost("upload")]

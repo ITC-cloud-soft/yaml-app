@@ -14,7 +14,6 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, IEnum
     public UploadFileCommandHandler(ILogger<UploadFileCommandHandler> logger)
     {
         _logger = logger;
-        
     }
 
     public async Task<IEnumerable<string>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
