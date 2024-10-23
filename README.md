@@ -16,6 +16,8 @@
 ## Introduction
 
 Yamler is a visual continuous delivery (CD) tool based on C#/ASP.NET and Kubernetes, designed to help developers and operations staff manage and deploy Kubernetes clusters and applications through an intuitive interface.
+* Kubernetes clusters on Azure and AWS
+* Multi-location deployment with one configuration: by exporting configuration files, applications can be imported and deployed on other clusters where Yamler is installed.
 * Supports integration with Azure Container Registry and KeyVault.
 * Offers rich configuration options, such as container images, pod count, CPU and memory limits, disk settings, ConfigMap and KeyVault configurations, etc.
 * Uses Helm and YAML to manage Kubernetes resources, simplifying complex configuration management and application deployment processes.

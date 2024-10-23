@@ -16,6 +16,8 @@
 ## 简介
 
 Yamler是一款基于 C#/ASP.NET 和 Kubernetes 的可视化持续交付(CD)工具，旨在帮助开发者和运维人员通过直观的界面管理和部署 Kubernetes 集群和应用。
+* Azure 和 AWS 的Kubernetes集群
+* 一次配置多处发布，通过导出配置文件，在其他安装Yamler的集群上也能导并发布应用
 * 支持Azure容器注册表连接与KeyVault集成。
 * 提供丰富的配置选项，如容器镜像、Pod数量、CPU和内存限制、磁盘配置、ConfigMap与KeyVault设置等。
 * 使用Helm和Yaml管理Kubernetes资源，简化了复杂的配置管理和应用部署流程。
