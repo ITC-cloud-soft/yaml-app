@@ -55,8 +55,8 @@ Yamler-backend
 ## 演示图
 <table>
     <tr>
-        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_1.png"/></td>
-        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_2.png"/></td>
+        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_cn1.png"/></td>
+        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_cn2.png"/></td>
     </tr>
 </table>
 
