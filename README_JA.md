@@ -112,7 +112,7 @@ Yamler ホームページにアクセスする際に、Lens または Kubernetes
 
 2. Kubernetes コマンドを使用してアクセスする
 ```shell
-kubectl port-forward service/batch-job-batch-job-helm 8080:80 --namespace batch-job
+kubectl port-forward service/my-helm-yarl 8081:8080 --namespace yamler
 ```
 その後、ブラウザで https://localhost:8081 にアクセスします。
 ### License

@@ -112,7 +112,7 @@ helm status yamler
 
 2. 使用 Kubernetes 命令访问
 ```shell
-kubectl port-forward service/batch-job-batch-job-helm 8080:80 --namespace batch-job
+kubectl port-forward service/my-helm-yarl 8081:8080 --namespace yamler
 ```
 然后在浏览器中输入`https://localhost:8081`访问
 ## 许可证
