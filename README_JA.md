@@ -102,5 +102,18 @@ helm install yamler yamler/yamler-chart
 ```bash
 helm status yamler
 ```
+
+## Yamler ホームページにアクセス
+Yamler ホームページにアクセスする際に、Lens または Kubernetes コマンドを使用して URL をプロキシすることができます。
+
+1. Lens を使用してアクセスする
+転送ボタンを押すと、URL に自動的に転送されま
+<table> <tr> <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_lens.png"/></td> </tr> </table>
+
+2. Kubernetes コマンドを使用してアクセスする
+```shell
+kubectl port-forward service/batch-job-batch-job-helm 8080:80 --namespace batch-job
+```
+その後、ブラウザで https://localhost:8081 にアクセスします。
 ### License
 Yamler は MIT License に基づいてライセンスされています。

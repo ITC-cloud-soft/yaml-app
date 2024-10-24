@@ -103,6 +103,18 @@ helm install yamler yamler/yamler-chart
 ```bash
 helm status yamler
 ```
+## 访问 Yamler
+当访问 Yamler 首页时，可以使用 Lens 或 Kubernetes 命令来代理 URL。
+
+1. 使用 Lens 访问
+按下转发按钮将自动转发到 URL
+<table> <tr> <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_lens.png"/></td> </tr> </table>
+
+2. 使用 Kubernetes 命令访问
+```shell
+kubectl port-forward service/batch-job-batch-job-helm 8080:80 --namespace batch-job
+```
+然后在浏览器中输入`https://localhost:8081`访问
 ## 许可证
 
 Yamler 基于 [MIT License](LICENSE) 许可证。

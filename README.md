@@ -104,6 +104,21 @@ helm install yamler yamler/yamler-chart
 ```
 helm status yamler
 ```
+## Access Yamler Page
+When access Yamler homepage could use Lens or Kubernetes command to proxy the url.
+1. Use Lens to access
+Press forward button will automatically forward to browser 
+<table>
+    <tr>
+        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_lens.png"/></td>
+    </tr>
+</table>
+
+2. Use kubernetes command to access
+```shell
+kubectl port-forward service/my-helm-yarl 8081:8080 --namespace yamler
+```
+then access `https://localhost:8081` in browser
 ### License
 
 Yamler is licensed under the MIT License.
