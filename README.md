@@ -22,7 +22,22 @@ Yamler is a visual continuous delivery (CD) tool based on C#/ASP.NET and Kuberne
 * Offers rich configuration options, such as container images, pod count, CPU and memory limits, disk settings, ConfigMap and KeyVault configurations, etc.
 * Uses Helm and YAML to manage Kubernetes resources, simplifying complex configuration management and application deployment processes.
 * Frontend based on React and Ant Design, backend using C# ASP.NET Core and Quartz.
+## Yamler Download, Export, Import Features
 
+Yamler offers the following features to support efficient management and deployment in development environments:
+
+1. **Download**:
+   Using Yamler, you can download the current configuration and manage the cluster settings locally.
+
+2. **Export**:
+   Users can export configuration files and save them, later importing them into the same or different environments to apply the same settings.
+
+3. **Import**:
+   You can easily import configuration files exported from other clusters to quickly deploy the same settings, ensuring consistent application deployment across multiple environments.
+
+### Migration Functionality (Parallel Deployment in Development Environments)
+
+Using configuration files in development environments, Yamler can apply the configured settings to multiple clusters, enabling parallel deployment across environments. Once the configuration is set, users can quickly import the same application and deploy it across other clusters where Yamler is installed.
 ## System Modules
 
 ~~~
