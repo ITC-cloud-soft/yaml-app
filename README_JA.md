@@ -86,11 +86,10 @@ Yamler-backend
 Helm Charts を使用して Yamler を簡単にインストールできます。以下の手順に従ってください：
 
 1. Yamler Helm レポジトリを追加します：
-1. Add the Yamler Helm repository:
 ```bash
 helm repo add yamler https://itc-cloud-soft.github.io/yaml-helm-open/
 ```
-2.	Update Helm repositories:
+2.	Helm レポジトリを更新します：
 ```bash
 helm repo update
 ```
