@@ -72,8 +72,8 @@ Yamler-backend
 ## 演示图
 <table>
     <tr>
-        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_cn1.png"/></td>
-        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_cn2.png"/></td>
+        <td><img  style="max-width: 60vh" src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_cn1.png"/></td>
+        <td><img  style="max-width: 60vh" src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_cn2.png"/></td>
     </tr>
 </table>
 
@@ -108,7 +108,7 @@ helm status yamler
 
 1. 使用 Lens 访问
 按下转发按钮将自动转发到 URL
-<table> <tr> <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_lens.png"/></td> </tr> </table>
+<table> <tr> <td><img  style="max-width: 60vh" src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_lens.png"/></td> </tr> </table>
 
 2. 使用 Kubernetes 命令访问
 ```shell

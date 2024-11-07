@@ -72,8 +72,8 @@ Yamler-backend
 ## Demo Images
 <table>
     <tr>
-        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_en1.png"/></td>
-        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_en2.png"/></td>
+        <td><img style="max-width: 60vh" src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_en1.png"/></td>
+        <td><img style="max-width: 60vh" src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_en2.png"/></td>
     </tr>
 </table>
 
@@ -93,7 +93,7 @@ You can easily install Yamler via Helm Charts. Follow these steps:
 helm repo add yamler https://itc-cloud-soft.github.io/yaml-helm-open/
 ```
 2.	Update Helm repositories:
-```bash
+```bash[uploads](Yaml%2Fuploads)
 helm repo update
 ```
 3.	Install Yamler using Helm:
@@ -110,7 +110,7 @@ When access Yamler homepage could use Lens or Kubernetes command to proxy the ur
 Press forward button will automatically forward to browser 
 <table>
     <tr>
-        <td><img src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_lens.png"/></td>
+        <td><img style="max-width: 60vh" src="https://itc-cloud-soft.github.io/doc-open/img/yamler/yamler_lens.png"/></td>
     </tr>
 </table>
 
