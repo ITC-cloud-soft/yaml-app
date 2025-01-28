@@ -9,18 +9,26 @@ spec:
     keyvaultName: @Model.KeyVaultName
     objects: |
       array:
-        @foreach (var kv in @Model.ConfigKeyList)
+@foreach (var kv in @Model.ConfigKeyList)
+{
+  string objectType = Model.IfAWS ? "secretsmanager" : "secret";
+  string obj = $"        - | \n" +
+               $"          objectType: {objectType} \n" +
+               $"          objectName: {kv} \n";
+  @obj
+}
+        @if (!Model.IfAWS)
         {
-          string obj = $"        - | \n" +
-                       $"          objectType: secret \n" +
-                       $"          objectName: {kv} \n";
-          @obj
+    @:tenantId: "@Model.TenantId"
+    @:usePodIdentity: "false"
+    @:useVMManagedIdentity: "true"
+    @:userAssignedIdentityID: "@Model.ManagedId"
+  @:provider: azure
         }
-    tenantId: "@Model.TenantId"
-    usePodIdentity: "false"
-    useVMManagedIdentity: "true"
-    userAssignedIdentityID: "@Model.ManagedId"
-  provider: azure
+        @if (Model.IfAWS)
+        {
+  @:provider: aws
+        }
   secretObjects:
     - secretName: @Model.AppName-secret
       type: Opaque

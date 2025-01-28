@@ -1,4 +1,12 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Yaml.Application.Command;
 
@@ -10,24 +18,28 @@ public class UploadFileCommand : IRequest<IEnumerable<string>>
 public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, IEnumerable<string>>
 {
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
-    public UploadFileCommandHandler(ILogger<UploadFileCommandHandler> logger)
+
+    public UploadFileCommandHandler(ILogger<UploadFileCommandHandler> logger, IConfiguration configuration)
     {
         _logger = logger;
+        _configuration = configuration;
     }
 
     public async Task<IEnumerable<string>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
     {
+        var uploadDirectory = _configuration.GetConnectionString("UploadDirectory"); // 修改这里的路径
+
         try
         {
             var files = request.Files;
-            if (files == null || files.Count == 0)
+            if (files.Count == 0)
             {
                 return Enumerable.Empty<string>();
             }
 
-            var uploadDirectory = "uploads";
-            if (!Directory.Exists(uploadDirectory))
+            if (uploadDirectory != null && !Directory.Exists(uploadDirectory))
             {
                 Directory.CreateDirectory(uploadDirectory);
             }
@@ -39,15 +51,13 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, IEnum
                 {
                     Guid newGuid = Guid.NewGuid();
                     string prefix = newGuid.ToString();
-                    var fileName = Path.Combine(uploadDirectory, prefix + "_" + file.FileName);
-                    using (var stream = new FileStream(fileName, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                        uploadedFiles.Add(fileName);
-                    }
+                    var fileName = prefix + "_" + file.FileName;
+                    var filePath = Path.Combine(uploadDirectory, fileName);
+                    await using var stream = new FileStream(filePath, FileMode.Create) ;
+                    await file.CopyToAsync(stream, cancellationToken);
+                    uploadedFiles.Add(fileName);
                 }
             }
-
             return uploadedFiles;
         }
         catch (Exception e)

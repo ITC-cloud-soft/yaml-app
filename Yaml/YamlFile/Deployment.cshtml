@@ -26,15 +26,18 @@ spec:
           image: @Model.Image
           imagePullPolicy: Always
           env:
-          @foreach (var cf in @Model.ConfigMap)
+          @if (Model.ConfigMapFlag)
           {
-            
-            string configMap = $"            - name: {cf.ConfigKey} \n" +
-                               $"              valueFrom: \n" +
-                               $"                configMapKeyRef: \n" +
-                               $"                  name: {Model.ClusterName}-configmap\n" +
-                               $"                  key: {cf.ConfigKey}\n";
-            @configMap
+            @foreach (var cf in @Model.ConfigMap)
+            {
+
+              string configMap = $"            - name: {cf.ConfigKey} \n" +
+                                 $"              valueFrom: \n" +
+                                 $"                configMapKeyRef: \n" +
+                                 $"                  name: {Model.ClusterName}-configmap\n" +
+                                 $"                  key: {cf.ConfigKey}\n";
+              @configMap
+            }
           }
           @if (Model.KeyVaultFlag)
           {
@@ -50,30 +53,55 @@ spec:
           volumeMounts:
           @if (Model.KeyVaultFlag)
           {
-            string keyvault =   $"            - mountPath: /mnt/secrets-store \n" + 
-                                $"              name: secrets-store-inline \n" + 
+            string keyvault =   $"            - mountPath: /mnt/secrets-store \n" +
+                                $"              name: secrets-store-inline \n" +
                                 $"              readOnly: true \n"
             ;
             @keyvault
           }
-          @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+          @if (Model.DiskInfoFlag)
           {
-            string mountPath = $"            - mountPath: {diskInfo.Path}\n" +
-                               $"              name: {diskInfo.Name}-pvc \n";
-            @mountPath
+            @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+            {
+              string mountPath = $"            - mountPath: {diskInfo.Path}\n" +
+                                 $"              name: {diskInfo.Name}-pvc \n";
+              @mountPath
+            }
+          }
+          @if (Model.ConfigMapFileFlag)
+          {
+              @foreach (var cf in @Model.ConfigFile ?? Enumerable.Empty<ConfigFileDto>())
+              {
+                 string configMapVolume = $"            - mountPath: {cf.FilePath}\n" +
+                                          $"              name: config-volume-{cf.Id} \n" +
+                                          $"              readOnly: true \n";
+                @configMapVolume
+              }
           }
           resources:
            limits:
              memory: @Model.Memory
              cpu: "@Model.Cpu"
       volumes:
-      @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+      @if (Model.DiskInfoFlag){
+          @foreach (var diskInfo in @Model.DiskInfoList ?? Enumerable.Empty<DiskInfoDto>())
+          {
+            string pvc = $"      - name: {diskInfo.Name}-pvc\n" +
+                         $"        persistentVolumeClaim:\n" +
+                         $"          claimName: {diskInfo.Name}-pvc\n";
+
+            @pvc
+          }
+      }
+      @if (Model.ConfigMapFileFlag)
       {
-        string pvc = $"      - name: {diskInfo.Name}-pvc\n" +
-                     $"        persistentVolumeClaim:\n" +
-                     $"          claimName: {diskInfo.Name}-pvc\n";             
-        
-        @pvc
+        @foreach (var cf in @Model.ConfigFile ?? Enumerable.Empty<ConfigFileDto>())
+        {
+          string configFileVolume = $"      - name: config-volume-{cf.Id}\n" +
+                                    $"        configMap:\n" +
+                                    $"          name: {@Model.ClusterName}-configfile\n";
+          @configFileVolume
+        }
       }
       - name: secrets-store-inline
         csi:

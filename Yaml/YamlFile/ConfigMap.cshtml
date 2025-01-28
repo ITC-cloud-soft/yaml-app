@@ -6,14 +6,11 @@ metadata:
   name: @Model.ClusterName-configmap
   namespace: @Model.AppName-ns
 data:
+@if (Model.ConfigMapFlag)
+{
     @foreach(var item in @Model.ConfigMap ?? Enumerable.Empty<ConfigMapDto>())
     {
         string configRecord = item.ConfigKey + ": \"" + item.Value + "\"\n";
-        @("  " + configRecord)
+        @("    " + configRecord)
     }
-    @* @foreach(var item in @Model.ConfigFile ?? Enumerable.Empty<ConfigFileDto>()) *@
-    @* { *@
-    @*     string configRecord = item.FilePath; *@
-    @*     @("  " + configRecord + ": | \n")  *@
-    @*     @("    " + item.FileContent + "\n")  *@
-    @* } *@
+}

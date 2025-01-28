@@ -1,0 +1,16 @@
+@using Yaml.Infrastructure.Dto
+@model Yaml.Infrastructure.Dto.YamlClusterInfoDto
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: @Model.ClusterName-configfile
+  namespace: @Model.AppName-ns
+data:
+@if (Model.ConfigMapFileFlag)
+{
+    @foreach (var item in Model.ConfigFile ?? Enumerable.Empty<ConfigFileDto>())
+    {
+        @("  " + item.FileLink + ": |\n")
+        @("    " + item.FileContent.Replace("\n", "\n    ") + "\n")
+    }
+}

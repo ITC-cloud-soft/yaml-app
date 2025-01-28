@@ -32,7 +32,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
     {
         try
         {
-            var yamlAppInfoDto = await _mediator.Send(new GetAppQuery { AppId = request.appId });
+            var yamlAppInfoDto = await _mediator.Send(new GetAppQuery { AppId = request.appId }, cancellationToken);
             
             var tasks = yamlAppInfoDto.ClusterInfoList?.Select(async cluster =>
             {
@@ -40,6 +40,7 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                 var service = await _kuberYamlGenerator.GenerateService(cluster);
                 var deployment = await _kuberYamlGenerator.GenerateDeployment(cluster);
                 var configMap = await _kuberYamlGenerator.GenerateConfigMap(cluster);
+                var configFile = await _kuberYamlGenerator.GenerateConfigFile(cluster);
                 var ingress = await _kuberYamlGenerator.GenerateIngress(cluster);
                 var persistentVolumeClaim = await _kuberYamlGenerator.GeneratePersistentVolumeClaim(cluster);
                 var secret = await _kuberYamlGenerator.GenerateSecret(yamlAppInfoDto, cluster);
@@ -50,6 +51,8 @@ public class DownloadYamlFileCommandHandler : IRequestHandler<DownloadYamlFileCo
                        $"{ingressSecret}" +
                        $"{NextLine}" +
                        $"{secret}" +
+                       $"{NextLine}" +
+                       $"{configFile}" +
                        $"{NextLine}" +
                        $"{configMap}" +
                        $"{NextLine}" +

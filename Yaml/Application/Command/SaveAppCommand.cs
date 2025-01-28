@@ -81,6 +81,12 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
     private async Task<YamlClusterInfo> HandleCluster(YamlClusterInfoDto yamlClusterInfoDto, CancellationToken cancellationToken, 
         int appId)
     {
+        // set default port
+        if (!yamlClusterInfoDto.PortFlag)
+        {
+            yamlClusterInfoDto.Port = "80";
+            yamlClusterInfoDto.TargetPort = "80";
+        }
         // save cluster 
         var cluster = _mapper.Map<YamlClusterInfo>(yamlClusterInfoDto);
         cluster.AppId = appId;
@@ -112,20 +118,23 @@ public class SaveYamlAppCommandHandler : IRequestHandler<SaveYamlAppCommand, str
             {
                 ConfigKey = kv.ConfigKey,
                 AppId = appId,
-                Id = kv.Id,
+                ClusterId = kv.ClusterId,
                 Value = kv.Value
             };
-            if (yamlKeyVaultInfo.Id <= 0)
+
+            var existingKeyVaultInfo = await _context.KeyVaultInfoContext.FirstOrDefaultAsync(e => e.AppId == appId && e.ConfigKey == kv.ConfigKey, cancellationToken);
+            if (existingKeyVaultInfo != null)
             {
-                yamlKeyVaultInfo.Id = 0;
-                await _context.KeyVaultInfoContext.AddAsync(yamlKeyVaultInfo, cancellationToken);
+                existingKeyVaultInfo.ConfigKey = kv.ConfigKey;
+                existingKeyVaultInfo.Value = kv.Value;
+                _context.KeyVaultInfoContext.Update(existingKeyVaultInfo);
             }
             else
             {
-                 _context.KeyVaultInfoContext.Update(yamlKeyVaultInfo); 
+                await _context.KeyVaultInfoContext.AddAsync(yamlKeyVaultInfo, cancellationToken);
             }
+            await _context.SaveChangesAsync(cancellationToken);
         }
-        await _context.SaveChangesAsync(cancellationToken);
 
         return "success";
     }

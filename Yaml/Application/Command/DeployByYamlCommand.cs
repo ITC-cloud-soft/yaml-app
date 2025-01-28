@@ -30,16 +30,18 @@ public class DeployByYamlCommandHandler : IRequestHandler<DeployByYamlCommand>
         var filePath = Path.Combine(_currentDirectory, KubeConstants.OutPutFile); 
         
         
-        var app = await _mediator.Send(new GetAppQuery { AppId = request.AppId, UserId = 1 });
+        var app = await _mediator.Send(new GetAppQuery { AppId = request.AppId, UserId = 1 }, cancellationToken);
         try
         {
             var createSpaceCommand = $"kubectl create namespace {app.AppName}-ns";
             var res = await ShellHelper.RunShellCommand(createSpaceCommand);
+
             _logger.LogInformation(res);
             _logger.LogInformation("create namespace :{Namespace} succeed", app.AppName +"-ns");
             
             var command = $"kubectl apply -f {filePath} --namespace {app.AppName}-ns";
             var output = await ShellHelper.RunShellCommand(command);
+
             _logger.LogInformation(output);
             _logger.LogInformation("deploy Id :{Id} succeed", downloadCommand.appId);
         }
