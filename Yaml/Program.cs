@@ -56,7 +56,8 @@ public class Program
         builder.Services.AddControllersWithViews()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddDataAnnotationsLocalization();
-        
+
+        builder.Services.AddTransient<Utils>();
         builder.Services.AddScoped<IKubeApi, KubeApi>();
         builder.Services.AddScoped<IKuberYamlGenerator, KuberYamlGenerator>();
 

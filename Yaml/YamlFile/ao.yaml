@@ -6,4 +6,4 @@ spec:
   provider: aws
   parameters:
     objects: |
-      - arn:aws:secretsmanager:heast-2:211125781546:secret:testscret1-1
+      - arn:aws:secretsmanager:ap-southeast-2:211125781546:secret:testscret1-1fOePl

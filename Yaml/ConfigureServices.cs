@@ -55,9 +55,10 @@ public static class ConfigureServices
         
         // 5.Memory Cache
         services.AddMemoryCache();
-        
+        Console.WriteLine(configuration.GetConnectionString("MyDatabase"));
         services.AddDbContext<MyDbContext>(options =>
-            options.UseSqlite("Data Source=data/app.db"));
+            options.UseSqlite(configuration.GetConnectionString("MyDatabase")));
+
         return services;
     }
 }
