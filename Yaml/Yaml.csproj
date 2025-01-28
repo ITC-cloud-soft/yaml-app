@@ -44,7 +44,6 @@
 
     <!-- for cshtml -->
     <ItemGroup>
-        <Content Include="Application\.DS_Store" />
         <Content Include="data\app.db" />
         <Content Include="Domain\.DS_Store" />
         <Content Include="Infrastructure\.DS_Store" />
